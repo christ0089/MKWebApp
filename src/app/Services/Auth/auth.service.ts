@@ -54,7 +54,7 @@ export class AuthService {
     if (user === null) {
       return false;
     }
-    if (user.role == "admin") {
+    if (user.role === "admin" || user.role === "zone_admin") {
       return true;
     } else {
       return false;

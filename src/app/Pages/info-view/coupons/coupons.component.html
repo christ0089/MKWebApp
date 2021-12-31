@@ -8,7 +8,6 @@
 <button mat-raised-button color="primary" style="float: right;" (click)="newQuestions()" *ngIf="selectedWarehouse?.name === 'General'">
     Agregar Coupon
 </button>
-
 <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px">
     <mat-list-item role="listitem" *ngFor="let obj of (obj$ | async); let i = index" style="padding: 10px">
         <div style="width: 90%; display: flex;">
@@ -33,6 +32,7 @@
             <mat-icon>close</mat-icon>
         </button>
     </h4>
+    <mat-progress-bar *ngIf="loading === true" mode="indeterminate"></mat-progress-bar>
     <form [formGroup]="form" *ngIf="questions != null">
         <div class="form-row" style="
         max-width: 400px;
@@ -59,7 +59,7 @@ overflow-y: scroll;">
             <mat-icon>close</mat-icon>
         </button>
     </h4>
-
+    <mat-progress-bar *ngIf="loading === true" mode="indeterminate"></mat-progress-bar>
     <form [formGroup]="form" *ngIf="questions != null">
         <div class="form-row" style="
         max-width: 400px;

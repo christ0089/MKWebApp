@@ -10,11 +10,13 @@
         margin-bottom: auto;
       "></div>
     <mat-form-field class="example-full-width" *ngSwitchCase="'textbox'" style="width: 100%">
+      <div *ngIf="question.icon && question.icon.position === 'prefix'" matPrefix>
+        <mat-icon *ngIf="question.icon.type == 'icon'">{{question.icon.name}}</mat-icon>
+      </div>
       <input matInput placeholder="{{ question.label }}" value="{{ question.value }}" [formControlName]="question.key"
         [id]="question.key" [type]="question.type" [disabled]="question.disabled" />
-      <div *ngIf="question.icon" matSuffix>
-        <mat-icon *ngIf="question.icon.type == 'icon'" matSuffix>{{question.icon.name}}</mat-icon>
-        <p *ngIf="question.icon.type == 'string'" matSuffix>{{question.icon.name}}</p>
+      <div *ngIf="question.icon && question.icon.position === 'suffix'" matSuffix>
+        <mat-icon *ngIf="question.icon.type == 'icon'">{{question.icon.name}}</mat-icon>
       </div>
 
     </mat-form-field>

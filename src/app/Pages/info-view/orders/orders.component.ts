@@ -109,22 +109,22 @@ export class OrdersComponent implements OnInit {
           const order_mapped = o.map((order) => {
             if (order_status === "canceled") {
               if ((order.payment.payment_method_types as string[]).indexOf("cash") > -1 && order.status === order_status) {
-                this.cash_total += (order.payment.amount / 10)
+                this.cash_total += (order.payment.amount / 100)
               }
               if ((order.payment.payment_method_types as string[]).indexOf("card") > -1 && order.status === order_status) {
-                this.card_total += (order.payment.amount / 10)
+                this.card_total += (order.payment.amount / 100)
               }
             }
             if (order_status == "completed") {
              
               if ((order.payment.payment_method_types as string[]).indexOf("cash") > -1 && order.status === "completed") {
-                this.cash_total += (order.payment.amount / 100)
+                this.cash_total += (order.payment.amount / 100) * 7
                 order.payment_meta_data.items.forEach((element:any) => {
                   this.orders(element);
                 });
               }
               if ((order.payment.payment_method_types as string[]).indexOf("card") > -1 && order.status === "completed") {
-                this.card_total += (order.payment.amount / 100)
+                this.card_total += (order.payment.amount / 100) * 7
                 order.payment_meta_data.items.forEach((element:any) => {
                   this.orders(element);
                 });

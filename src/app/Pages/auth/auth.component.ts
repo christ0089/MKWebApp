@@ -13,7 +13,6 @@ export class AuthComponent implements OnInit {
   selectedTab = '0';
   constructor(
     breakpointObserver: BreakpointObserver,
-    private router: Router,
 ) {
     breakpointObserver.observe([
       Breakpoints.Handset

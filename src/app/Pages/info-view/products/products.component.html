@@ -48,6 +48,8 @@
             <mat-icon>close</mat-icon>
         </button>
     </h4>
+    <mat-progress-bar  *ngIf="loading === true"  mode="indeterminate"></mat-progress-bar>
+
     <form [formGroup]="form" *ngIf="questions != null">
         <div class="form-row" style="
         max-width: 400px;
@@ -74,6 +76,7 @@ overflow-y: scroll;">
             <mat-icon>close</mat-icon>
         </button>
     </h4>
+    <mat-progress-bar *ngIf="loading === true" mode="indeterminate"></mat-progress-bar>
 
     <form [formGroup]="form" *ngIf="questions != null">
         <div class="form-row" style="

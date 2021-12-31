@@ -83,6 +83,7 @@ export class ProductsComponent implements OnInit {
   form!: FormGroup;
   file!: File | null;
   currProd!: IProducts;
+  loading = false;
 
   @ViewChild("edit_prod_drawer") editDrawer!: MatDrawer;
   @ViewChild("new_prod_drawer") newDrawer!: MatDrawer;
@@ -106,7 +107,7 @@ export class ProductsComponent implements OnInit {
 
     this.searchForm.valueChanges.subscribe(userInput => {
       this.searchProd(userInput)
-  })
+    })
 
     this.products$.subscribe()
   }
@@ -122,6 +123,7 @@ export class ProductsComponent implements OnInit {
 
   editQuestions(product: IProducts) {
     this.editDrawer.toggle()
+    this.form.enable()
     this.questions = this.qcs.product_questionaire();
     this.currProd = product;
     this.questions.questions[0].options[0].value = true;
@@ -133,6 +135,7 @@ export class ProductsComponent implements OnInit {
 
   newQuestions() {
     this.newDrawer.toggle()
+    this.form.enable()
     this.questions = this.qcs.product_questionaire();
     this.form = this.qcs.toFormGroup(
       this.questions.questions
@@ -170,10 +173,10 @@ export class ProductsComponent implements OnInit {
       this.products$ = this.loadProducts();
     } else {
       let prods = await lastValueFrom(this.products$)
-        
+
       prods = prods.filter((v) => {
-        const hasBrand =  v.stripe_metadata_brand.toLowerCase().includes(prodName);
-        const hasType =  v.stripe_metadata_type.toLowerCase().includes(prodName);
+        const hasBrand = v.stripe_metadata_brand.toLowerCase().includes(prodName);
+        const hasType = v.stripe_metadata_type.toLowerCase().includes(prodName);
         return (v.name.toLowerCase().includes(prodName) || hasBrand || hasType);
       });
       this.products$ = of(prods);
@@ -208,6 +211,8 @@ export class ProductsComponent implements OnInit {
   async productFunction(event = "product.create") {
     const stripe_product = this.getProduct();
     const product = (this.form.value as IProducts)
+    this.form.disable()
+    this.loading = true;
 
     const downloadUrl = await this.storage.postPicture(this.file as File, "stripe_products", product.name)
 
@@ -221,19 +226,20 @@ export class ProductsComponent implements OnInit {
       description: product.description
     })
     lastValueFrom(prod$).then((res) => {
+      this.loading = false;
       this.file = null;
       this.newDrawer.toggle();
     })
   }
 
   async updateProduct() {
-
     const product = (this.form.value as IProducts)
     const stripe_product = {
       images: [""],
       description: product.description,
       ...this.getProduct()
     }
+    this.loading = true;
 
     if (this.file != null) {
       const downloadUrl: string = await this.storage.postPicture(this.file as File, "stripe_products", product.name)
@@ -256,6 +262,7 @@ export class ProductsComponent implements OnInit {
       lastValueFrom(prod$).then((res) => {
         console.log(res)
         this.file = null;
+        this.loading = false;
         this.editDrawer.toggle();
       })
     } else {

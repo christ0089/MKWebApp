@@ -11,6 +11,7 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { WarehouseComponent } from './warehouse/warehouse.component';
+import { MatIconModule } from "@angular/material/icon";
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { WarehouseComponent } from './warehouse/warehouse.component';
     MatFormFieldModule,
     MatFormFieldModule,
     MatInputModule,
+    MatIconModule,
     MatSelectModule,
     MatButtonModule,
     MatCheckboxModule,

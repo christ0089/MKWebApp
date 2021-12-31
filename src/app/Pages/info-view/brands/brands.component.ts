@@ -37,6 +37,8 @@ export class BrandsComponent implements OnInit {
   file!: File | null;
   currBrand!: IBrands;
 
+  loading = false;
+
   @ViewChild("edit_prod_drawer") editDrawer!: MatDrawer;
   @ViewChild("new_prod_drawer") newDrawer!: MatDrawer;
 
@@ -73,6 +75,7 @@ export class BrandsComponent implements OnInit {
 
   editQuestions(brand: IBrands) {
     this.editDrawer.toggle()
+    this.form.enable()
     this.questions = this.qcs.brand_questionaire();
     this.currBrand = brand;
     this.questions.questions[0].options[0].value = true;
@@ -84,6 +87,7 @@ export class BrandsComponent implements OnInit {
 
   newQuestions() {
     this.newDrawer.toggle()
+    this.form.enable()
     this.questions = this.qcs.brand_questionaire();
     this.form = this.qcs.toFormGroup(
       this.questions.questions
@@ -93,8 +97,11 @@ export class BrandsComponent implements OnInit {
 
   async brandAction(event: string, drawer: MatDrawer) {
     const collectionRef = collection(this.afs, "brands")
-    let id = doc(collectionRef).id
     let brandData = this.form.value as IBrands;
+    let id = doc(collectionRef).id
+  
+    this.form.disable()
+    this.loading = true;
 
     if (event == "brand.update") {
       id = this.currBrand.id as string;
@@ -115,10 +122,15 @@ export class BrandsComponent implements OnInit {
       await setDoc(docRef, { warehouse_id: this.warehouse.selectedWarehouse$.value?.id || "", ...brandData });
       this.file = null;
     } catch (e) {
+      alert(e);
       console.error(e);
     }
+    
+    this.loading = false;
+    this.form.enable();
     drawer.toggle();
   }
+
   setImage(fileEvent: File) {
     this.file = fileEvent;
   }

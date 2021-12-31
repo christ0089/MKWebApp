@@ -42,6 +42,7 @@ export class CouponsComponent implements OnInit {
   form!: FormGroup;
   file!: File | null;
   currBrand!: ICoupon;
+  loading = false;
 
   @ViewChild("edit_prod_drawer") editDrawer!: MatDrawer;
   @ViewChild("new_prod_drawer") newDrawer!: MatDrawer;
@@ -102,6 +103,9 @@ export class CouponsComponent implements OnInit {
     let id = doc(collectionRef).id;
     let brandData = this.form.value as ICoupon;
 
+    this.form.disable();
+    this.loading = true;
+
     if (event == "coupon.update") {
       id = this.currBrand.id as string;
     }
@@ -116,10 +120,15 @@ export class CouponsComponent implements OnInit {
       await setDoc(docRef, { warehouse_id: this.warehouse.selectedWarehouse$.value?.id || "", ...brandData });
       this.file = null;
     } catch (e) {
+      alert(e);
       console.error(e);
     }
+
+    this.loading = false;
+    this.form.enable();
     drawer.toggle();
   }
+  
   setImage(fileEvent: File) {
     this.file = fileEvent;
   }

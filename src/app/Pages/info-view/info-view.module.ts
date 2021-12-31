@@ -28,6 +28,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { AuthGuard } from 'src/app/Guard/auth.guard';
 import { CouponsComponent } from './coupons/coupons.component';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.se
     MatInputModule, 
     MatDatepickerModule,
     MatNativeDateModule,
+    MatProgressBarModule,
     InfoViewRoutingModule,
     ComponentModule
   ],

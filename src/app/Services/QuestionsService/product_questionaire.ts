@@ -96,6 +96,19 @@ export const product_questionaire = () => {
         options: [],
         verfication: false,
       }),
+      new TextboxQuestion({
+        key: "stripe_metadata_discount",
+        label: "Descuento",
+        value: null,
+        order: 0,
+        options: [],
+        icon: {
+          name: "attach_money",
+          type: "icon",
+          position: "prefix"
+        },
+        verfication: false,
+      }),
     ],
   }
 }
