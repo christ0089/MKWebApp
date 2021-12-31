@@ -1,0 +1,89 @@
+<div [formGroup]="form" style="width: 100%">
+  <!-- <label [attr.for]="question.key">{{ question.label }}</label> -->
+  <div [ngSwitch]="question.controlType" style="width: calc(100% - 20px); display: inline-flex; margin: 10px">
+    <div *ngIf="question.verification == true" style="
+        width: 20px;
+        height: 20px;
+        margin: 0px 10px;
+        border-radius: 10px;
+        margin-top: auto;
+        margin-bottom: auto;
+      "></div>
+    <mat-form-field class="example-full-width" *ngSwitchCase="'textbox'" style="width: 100%">
+      <input matInput placeholder="{{ question.label }}" value="{{ question.value }}" [formControlName]="question.key"
+        [id]="question.key" [type]="question.type" [disabled]="question.disabled" />
+      <div *ngIf="question.icon" matSuffix>
+        <mat-icon *ngIf="question.icon.type == 'icon'" matSuffix>{{question.icon.name}}</mat-icon>
+        <p *ngIf="question.icon.type == 'string'" matSuffix>{{question.icon.name}}</p>
+      </div>
+
+    </mat-form-field>
+    <mat-form-field *ngSwitchCase="'dropdown'" style="width: 100%">
+      <mat-select [id]="question.key" placeholder="{{ question.label }}" [formControlName]="question.key"
+        [disabled]="question.disabled" [compareWith]="compareObjects" [(ngModel)]="question.value">
+        <mat-option *ngFor="let opt of question.options" [value]="opt.key">{{
+          opt.value
+          }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field *ngSwitchCase="'textarea'" style="width: 100%">
+      <textarea matInput placeholder="{{ question.label }}" value="{{ question.value }}"
+        [formControlName]="question.key" [id]="question.key"></textarea>
+    </mat-form-field>
+
+    <mat-form-field *ngSwitchCase="'calendar'" style="width: 100%">
+      <input *ngIf="question.options.length == 2" matInput [matDatepicker]="picker" placeholder="{{ question.label }}"
+        [formControlName]="question.key" [min]="question.options[1].value" [max]="question.options[0].value"
+        [id]="question.key" />
+      <input *ngIf="question.options.length == 0" matInput [matDatepicker]="picker" placeholder="{{ question.label }}"
+        [formControlName]="question.key" [id]="question.key" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker touchUi #picker></mat-datepicker>
+    </mat-form-field>
+
+    <div *ngSwitchCase="'radio_options'" style="width: calc(100% - 20px); display: inline-block; margin: 10px">
+      <mat-radio-group aria-labelledby="example-radio-group-label" class="radio-group" [formControlName]="question.key">
+        <mat-radio-button class="radio-button" *ngFor="let option of question.options" [value]="option.value"
+          color="primary" style="display: inline-block; margin: 10px">
+          {{ option.key }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+    <div *ngSwitchCase="'checkbox_options'" style="width: calc(100% - 20px); display: inline-block; margin: 10px">
+      <mat-checkbox [formControlName]="question.key">
+        {{ question.label }}
+      </mat-checkbox>
+    </div>
+
+    <div *ngSwitchCase="'upload_file'" style="width: 100%; display: block; margin: 10px">
+      <img *ngIf="question.value != ''" [src]="question.value" style="width: 100%; max-height: 300px; height: fit-content; object-fit: cover;">
+      <input matInput hidden [value]="question.value" [formControlName]="question.key" [id]="question.key" />
+      <button mat-raised-button  (click)="uploader.click()" color="primary">
+        Subir
+      </button>
+      <button mat-button (click)="download()" *ngIf="question.options[0].value === true" color="accent">
+        Descargar
+      </button>
+    </div>
+  </div>
+  <!-- 
+  <div class="errorMessage" *ngIf="!isValid">
+    {{ question.label }} is required
+  </div> -->
+
+ 
+</div>
+
+<!-- <div
+*ngIf="question.controlType == 'geolocation'"
+style="width: calc(100% - 20px); display: inline-block; margin: 10px"
+>
+<geo-question
+  [question]="question"
+  [idx]="idx"
+  [form]="form"
+  (geoLocation)="locationSelected($event)"
+></geo-question>
+</div> -->
+<input hidden type="file" (change)="fileChange($event)"  #uploader />

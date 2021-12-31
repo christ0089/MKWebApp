@@ -1,0 +1,32 @@
+<mat-toolbar style="background-color:  #f70486; color: white; font-size: 3.5vh;">
+    <span>PRTY</span>
+</mat-toolbar>
+<mat-drawer-container class="example-container">
+    <mat-drawer mode="side" opened>
+        <mat-list role="list">
+            <mat-list-item role="listitem" routerLink="orders">
+                <button mat-button>
+                    Ordenes
+                </button>
+            </mat-list-item>
+            <mat-list-item role="listitem" routerLink="products">
+                <button mat-button>
+                    Inventario
+                </button>
+            </mat-list-item>
+            <mat-list-item role="listitem" routerLink="brands">
+                <button mat-button >
+                    Brands
+                </button>
+            </mat-list-item>
+            <mat-list-item role="listitem" routerLink="coupons">
+                <button mat-button >
+                    Cupones
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+    <mat-drawer-content>
+        <router-outlet></router-outlet>
+    </mat-drawer-content>
+</mat-drawer-container>

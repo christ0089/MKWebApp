@@ -1,0 +1,16 @@
+.login {
+    background-color: rgb(216, 216, 216);
+    padding: 15px;
+    width: calc(100% - 30px);
+    max-width: 400px;
+    font-family: 'Roboto';
+    margin-left: auto;
+    margin-right: auto;
+    mat-form-field {
+        width: 100%;
+    }
+}
+
+.invalid-feedback {
+    color: rgb(121, 21, 30);
+}

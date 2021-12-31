@@ -1,0 +1,83 @@
+<h1>Brands</h1>
+<mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Buscar</mat-label>
+    <input matInput placeholder="Buscar">
+    <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
+<app-warehouse></app-warehouse>
+<button mat-raised-button color="primary" style="float: right;" (click)="newQuestions()" *ngIf="selectedWarehouse?.name === 'General'">
+    Agregar Categoria
+</button>
+
+<mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px">
+    <mat-list-item role="listitem" *ngFor="let brands of (brands$ | async); let i = index" style="padding: 10px">
+        <div style="width: 90%; display: flex;">
+            <div style="height: 20px; margin-top: auto; margin-bottom: auto; margin-right: 10px; z-index: 1000; color: white;">
+                <p style=" height: 20px; color: whitesmoke;">{{i + 1}}</p>
+            </div>
+            <div style="width: 80%; height: 50px; background-color: white; border-radius: 5px; overflow: hidden;  position: absolute; left: 0px; top:0px">
+                <img style="object-fit: cover; width: 100%; height: 100%;" [src]=brands.img>
+            </div>
+            <div style="width: fit-content; height: 20px; margin-top: auto; margin-bottom: auto; display: block; color: white; z-index: 100;">
+                <p style="font-weight: 600; height: 20px;">{{brands.name}}</p>
+            </div>
+            <span class="example-spacer"></span>
+
+            <button mat-button (click)="editQuestions(brands)" style="color: #f70486;">
+                Editar
+            </button>
+        </div>
+    </mat-list-item>
+
+</mat-list>
+
+<mat-drawer #new_prod_drawer class="example-sidenav" mode="over" position="end">
+    <h4>Agregar Producto
+        <button mat-icon-button style="float: right;" (click)="new_prod_drawer.toggle()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </h4>
+    <form [formGroup]="form" *ngIf="questions != null">
+        <div class="form-row" style="
+        max-width: 400px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      ">
+            <app-question *ngFor="let q of questions.questions" [question]="q" [form]="form" [idx]="0"
+                (fileUpload)="setImage($event)">
+            </app-question>
+            <app-warehouse></app-warehouse>
+        </div>
+        <button mat-button [disabled]="form.invalid" (click)="brandAction('brand.create', new_prod_drawer)">
+            Guardar
+        </button>
+    </form>
+</mat-drawer>
+
+<mat-drawer #edit_prod_drawer class="example-sidenav" mode="over" position="end" style="
+margin-bottom: 40px;
+overflow-y: scroll;">
+    <h4>Editar Producto
+        <button mat-icon-button style="float: right;" (click)="edit_prod_drawer.toggle()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </h4>
+
+    <form [formGroup]="form" *ngIf="questions != null">
+        <div class="form-row" style="
+        max-width: 400px;
+        display: block;
+
+        margin-left: auto;
+        margin-right: auto;
+      ">
+            <app-question *ngFor="let q of questions.questions" [question]="q" [form]="form" [idx]="0">
+            </app-question>
+            <app-warehouse></app-warehouse>
+        </div>
+        <button mat-button [disabled]="form.invalid" (click)="brandAction('brand.update', edit_prod_drawer)">
+            Guardar
+        </button>
+    </form>
+</mat-drawer>

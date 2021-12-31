@@ -1,0 +1,26 @@
+.mat-form-field-infix {
+    width: 100% !important;
+}
+
+mat-form-field {
+    width: 100% !important;
+}
+
+.mat-form-field-flex {
+    width: 100% !important;
+}
+
+.radio-group {
+    width: 100%;
+}
+
+.radio-button {
+    width: calc(100% - 60px);
+    display: inline-block;
+    margin: 10px;
+    height: 25px;
+    background-color: #e6e6e6;
+    padding: 20px;
+    border-radius: 10px;
+    text-transform: uppercase;
+}

@@ -1,0 +1,21 @@
+<div [formGroup]="form">
+    <mat-form-field style="width: 100%;">
+        <input
+          matInput
+          placeholder="{{ question.label }}"
+          value="{{ question.value }}"
+          [formControlName]="question.key"
+          [id]="question.key"
+          [type]="question.type"
+          [disabled]="question.disabled"
+          (input)="updateSearch($event)"
+        />
+        </mat-form-field>
+</div>
+
+<mat-list role="list">
+    <mat-list-item  [@fadeIn] *ngFor="let item of autocompleteItems | async" tappable (click)="chooseItem(item)" style="height: fit-content; color: rgb(68, 68, 68); margin-bottom: 10px">
+        <mat-icon mat-list-icon>place</mat-icon>
+        {{ item.description }}
+    </mat-list-item>
+  </mat-list>

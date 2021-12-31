@@ -1,0 +1,60 @@
+<div class="register">
+  <h2>Registro</h2>
+  <mat-progress-bar mode="indeterminate"  *ngIf="loading == true"></mat-progress-bar>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="Poliza"
+          formControlName="firstName"
+          class="form-control"
+        />
+      </mat-form-field>
+    </div>
+    <div class="form-group">
+      <mat-form-field>
+        <input
+          type="text"
+          matInput
+          placeholder="RFC"
+          formControlName="lastName"
+          class="form-control"
+ 
+        />
+      </mat-form-field>
+     
+    </div>
+    <div class="form-group">
+      <mat-form-field>
+        <input
+          type="email"
+          matInput
+          placeholder="Correo Electrónico"
+          formControlName="email"
+          class="form-control"
+
+        />
+      </mat-form-field>
+      
+    </div>
+    <div class="form-group">
+      <mat-form-field>
+        <input
+          type="password"
+          matInput
+          placeholder="Contraseña"
+          formControlName="password"
+          class="form-control"
+        />
+      </mat-form-field>
+      
+    </div>
+    <div class="form-group">
+      <button [disabled]="loading" mat-button color="primary" type="submit" mat-flat-button color="primary" style="width:100%;" >
+        Registrar
+      </button>
+    </div>
+  </form>
+</div>

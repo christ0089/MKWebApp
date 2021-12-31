@@ -1,0 +1,64 @@
+<h1>Ordenes</h1>
+<div style="display: block; width: 100%; height: 60px;">
+    <mat-form-field class="example-form-field" appearance="fill">
+        <mat-label>First campaign</mat-label>
+        <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
+            <input matStartDate placeholder="Start date" formControlName="start">
+            <input matEndDate placeholder="End date" formControlName="end">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+    </mat-form-field>
+    <app-warehouse></app-warehouse>
+</div>
+
+
+<mat-tab-group (selectedTabChange)="changedTab($event)" style="width: 100%;">
+    <mat-tab label="Processando">
+    </mat-tab>
+    <mat-tab label="En Transito"></mat-tab>
+    <mat-tab label="Completadas">
+        <div style="padding: 10px;">
+            <p>Total Cash: {{cash_total | currency }}</p>
+            <p>Total Tarjeta: {{card_total | currency }}</p>
+        </div>
+        <h3>Ventas</h3>
+        <div>
+            <mat-list role="list" style="overflow: scroll; height:fit-content; max-height: 500px">
+                <mat-list-item role="listitem"  *ngFor="let order of (items_sold | keyvalue)">
+                    <div style="width: 100%;">
+                        <div style="width: 100%; display: flex;">
+                            <span>{{order.value.name}}</span>
+                            <span class="example-spacer"></span>
+                            <span>{{order.value.quantity }}</span>
+                        </div>
+                    </div>
+                </mat-list-item>
+            </mat-list>
+        </div>
+    </mat-tab>
+    <mat-tab label="Canceladas">
+        <div style="padding: 10px;">
+            <p>Total Cash: {{cash_total | currency }}</p>
+            <p>Total Tarjeta: {{card_total | currency }}</p>
+        </div>
+    </mat-tab>
+</mat-tab-group>
+<div>
+    <h3>Ordenes: Completadas</h3>
+    <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px">
+        <mat-list-item role="listitem" *ngFor="let order of (orders$ | async)">
+            <div style="width: 100%;">
+                <div style="width: 100%; display: flex;">
+                    <span>Orden: {{order.orderId}}</span>
+                    <span class="example-spacer"></span>
+                    <span>{{order.payment.amount/100 | currency}}</span>
+                    <span style="padding-left: 20px;">{{ order.createdAt.toDate() | date}}</span>
+                </div>
+                <div style="width: 100%; padding: 10 0px;">
+                    <p>Cliente: {{order.shipping.name}}</p>
+                </div>
+            </div>
+        </mat-list-item>
+    </mat-list>
+</div>

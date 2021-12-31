@@ -1,0 +1,13 @@
+.register {
+    background-color: rgb(216, 216, 216);
+    padding: 15px;
+    max-width: 100%;
+
+    mat-form-field {
+        width: 100%;
+    }
+}
+
+.invalid-feedback {
+    color: rgb(121, 21, 30);
+}

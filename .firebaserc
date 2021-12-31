@@ -1,0 +1,23 @@
+{
+  "projects": {
+    "default": "prty-dev",
+    "dev": "prty-dev",
+    "prod": "maskkingapp"
+  },
+  "targets": {
+    "prty-dev": {
+      "hosting": {
+        "MKWeb": [
+          "prty-dev"
+        ]
+      }
+    },
+    "maskkingapp": {
+      "hosting": {
+        "MKWeb": [
+          "prod"
+        ]
+      }
+    }
+  }
+}

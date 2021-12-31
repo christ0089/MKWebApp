@@ -1,0 +1,11 @@
+
+
+export enum ORIENTATION {
+    VERTICAL,
+    HORIZONTAL
+}
+
+export enum QUESTIONAIRE_TYPE {
+    MULTIPLE_SELECT,
+    SINGLE_SELCT
+}
