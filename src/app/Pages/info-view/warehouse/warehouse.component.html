@@ -1,2 +1,18 @@
 <h1>Warehouse</h1>
 <app-warehouse></app-warehouse>
+<mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+<div *ngFor="let form of forms; let i = index">
+    <h3>{{questions[i].title}}</h3>
+    <form [formGroup]="form" *ngIf="questions != null">
+        <div class="form-row" style="
+        max-width: 400px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      ">
+            <app-question *ngFor="let q of questions[i].questions" [question]="q" [form]="form" [idx]="0">
+            </app-question>
+        </div>
+        <button mat-button color="primary" (click)="save()">Guardar</button>
+    </form>
+</div>

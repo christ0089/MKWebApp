@@ -390,31 +390,3 @@ export interface Warehouse {
   warehouse_centers: GeoPoint[];
 }
 
-export const warehouse_centers = () => {
-  return {
-    title: "Centro de Distrobución",
-    subtitle: null,
-    questions: [
-      new TextboxQuestion({
-        key: "name",
-        label: "Nombre",
-        value: "",
-        disabled: false,
-        required: true,
-        order: 0,
-        options: [],
-        verfication: false,
-      }),
-      new TextboxQuestion({
-        key: "referal_coupon",
-        label: "Coupon de Descuento",
-        value: "",
-        disabled: false,
-        required: true,
-        order: 0,
-        options: [],
-        verfication: false,
-      }),
-    ]
-  }
-}

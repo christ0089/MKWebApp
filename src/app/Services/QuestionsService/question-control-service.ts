@@ -3,7 +3,8 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { QuestionBase } from "src/app/Models/Forms/question-base";
 import { Observable, BehaviorSubject } from "rxjs";
 import { TextboxQuestion } from "src/app/Models/Forms/textbox";
-import { product_questionaire, brand_questionaire, coupon_questionaire, warehouse_centers } from "./product_questionaire";
+import { product_questionaire, brand_questionaire, coupon_questionaire } from "./product_questionaire";
+import { warehouse_questionaire } from "./warehouse_questionaire";
 
 
 @Injectable()
@@ -63,7 +64,7 @@ export class QuestionControlService {
     return new FormGroup(group);
   }
 
-  mapToQuestion(questions: QuestionBase<string>[], data: any) {
+  mapToQuestion(questions: QuestionBase<string | number | boolean | Date>[], data: any) {
     questions.forEach((question) => {
       question.value = data[question.key];
       question.options = data["options"] || question.options;
@@ -100,7 +101,7 @@ export class QuestionControlService {
   };
 
   warehouse_questionaire() {
-    const question = warehouse_centers();
+    const question = warehouse_questionaire();
     return question
   };
 }

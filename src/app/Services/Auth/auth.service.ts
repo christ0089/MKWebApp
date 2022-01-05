@@ -14,6 +14,7 @@ export interface UserData {
   img: string,
   status: UserService,
   warehouse_id: string | string[]
+  uid: string
 }
 
 @Injectable({
@@ -21,7 +22,7 @@ export interface UserData {
 })
 export class AuthService {
   public readonly user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
-  public readonly userData$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  public readonly userData$: BehaviorSubject<any> = new BehaviorSubject<UserData| null>(null);
   public readonly auth$: Observable<any> = EMPTY;
 
   constructor(

@@ -78,7 +78,7 @@ export class BrandsComponent implements OnInit {
     this.questions = this.qcs.brand_questionaire();
     this.currBrand = brand;
     this.questions.questions[0].options[0].value = true;
-    const questions: QuestionBase<string>[] = this.qcs.mapToQuestion(this.questions.questions, brand)
+    const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(this.questions.questions, brand)
     this.form = this.qcs.toFormGroup(
       questions
     );

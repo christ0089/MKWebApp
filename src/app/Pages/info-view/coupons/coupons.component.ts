@@ -83,7 +83,7 @@ export class CouponsComponent implements OnInit {
     this.editDrawer.toggle()
     this.questions = this.qcs.coupon_questionaire();
     this.currBrand = coupon;
-    const questions: QuestionBase<string>[] = this.qcs.mapToQuestion(this.questions.questions, coupon)
+    const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(this.questions.questions, coupon)
     this.form = this.qcs.toFormGroup(
       questions
     );

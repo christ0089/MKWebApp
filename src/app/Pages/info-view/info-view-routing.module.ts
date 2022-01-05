@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { WarehouseComponent } from 'src/app/Components/warehouse/warehouse.component';
 import { AuthGuard } from 'src/app/Guard/auth.guard';
 import { BrandsComponent } from './brands/brands.component';
 import { CouponsComponent } from './coupons/coupons.component';
 import { InfoViewComponent } from './info-view.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProductsComponent } from './products/products.component';
+import { WarehouseComponent } from './warehouse/warehouse.component';
 
 const routes: Routes = [
   {

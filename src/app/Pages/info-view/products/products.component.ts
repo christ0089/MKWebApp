@@ -34,10 +34,17 @@ export enum IProductStatus {
   OUT_OF_STOCK
 }
 
+interface IDelivery {
+  min_payment : number,
+  max_fee: number,
+  min_fee: number
+}
+
 export interface IWarehouse {
   id: string;
   name: string;
   owner: string;
+  delivery: IDelivery
 }
 
 export const prodConverter: FirestoreDataConverter<IProducts> = {
@@ -79,7 +86,6 @@ export const genericConverter = <T>() => ({
 export class ProductsComponent implements OnInit {
 
   products$ = new BehaviorSubject<IProducts[]>([]);
-  filtered_products$ = new BehaviorSubject<IProducts[]>([]);
   selectedWarehouse: IWarehouse | null = null
   questions: any = null;
   form!: FormGroup;
@@ -126,9 +132,9 @@ export class ProductsComponent implements OnInit {
     this.questions = this.qcs.product_questionaire();
     this.currProd = product;
     this.questions.questions[0].options[0].value = true;
-    const questions: QuestionBase<string>[] = this.qcs.mapToQuestion(this.questions.questions, product)
+    const question: QuestionBase<any>[] = this.qcs.mapToQuestion(this.questions.questions, product)
     this.form = this.qcs.toFormGroup(
-      questions
+      question
     );
   }
 
@@ -256,22 +262,17 @@ export class ProductsComponent implements OnInit {
         price: product.price,
         price_id: this.currProd.price_id
       })
-
-      lastValueFrom(prod$).then((res) => {
-        console.log(res)
-        this.file = null;
-        this.loading = false;
-        this.editDrawer.toggle();
-      })
+      await lastValueFrom(prod$)
     } else {
       let docRef = doc(this.afs, `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${this.currProd.id}`)
       try {
         this.currProd.price = product.price;
         await setDoc(docRef, { warehouse_id: this.warehouse.selectedWarehouse$.value?.id || "", ...this.currProd });
-        this.file = null;
       } catch (e) {
         console.error(e);
       }
+      this.file = null;
+      this.loading = false;
       this.editDrawer.toggle();
     }
   }

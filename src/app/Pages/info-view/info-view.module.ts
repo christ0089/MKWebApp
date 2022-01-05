@@ -19,16 +19,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSortModule } from '@angular/material/sort';
 import { CdkTableModule } from '@angular/cdk/table';
-import { ProductsComponent } from './products/products.component';
+
 import { ComponentModule } from 'src/app/Components/components.module';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { MatIconModule } from '@angular/material/icon';
 import { BrandsComponent } from './brands/brands.component';
 import { MatSelectModule } from '@angular/material/select';
 import { AuthGuard } from 'src/app/Guard/auth.guard';
-import { CouponsComponent } from './coupons/coupons.component';
+
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+
+import { ProductsComponent } from './products/products.component';
+import { CouponsComponent } from './coupons/coupons.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 
 @NgModule({
