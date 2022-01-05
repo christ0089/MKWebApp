@@ -40,8 +40,14 @@ export class LoginComponent implements OnInit {
     console.log(user);
     this.auth.emailAuth(user.email, user.password).then(() => {
       this.router.navigateByUrl("/home")
+    }).catch((e) => {
+      this.snackbar
+      .open(e.message)
+      ._dismissAfter(3000);
     });
   }
+
+  
 
   emailSent() {
     this.snackbar

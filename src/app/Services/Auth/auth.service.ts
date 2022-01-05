@@ -2,8 +2,19 @@ import { Injectable, Optional } from "@angular/core";
 import { Auth } from "@angular/fire/auth";
 import { ApplicationVerifier, signInWithEmailAndPassword, signInWithPhoneNumber, signOut, updateCurrentUser, User, UserCredential } from "@firebase/auth";
 import { authState } from "rxfire/auth";
-import { BehaviorSubject, combineLatest, EMPTY, lastValueFrom, map, Observable, switchMap } from "rxjs";
+import { BehaviorSubject, EMPTY, map, Observable, switchMap } from "rxjs";
 import { UserService } from "../user.service";
+
+
+export type UserRoles = "admin" | "zone_admin" | "driver";
+export type UserStatus = "available" | "in-transit";
+export interface UserData {
+  name: string,
+  role: UserRoles,
+  img: string,
+  status: UserService,
+  warehouse_id: string | string[]
+}
 
 @Injectable({
   providedIn: "root",
@@ -36,7 +47,6 @@ export class AuthService {
     })
     );
     this.auth$.subscribe((user) => {
-      console.log(user);
       this.userData$.next(user)
     })
   }

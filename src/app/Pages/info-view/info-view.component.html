@@ -1,9 +1,15 @@
 <mat-toolbar style="background-color:  #f70486; color: white; font-size: 3.5vh;">
     <span>PRTY</span>
+    <span class="example-spacer"></span>
 </mat-toolbar>
 <mat-drawer-container class="example-container">
     <mat-drawer mode="side" opened>
         <mat-list role="list">
+            <mat-list-item role="listitem" routerLink="warehouse">
+                <button mat-button >
+                    Centro de Distribucion
+                </button>
+            </mat-list-item>
             <mat-list-item role="listitem" routerLink="orders">
                 <button mat-button>
                     Ordenes
@@ -25,6 +31,9 @@
                 </button>
             </mat-list-item>
         </mat-list>
+        <button mat-button color="warn" style="position:absolute; bottom: 100px; width: calc(100% - 40px)" (click)="signOut()">
+            Cerrar Sesion
+        </button>
     </mat-drawer>
     <mat-drawer-content>
         <router-outlet></router-outlet>

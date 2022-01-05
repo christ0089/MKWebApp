@@ -29,6 +29,7 @@ import { AuthGuard } from 'src/app/Guard/auth.guard';
 import { CouponsComponent } from './coupons/coupons.component';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { WarehouseComponent } from './warehouse/warehouse.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     OrdersComponent,
     ProductsComponent,
     BrandsComponent,
-    CouponsComponent
+    CouponsComponent,
+    WarehouseComponent
   ],
   imports: [
     CommonModule,

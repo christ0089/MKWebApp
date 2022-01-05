@@ -4,11 +4,11 @@ import { Functions } from '@angular/fire/functions';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 
-import { doc, FirestoreDataConverter, orderBy, QueryDocumentSnapshot, setDoc } from '@firebase/firestore';
+import { deleteDoc, doc, FirestoreDataConverter, orderBy, QueryDocumentSnapshot, setDoc } from '@firebase/firestore';
 import { collectionData } from 'rxfire/firestore';
 import { DocumentData } from 'rxfire/firestore/interfaces';
 import { httpsCallable } from 'rxfire/functions';
-import { BehaviorSubject, EMPTY, lastValueFrom, map, Observable, of, switchMap, takeLast, tap, withLatestFrom } from 'rxjs';
+import { BehaviorSubject, EMPTY, firstValueFrom, lastValueFrom, map, Observable, of, switchMap, takeLast, tap, withLatestFrom } from 'rxjs';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { StorageService } from 'src/app/Services/storage.service';
@@ -78,7 +78,9 @@ export const genericConverter = <T>() => ({
 })
 export class ProductsComponent implements OnInit {
 
-  products$: Observable<IProducts[]>;
+  products$ = new BehaviorSubject<IProducts[]>([]);
+  filtered_products$ = new BehaviorSubject<IProducts[]>([]);
+  selectedWarehouse: IWarehouse | null = null
   questions: any = null;
   form!: FormGroup;
   file!: File | null;
@@ -98,18 +100,15 @@ export class ProductsComponent implements OnInit {
     private readonly warehouse: WarehouseService,
     private qcs: QuestionControlService
   ) {
-    const product_collection = collection(this.afs, 'stripe_products').withConverter(prodConverter)
-    const q = query<IProducts>(
-      product_collection, orderBy("stripe_metadata_brand", "desc"))
-
-
-    this.products$ = this.loadProducts();
+    const prods$  = this.loadProducts()
+    
+    prods$.subscribe((prods) => {
+      this.products$.next(prods);
+    });
 
     this.searchForm.valueChanges.subscribe(userInput => {
       this.searchProd(userInput)
     })
-
-    this.products$.subscribe()
   }
 
 
@@ -152,6 +151,7 @@ export class ProductsComponent implements OnInit {
         return of([]);
       }
       let product_collection = collection(this.afs, 'stripe_products').withConverter(prodConverter)
+      this.selectedWarehouse = warehouse;
       if (warehouse?.name !== "General") {
         product_collection = collection(this.afs, `warehouse/${warehouse.id}/stripe_products`).withConverter(prodConverter)
       }
@@ -165,21 +165,19 @@ export class ProductsComponent implements OnInit {
     }))
   }
 
-  async searchProd($event: any) {
-    console.log($event);
-    const prodName: string = $event.toLowerCase();
-
-    if (prodName === '') {
-      this.products$ = this.loadProducts();
+  async searchProd(search: string) {
+    const prodName: string = search.toLowerCase();
+    if (prodName == "" || this.products$.value == []) {
+      const prods = await firstValueFrom(this.loadProducts());
+      console.log(prods);
+      this.products$.next(prods);
     } else {
-      let prods = await lastValueFrom(this.products$)
-
-      prods = prods.filter((v) => {
-        const hasBrand = v.stripe_metadata_brand.toLowerCase().includes(prodName);
-        const hasType = v.stripe_metadata_type.toLowerCase().includes(prodName);
+      const prods = this.products$.value.filter((v) => {
+        const hasBrand =  v.stripe_metadata_brand.toLowerCase().includes(prodName);
+        const hasType =  v.stripe_metadata_type.toLowerCase().includes(prodName);
         return (v.name.toLowerCase().includes(prodName) || hasBrand || hasType);
       });
-      this.products$ = of(prods);
+      this.products$.next(prods);
     }
   }
 
@@ -197,7 +195,7 @@ export class ProductsComponent implements OnInit {
       metadata["warehouse"] = this.warehouse.selectedWarehouse$.value?.id
     }
     else {
-      metadata["warehouse"] = "-"
+      metadata["warehouse"] = null
     }
 
     const stripe_product = {
@@ -276,5 +274,11 @@ export class ProductsComponent implements OnInit {
       }
       this.editDrawer.toggle();
     }
+  }
+
+
+  async deleteProd(product:IProducts) {
+    let docRef = doc(this.afs, `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${product.id}`)
+    await deleteDoc(docRef)
   }
 }

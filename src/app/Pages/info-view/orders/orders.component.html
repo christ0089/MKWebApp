@@ -21,6 +21,7 @@
         <div style="padding: 10px;">
             <p>Total Cash: {{cash_total | currency }}</p>
             <p>Total Tarjeta: {{card_total | currency }}</p>
+            <p style="font-weight: bolder;">Total: {{ card_total + cash_total | currency }}</p>
         </div>
         <h3>Ventas</h3>
         <div>
@@ -41,6 +42,7 @@
         <div style="padding: 10px;">
             <p>Total Cash: {{cash_total | currency }}</p>
             <p>Total Tarjeta: {{card_total | currency }}</p>
+            <p style="font-weight: bolder;">Total: {{ card_total + cash_total | currency }}</p>
         </div>
     </mat-tab>
 </mat-tab-group>

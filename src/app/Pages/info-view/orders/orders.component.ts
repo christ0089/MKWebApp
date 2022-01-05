@@ -6,7 +6,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { FirestoreDataConverter, limit, orderBy, QueryDocumentSnapshot, where } from '@firebase/firestore';
 import { DocumentData } from 'rxfire/firestore/interfaces';
-import { BehaviorSubject, combineLatest, combineLatestAll, forkJoin, map, Observable, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, of, switchMap, tap } from 'rxjs';
+import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 
 
@@ -59,6 +60,7 @@ export class OrdersComponent implements OnInit {
 
   constructor(
     private readonly afs: Firestore,
+    private readonly auth: AuthService,
     private readonly warehouse: WarehouseService
   ) {
 
@@ -69,7 +71,7 @@ export class OrdersComponent implements OnInit {
 
     this.campaignOne = new FormGroup({
       start: new FormControl(new Date(year, month, day - 7)),
-      end: new FormControl(new Date(year, month, day)),
+      end: new FormControl(new Date(year, month, day + 1)),
     });
 
     const dateObserver = this.campaignOne.valueChanges
@@ -81,19 +83,23 @@ export class OrdersComponent implements OnInit {
       const start = new Date(dateObserver.start);
       const end = new Date(dateObserver.end);
       let q = query<IOrder>(
-        order_collection,
-        where("status", "==", order_status),
-        where("createdAt", ">=", start),
-        where("createdAt","<=",end ),
-        orderBy('createdAt', 'desc'))
-     
-      if (warehouse != null && warehouse?.name !== "General") {
-        q = query<IOrder>(
           order_collection,
           where("status", "==", order_status),
           where("warehouse_id", "==", warehouse?.id),
           where("createdAt", ">=", start),
-          orderBy('createdAt', 'desc'),)
+          orderBy('createdAt', 'desc'))
+     
+      if (warehouse?.name === "General") {
+        if (auth.userData$.value.role === "admin") {
+          q = query<IOrder>(
+            order_collection,
+            where("status", "==", order_status),
+            where("createdAt", ">=", start),
+            where("createdAt","<=",end ),
+            orderBy('createdAt', 'desc'))
+        } else {
+          return of([])
+        }
       }
     
       return collectionData<IOrder>(q, {
@@ -118,13 +124,13 @@ export class OrdersComponent implements OnInit {
             if (order_status == "completed") {
              
               if ((order.payment.payment_method_types as string[]).indexOf("cash") > -1 && order.status === "completed") {
-                this.cash_total += (order.payment.amount / 100) * 7
+                this.cash_total += (order.payment.amount / 100) //* 7
                 order.payment_meta_data.items.forEach((element:any) => {
                   this.orders(element);
                 });
               }
               if ((order.payment.payment_method_types as string[]).indexOf("card") > -1 && order.status === "completed") {
-                this.card_total += (order.payment.amount / 100) * 7
+                this.card_total += (order.payment.amount / 100) //* 7
                 order.payment_meta_data.items.forEach((element:any) => {
                   this.orders(element);
                 });
@@ -155,5 +161,4 @@ export class OrdersComponent implements OnInit {
   changedTab(event: MatTabChangeEvent) {
     this.selectedType.next(this.status[event.index] as OrderStatus)
   }
-
 }

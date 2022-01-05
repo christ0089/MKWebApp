@@ -1,3 +1,4 @@
+import { Firestore, GeoPoint } from "@firebase/firestore";
 import { DatePickerQuestion } from "src/app/Models/Forms/datePicker";
 import { DropdownQuestion } from "src/app/Models/Forms/dropdown";
 import { RadioQuestion } from "src/app/Models/Forms/radio";
@@ -378,6 +379,42 @@ export const coupon_questionaire = () => {
         value: 100,
         required: true,
       })
+    ]
+  }
+}
+
+export interface Warehouse {
+  name: string,
+  cities: string[]
+  alchohol_time: string[],
+  warehouse_centers: GeoPoint[];
+}
+
+export const warehouse_centers = () => {
+  return {
+    title: "Centro de Distrobución",
+    subtitle: null,
+    questions: [
+      new TextboxQuestion({
+        key: "name",
+        label: "Nombre",
+        value: "",
+        disabled: false,
+        required: true,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: "referal_coupon",
+        label: "Coupon de Descuento",
+        value: "",
+        disabled: false,
+        required: true,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
     ]
   }
 }

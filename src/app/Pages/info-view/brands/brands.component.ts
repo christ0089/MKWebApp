@@ -75,7 +75,6 @@ export class BrandsComponent implements OnInit {
 
   editQuestions(brand: IBrands) {
     this.editDrawer.toggle()
-    this.form.enable()
     this.questions = this.qcs.brand_questionaire();
     this.currBrand = brand;
     this.questions.questions[0].options[0].value = true;
@@ -83,15 +82,16 @@ export class BrandsComponent implements OnInit {
     this.form = this.qcs.toFormGroup(
       questions
     );
+    this.form.enable()
   }
 
   newQuestions() {
     this.newDrawer.toggle()
-    this.form.enable()
     this.questions = this.qcs.brand_questionaire();
     this.form = this.qcs.toFormGroup(
       this.questions.questions
     );
+    this.form.enable()
   }
 
 
@@ -125,7 +125,7 @@ export class BrandsComponent implements OnInit {
       alert(e);
       console.error(e);
     }
-    
+
     this.loading = false;
     this.form.enable();
     drawer.toggle();

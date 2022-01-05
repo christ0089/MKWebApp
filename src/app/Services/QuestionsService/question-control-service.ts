@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { QuestionBase } from "src/app/Models/Forms/question-base";
 import { Observable, BehaviorSubject } from "rxjs";
 import { TextboxQuestion } from "src/app/Models/Forms/textbox";
-import { product_questionaire, brand_questionaire, coupon_questionaire } from "./product_questionaire";
+import { product_questionaire, brand_questionaire, coupon_questionaire, warehouse_centers } from "./product_questionaire";
 
 
 @Injectable()
@@ -94,10 +94,13 @@ export class QuestionControlService {
     return question
   };
 
-
   coupon_questionaire() {
     const question = coupon_questionaire();
     return question
   };
 
+  warehouse_questionaire() {
+    const question = warehouse_centers();
+    return question
+  };
 }
