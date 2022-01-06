@@ -54,18 +54,18 @@ export const product_questionaire = () => {
       }),
       new DropdownQuestion({
         key: "active",
-        label: "Activo",
+        label: "Disponible",
         value: true,
         required: true,
         order: 0,
         options: [
           {
             key: true,
-            value: "True",
+            value: "Disponible",
           },
           {
             key: false,
-            value: "False",
+            value: "Agotado",
           },
         ],
         verfication: false,
@@ -143,6 +143,24 @@ export const brand_questionaire = () => {
       new DropdownQuestion({
         key: "buildActive",
         label: "Build Active",
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: true,
+            value: "True",
+          },
+          {
+            key: false,
+            value: "False",
+          },
+        ],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: "visible",
+        label: "Visible",
         value: true,
         required: true,
         order: 0,

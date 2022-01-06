@@ -113,11 +113,8 @@ export class BrandsComponent implements OnInit {
 
     let docRef = doc(this.afs, `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/brands/${id}`)
     if (this.warehouse.selectedWarehouse$.value?.name === "General") {
-      
       docRef = doc(this.afs, `brands/${id}`)
     }
-    console.log(this.warehouse.selectedWarehouse$.value?.name)
-
     try {
       await setDoc(docRef, { warehouse_id: this.warehouse.selectedWarehouse$.value?.id || "", ...brandData });
       this.file = null;

@@ -85,10 +85,11 @@ export class OrdersComponent implements OnInit {
       let q = query<IOrder>(
           order_collection,
           where("status", "==", order_status),
-          where("warehouse_id", "==", warehouse?.id),
+          where("payment_meta_data.warehouse_id", "==", warehouse?.id),
           where("createdAt", ">=", start),
+          where("createdAt","<=",end ),
           orderBy('createdAt', 'desc'))
-     
+
       if (warehouse?.name === "General") {
         if (auth.userData$.value.role === "admin") {
           q = query<IOrder>(
@@ -106,6 +107,7 @@ export class OrdersComponent implements OnInit {
         idField: "id"
       }).pipe(
         map((orders) => {
+          console.log(orders);
           this.cash_total = 0;
           this.card_total = 0;
           this.items_sold = new Map();

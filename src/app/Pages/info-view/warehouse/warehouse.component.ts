@@ -4,6 +4,7 @@ import { collection, doc, Firestore, setDoc } from '@firebase/firestore';
 import { EMPTY, map, Observable } from 'rxjs';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { IQuestion } from 'src/app/Models/question';
+import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 
@@ -21,9 +22,12 @@ export class WarehouseComponent implements OnInit {
   constructor(
     private qcs: QuestionControlService,
     private readonly warehouse: WarehouseService,
+    private readonly auth: AuthService
   ) {
 
     this.warehouse$ = this.warehouse.selectedWarehouse$.pipe(map((curr_warehouse) => {
+
+
       this.questions = this.qcs.warehouse_questionaire();
       if (!curr_warehouse) {
         return null
@@ -32,9 +36,9 @@ export class WarehouseComponent implements OnInit {
         name: curr_warehouse?.name,
       };
       const delivery = {
-        min_payment: curr_warehouse.delivery.min_payment || 0,
-        min_fee: curr_warehouse.delivery.min_fee || 0,
-        max_fee: curr_warehouse.delivery.max_fee || 0,
+        min_payment: curr_warehouse.delivery?.min_payment || 0,
+        min_fee: curr_warehouse.delivery?.min_fee || 0,
+        max_fee: curr_warehouse.delivery?.max_fee || 0,
       };
   
       const warehouse_form_data = [
@@ -48,7 +52,11 @@ export class WarehouseComponent implements OnInit {
           w
         );
         return this.qcs.toFormGroup(questions);
-      })
+      });
+      
+      if (auth.userData$.value.role !== "admin" && curr_warehouse?.name === "General") {
+        this.forms.map(form => form.disable())
+      }
       return null
     }));
 

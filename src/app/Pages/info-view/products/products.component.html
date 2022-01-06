@@ -7,7 +7,7 @@
 <app-warehouse></app-warehouse>
 
 
-<button mat-raised-button (click)="newQuestions()" color="primary" style="float: right;">
+<button mat-raised-button (click)="newQuestions()" color="primary" style="float: right;" *ngIf="selectedWarehouse?.name === 'General'">
     Agregar Producto
 </button>
 <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px">
