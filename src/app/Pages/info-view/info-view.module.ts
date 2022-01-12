@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { InfoViewRoutingModule } from './info-view-routing.module';
-import { MatSidenavModule} from '@angular/material/sidenav'
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { InfoViewComponent } from './info-view.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { OrdersComponent } from './orders/orders.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,6 +34,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ProductsComponent } from './products/products.component';
 import { CouponsComponent } from './coupons/coupons.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
+import { UsersComponent } from '../users/users.component';
 
 @NgModule({
   declarations: [
@@ -40,8 +42,9 @@ import { WarehouseComponent } from './warehouse/warehouse.component';
     OrdersComponent,
     ProductsComponent,
     BrandsComponent,
+    UsersComponent,
     CouponsComponent,
-    WarehouseComponent
+    WarehouseComponent,
   ],
   imports: [
     CommonModule,
@@ -52,28 +55,22 @@ import { WarehouseComponent } from './warehouse/warehouse.component';
     MatToolbarModule,
     MatListModule,
     MatTabsModule,
-    // Table Dependencies 
+    // Table Dependencies
     MatTableModule,
     MatSortModule,
     MatSelectModule,
     CdkTableModule,
+    MatChipsModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule, 
+    MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressBarModule,
     InfoViewRoutingModule,
-    ComponentModule
+    ComponentModule,
   ],
-  bootstrap: [
-    InfoViewComponent,
-    ProductsComponent
-  ],
-  providers: [
-    QuestionControlService,
-    AuthGuard,
-    WarehouseService
-  ]
+  bootstrap: [InfoViewComponent],
+  providers: [QuestionControlService, WarehouseService, AuthGuard],
 })
-export class InfoViewModule { }
+export class InfoViewModule {}

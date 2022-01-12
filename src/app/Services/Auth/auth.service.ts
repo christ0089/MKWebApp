@@ -72,6 +72,18 @@ export class AuthService {
     }
   }
 
+  get isSuperAdmin() {
+    const user = this.userData$.value
+    if (user === null) {
+      return false;
+    }
+    if (user.role === "admin") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // get isLoggedIn(): boolean {
   //   const user = JSON.parse(localStorage.getItem("user"));
   //   return user !== null && user.emailVerified !== false ? true : false;

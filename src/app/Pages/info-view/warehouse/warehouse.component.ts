@@ -53,7 +53,7 @@ export class WarehouseComponent implements OnInit {
         );
         return this.qcs.toFormGroup(questions);
       });
-      
+
       if (auth.userData$.value.role !== "admin" && curr_warehouse?.name === "General") {
         this.forms.map(form => form.disable())
       }
@@ -70,7 +70,18 @@ export class WarehouseComponent implements OnInit {
 
   async save() {
     const {name} = this.forms[0].value
-    const delivery = this.forms[1].value
+    const {
+      min_payment,
+      min_fee,
+      max_fee
+    } = this.forms[1].value
+
+
+    const delivery = {
+      min_payment:  parseInt(min_payment),
+      min_fee: parseInt(min_fee),
+      max_fee: parseInt(max_fee)
+    };
     this.loading = true;
     await this.warehouse.saveWarehouse(name, delivery);
     this.loading = false;

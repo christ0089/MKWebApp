@@ -14,32 +14,30 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { AuthService } from 'src/app/Services/Auth/auth.service';
 
 const routes: Routes = [
-    {
-        path: '',
-        component: AuthComponent,
-    }
+  {
+    path: '',
+    component: AuthComponent,
+  },
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatToolbarModule,
-        MatFormFieldModule,
-        MatSnackBarModule,
-        MatProgressBarModule,
-        MatButtonModule,
-        MatInputModule,
-        MatGridListModule,
-        RouterModule.forChild(routes),
-    ],
-    declarations: [
-        AuthComponent,
-        RegisterComponent,
-        LoginComponent
-  ]
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatFormFieldModule,
+    MatSnackBarModule,
+    MatProgressBarModule,
+    MatButtonModule,
+    MatInputModule,
+    MatGridListModule,
+    RouterModule.forChild(routes),
+  ],
+  declarations: [AuthComponent, RegisterComponent, LoginComponent],
+  providers: [AuthService],
 })
-export class AuthModule { };
+export class AuthModule {}

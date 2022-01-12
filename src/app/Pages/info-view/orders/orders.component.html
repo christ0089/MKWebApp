@@ -19,11 +19,11 @@
     <mat-tab label="En Transito"></mat-tab>
     <mat-tab label="Completadas">
         <div style="padding: 10px;">
-            <p>Total Cash: {{cash_total | currency }}</p>
-            <p>Total Tarjeta: {{card_total | currency }}</p>
-            <p style="font-weight: bolder;">Total: {{ card_total + cash_total | currency }}</p>
+            <p>Total Cash: <span style="color: lightslategray; font-weight: 500;">{{cash_total | currency }}</span></p>
+            <p>Total Tarjeta: <span style="color: lightslategray; font-weight: 500;">{{card_total | currency }}</span></p>
+            <p style="font-weight: bolder;">Total: <span style="color: rgb(237, 100, 230); font-weight: bolder;">{{ card_total + cash_total | currency }}</span></p>
         </div>
-        <h3>Ventas</h3>
+        <h2>Ventas</h2>
         <div>
             <mat-list role="list" style="overflow: scroll; height:fit-content; max-height: 500px">
                 <mat-list-item role="listitem"  *ngFor="let order of (items_sold | keyvalue)">
@@ -31,7 +31,7 @@
                         <div style="width: 100%; display: flex;">
                             <span>{{order.value.name}}</span>
                             <span class="example-spacer"></span>
-                            <span>{{order.value.quantity }}</span>
+                            <span style="color: lightslategray;">{{order.value.quantity }}</span>
                         </div>
                     </div>
                 </mat-list-item>
@@ -40,24 +40,26 @@
     </mat-tab>
     <mat-tab label="Canceladas">
         <div style="padding: 10px;">
-            <p>Total Cash: {{cash_total | currency }}</p>
-            <p>Total Tarjeta: {{card_total | currency }}</p>
-            <p style="font-weight: bolder;">Total: {{ card_total + cash_total | currency }}</p>
+            <p>Total Cash: <span style="color: lightslategray; font-weight: 500;">{{cash_total | currency }}</span></p>
+            <p>Total Tarjeta: <span style="color: lightslategray; font-weight: 500;">{{card_total | currency }}</span></p>
+            <p style="font-weight: bolder;">Total: <span style="color: rgb(237, 100, 230); font-weight: bolder;">{{ card_total + cash_total | currency }}</span></p>
         </div>
     </mat-tab>
 </mat-tab-group>
 <div>
-    <h3>Ordenes: Completadas</h3>
+    <h2>Ordenes</h2>
     <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px">
-        <mat-list-item role="listitem" *ngFor="let order of (orders$ | async)">
+        <mat-list-item role="listitem" *ngFor="let order of (orders$ | async)" style="margin-bottom: 10px; height: fit-content;">
             <div style="width: 100%;">
                 <div style="width: 100%; display: flex;">
                     <span>Orden: {{order.orderId}}</span>
                     <span class="example-spacer"></span>
-                    <span>{{order.payment.amount/100 | currency}}</span>
-                    <span style="padding-left: 20px;">{{ order.createdAt.toDate() | date}}</span>
+                    <div style="background: rgba(132, 237, 100, 0.274); padding: 5px; border-radius: 5px;">
+                        <span style="color: rgb(100, 237, 152);">{{order.payment.amount/100 | currency}}</span>
+                    </div>
+                    <span style="padding-left: 20px; color: lightslategray; padding-top: 5px; padding-bottom: 5px;">{{ order.createdAt.toDate() | date}}</span>
                 </div>
-                <div style="width: 100%; padding: 10 0px;">
+                <div style="width: fit-content; padding: 0px;">
                     <p>Cliente: {{order.shipping.name}}</p>
                 </div>
             </div>

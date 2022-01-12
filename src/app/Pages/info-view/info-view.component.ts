@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/Services/Auth/auth.service';
+import { Role } from '../users/users.component';
 
 @Component({
   selector: 'app-info-view',
@@ -9,10 +10,13 @@ import { AuthService } from 'src/app/Services/Auth/auth.service';
 })
 export class InfoViewComponent implements OnInit {
 
+  role!: Role; 
   constructor(
     private readonly auth: AuthService,
     private readonly router: Router
-  ) { }
+  ) { 
+    this.role = this.auth.userData$.value.role
+  }
 
   ngOnInit(): void {
   }

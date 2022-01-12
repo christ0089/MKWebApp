@@ -92,12 +92,12 @@ export class OrdersComponent implements OnInit {
 
       if (warehouse?.name === "General") {
         if (auth.userData$.value.role === "admin") {
-          q = query<IOrder>(
-            order_collection,
-            where("status", "==", order_status),
-            where("createdAt", ">=", start),
-            where("createdAt","<=",end ),
-            orderBy('createdAt', 'desc'))
+          // q = query<IOrder>(
+          //   order_collection,
+          //   where("status", "==", order_status),
+          //   where("createdAt", ">=", start),
+          //   where("createdAt","<=",end ),
+          //   orderBy('createdAt', 'desc'))
         } else {
           return of([])
         }
