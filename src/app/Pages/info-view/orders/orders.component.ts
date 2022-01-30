@@ -11,6 +11,8 @@ import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 
 
+
+
 export interface IOrder {
   id: string;
   orderId: string;
@@ -52,8 +54,12 @@ export class OrdersComponent implements OnInit {
   status = ['processing', 'in-transit', 'completed', "canceled"];
   campaignOne: FormGroup;
   cash_total = 0;
+
+  card_subtotal = 0;
+  comissions = 0;
   card_total = 0;
   canceled_total = 0;
+  quantity_total = 0;
 
   items_sold: Map<string, any> = new Map<string, any>();
   private selectedType = new BehaviorSubject<OrderStatus>(this.status[0] as OrderStatus)
@@ -90,7 +96,7 @@ export class OrdersComponent implements OnInit {
           where("createdAt","<=",end ),
           orderBy('createdAt', 'desc'))
 
-      if (warehouse?.name === "General") {
+      if (warehouse?.name === "Torreón") {
         if (auth.userData$.value.role === "admin") {
           // q = query<IOrder>(
           //   order_collection,
@@ -107,9 +113,10 @@ export class OrdersComponent implements OnInit {
         idField: "id"
       }).pipe(
         map((orders) => {
-          console.log(orders);
           this.cash_total = 0;
           this.card_total = 0;
+          this.card_subtotal  = 0;
+          this.quantity_total = 0;
           this.items_sold = new Map();
 
           const o = orders.filter((or) => or.customer != "hQUt1wUTc0httdD9p2V7oQB5m4v2")
@@ -124,17 +131,20 @@ export class OrdersComponent implements OnInit {
               }
             }
             if (order_status == "completed") {
-             
+              const rand: number = 1; //(Math.floor(Math.random() * 10) + 1 )* 3;
               if ((order.payment.payment_method_types as string[]).indexOf("cash") > -1 && order.status === "completed") {
-                this.cash_total += (order.payment.amount / 100) //* 7
+                this.cash_total += (order.payment.amount / 100) * rand
                 order.payment_meta_data.items.forEach((element:any) => {
-                  this.orders(element);
+                  this.orders(element, rand);
                 });
               }
               if ((order.payment.payment_method_types as string[]).indexOf("card") > -1 && order.status === "completed") {
-                this.card_total += (order.payment.amount / 100) //* 7
+                const comissions = (((order.payment.amount as number) * 36) / 100000) * rand 
+                const subtotal = (order.payment.amount / 100) * rand;
+                this.card_subtotal += subtotal
+                this.card_total += subtotal - comissions - 3.5
                 order.payment_meta_data.items.forEach((element:any) => {
-                  this.orders(element);
+                  this.orders(element, rand);
                 });
               }
             }
@@ -147,13 +157,17 @@ export class OrdersComponent implements OnInit {
   }
 
 
-  orders(items: any) {
+  orders(items: any, multiplier = 1 ) {
     if (this.items_sold.has(items.price)) {
       const curr_items = this.items_sold.get(items.price) 
-      curr_items.quantity += items.quantity
+      curr_items.quantity += (items.quantity * multiplier);
+      this.quantity_total += (items.quantity * multiplier);
       this.items_sold.set(items.price, curr_items)
     } else {
-      this.items_sold.set(items.price, items)
+      this.quantity_total += (items.quantity * multiplier);
+      const curr_items = items;
+      curr_items.quantity = (items.quantity * multiplier);
+      this.items_sold.set(items.price, curr_items)
     }
   }
 

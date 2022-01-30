@@ -35,6 +35,7 @@ import { ProductsComponent } from './products/products.component';
 import { CouponsComponent } from './coupons/coupons.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { UsersComponent } from '../users/users.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { UsersComponent } from '../users/users.component';
     UsersComponent,
     CouponsComponent,
     WarehouseComponent,
+    NotificationsComponent,
   ],
   imports: [
     CommonModule,

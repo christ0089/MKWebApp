@@ -5,7 +5,7 @@
     <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
 <app-warehouse></app-warehouse>
-<button mat-raised-button color="primary" style="float: right;" (click)="newQuestions()" *ngIf="selectedWarehouse?.name === 'General'">
+<button mat-raised-button color="primary" style="float: right;" (click)="newQuestions()">
     Agregar Coupon
 </button>
 <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px">
@@ -45,7 +45,7 @@
             </app-question>
             <app-warehouse></app-warehouse>
         </div>
-        <button mat-button [disabled]="form.invalid" (click)="brandAction('coupon.create', new_prod_drawer)">
+        <button mat-button [disabled]="form.invalid" (click)="couponsAction('coupon.create', new_prod_drawer)">
             Guardar
         </button>
     </form>
@@ -72,7 +72,7 @@ overflow-y: scroll;">
             </app-question>
             <app-warehouse></app-warehouse>
         </div>
-        <button mat-button [disabled]="form.invalid" (click)="brandAction('coupon.update', edit_prod_drawer)">
+        <button mat-button [disabled]="form.invalid" (click)="couponsAction('coupon.update', edit_prod_drawer)">
             Guardar
         </button>
     </form>

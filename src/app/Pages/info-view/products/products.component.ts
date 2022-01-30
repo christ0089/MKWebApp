@@ -65,6 +65,7 @@ export interface IWarehouse {
   name: string;
   owner: string;
   delivery: IDelivery;
+  active: boolean
 }
 
 export const prodConverter: FirestoreDataConverter<IProducts> = {
@@ -303,10 +304,14 @@ export class ProductsComponent implements OnInit {
         `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${this.currProd.id}`
       );
       try {
-        this.currProd = product;
-        // this.currProd.price = product.price;
-        // this.currProd.stripe_metadata_discount = product.stripe_metadata_discount == "" ? null : product.stripe_metadata_discount
-        // this.currProd.active = product.active
+        // this.currProd = product;
+        this.currProd.price = product.price;
+        this.currProd.active = product.active;
+        this.currProd.name = product.name;
+        this.currProd.description = product.description;
+        this.currProd.stripe_metadata_brand = product.stripe_metadata_brand;
+        this.currProd.stripe_metadata_type = product.stripe_metadata_type;
+        this.currProd.stripe_metadata_discount = product.stripe_metadata_discount == "" ? null : product.stripe_metadata_discount
         this.currProd.images = stripe_product.images;
         await setDoc(docRef, { ...this.currProd });
       } catch (e) {

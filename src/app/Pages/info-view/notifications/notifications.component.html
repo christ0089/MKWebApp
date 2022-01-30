@@ -1,0 +1,116 @@
+<h1>Notificaciones</h1>
+<app-warehouse></app-warehouse>
+<button
+  mat-raised-button
+  color="primary"
+  style="float: right"
+  (click)="newNotification()"
+>
+  Agregar Notificacion
+</button>
+
+<p *ngIf="w$ | async; let w">Usuarios a notificar: {{ size  * 20 }}</p>
+
+<mat-tab-group
+  (selectedTabChange)="changedTab($event)"
+  style="width: max-content"
+>
+  <mat-tab label="Probando"> </mat-tab>
+  <mat-tab label="Por Aprovar"></mat-tab>
+  <mat-tab label="Aprovado"></mat-tab>
+</mat-tab-group>
+
+<mat-list
+  role="list"
+  style="overflow: scroll; margin-bottom: 40px; height: 500px"
+>
+  <mat-list-item
+    role="listitem"
+    *ngFor="let obj of notifications$ | async; let i = index"
+    style="padding: 10px"
+  >
+    <div style="width: 90%; display: flex">
+      <div
+        style="
+          height: 20px;
+          margin-top: auto;
+          margin-bottom: auto;
+          margin-right: 10px;
+          z-index: 1000;
+        "
+      >
+        <p style="height: 20px">{{ i + 1 }}</p>
+      </div>
+      <div
+        style="
+          width: fit-content;
+          height: 20px;
+          margin-top: auto;
+          margin-bottom: auto;
+          display: block;
+          z-index: 100;
+        "
+      >
+        <p style="font-weight: 600; height: 20px">{{ obj.title }}</p>
+      </div>
+      <span class="example-spacer"></span>
+      <span style="padding-left: 20px; color: lightslategray; padding-top: 5px; padding-bottom: 5px; padding-right: 10px;">{{ obj.createdAt.toDate() | date}}</span>
+      <button mat-button (click)="editNotification(obj)"  *ngIf="obj.issue_status !== 'approved'" style="color: #f70486">
+        Editar
+      </button>
+      <button
+        mat-button
+        *ngIf="obj.issue_status == 'tested'"
+        (click)="notificationAction('notification.approve', obj)"
+        style="color: #04f755"
+      >
+        Aprovar
+      </button>
+    </div>
+  </mat-list-item>
+</mat-list>
+
+<mat-drawer #new_prod_drawer class="example-sidenav" mode="over" position="end">
+  <div *ngIf="questions">
+    <h4>
+      {{ questions.title }}
+      <button
+        mat-icon-button
+        style="float: right"
+        (click)="new_prod_drawer.toggle()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </h4>
+    <mat-progress-bar
+      *ngIf="loading === true"
+      mode="indeterminate"
+    ></mat-progress-bar>
+    <form [formGroup]="form" *ngIf="questions != null">
+      <div
+        class="form-row"
+        style="
+          max-width: 400px;
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+        "
+      >
+        <app-question
+          *ngFor="let q of questions.questions"
+          [question]="q"
+          [form]="form"
+          [idx]="0"
+        ></app-question>
+        <app-warehouse></app-warehouse>
+      </div>
+      <button
+        mat-button
+        [disabled]="form.invalid"
+        (click)="notificationAction(questions.action)"
+      >
+        Guardar
+      </button>
+    </form>
+  </div>
+</mat-drawer>

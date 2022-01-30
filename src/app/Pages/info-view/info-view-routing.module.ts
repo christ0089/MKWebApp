@@ -6,6 +6,7 @@ import { UsersComponent } from '../users/users.component';
 import { BrandsComponent } from './brands/brands.component';
 import { CouponsComponent } from './coupons/coupons.component';
 import { InfoViewComponent } from './info-view.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProductsComponent } from './products/products.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
@@ -20,6 +21,7 @@ const routes: Routes = [
       { path: 'products', component: ProductsComponent },
       { path: 'brands', component: BrandsComponent },
       { path: 'users', component: UsersComponent },
+      { path: 'notifications', component: NotificationsComponent },
       { path: 'coupons', component: CouponsComponent }
     ]
   },

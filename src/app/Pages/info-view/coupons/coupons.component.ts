@@ -80,25 +80,26 @@ export class CouponsComponent implements OnInit {
 
 
   editQuestions(coupon: ICoupon) {
-    this.editDrawer.toggle()
     this.questions = this.qcs.coupon_questionaire();
     this.currBrand = coupon;
     const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(this.questions.questions, coupon)
     this.form = this.qcs.toFormGroup(
       questions
     );
+    this.newDrawer.toggle()
     console.log(questions);
   }
 
   newQuestions() {
-    this.newDrawer.toggle()
+
     this.questions = this.qcs.coupon_questionaire();
     this.form = this.qcs.toFormGroup(
       this.questions.questions
     );
+    this.newDrawer.toggle()
   }
 
-  async brandAction(event: string, drawer: MatDrawer) {
+  async couponsAction(event: string, drawer: MatDrawer) {
     const collectionRef = collection(this.afs, "coupons")
     let id = doc(collectionRef).id;
     let brandData = this.form.value as ICoupon;
@@ -110,7 +111,7 @@ export class CouponsComponent implements OnInit {
       id = this.currBrand.id as string;
     }
 
-    let docRef = doc(this.afs, `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/brands/${id}`)
+    let docRef = doc(this.afs, `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/coupons/${id}`)
     if (this.warehouse.selectedWarehouse$.value?.name === "General") {
       docRef = doc(this.afs, `coupons/${id}`)
     }
