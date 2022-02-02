@@ -16,6 +16,19 @@
     <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
   </mat-form-field>
   <app-warehouse></app-warehouse>
+
+  <mat-form-field appearance="fill" *ngIf="(drivers$ | async) let sel_driver">
+    <mat-label>Repartidores</mat-label>
+    <mat-select (valueChange)="selectedDriver($event)" required [compareWith]="compareObjects"
+        [value]="sel_driver">
+        <mat-option  [value]="null">
+          General
+      </mat-option>
+        <mat-option *ngFor="let driver of (drivers$ | async)" [value]="driver">
+            {{driver.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
 </div>
 
 <mat-tab-group (selectedTabChange)="changedTab($event)" style="width: 100%">
@@ -135,6 +148,23 @@
         <div style="width: 100%; display: flex">
           <span>Orden: {{ order.orderId }}</span>
           <span class="example-spacer"></span>
+          <span> Repartidor: {{
+            order.driver.name 
+          }}</span>
+
+          <div
+          style="
+            background: rgba(255, 255, 255, 0.274);
+            padding: 5px;
+            margin-left: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+          "
+        >
+          <span style="color: rgb(255, 0, 200)">{{
+            order.payment.payment_method_types[0]
+          }}</span>
+        </div>
           <div
             style="
               background: rgba(132, 237, 100, 0.274);
@@ -146,6 +176,7 @@
               order.payment.amount / 100 | currency
             }}</span>
           </div>
+
           <span
             style="
               padding-left: 20px;
