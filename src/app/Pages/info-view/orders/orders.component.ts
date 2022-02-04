@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GeoPoint, query, Timestamp } from '@angular/fire/firestore';
 import {
   Firestore,
@@ -7,6 +7,7 @@ import {
   CollectionReference,
 } from '@angular/fire/firestore';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDrawer } from '@angular/material/sidenav';
 
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import {
@@ -70,8 +71,9 @@ export class OrdersComponent implements OnInit {
   drivers$: Observable<any> = EMPTY;
   status = ['processing', 'in-transit', 'completed', 'canceled'];
   campaignOne: FormGroup;
-  cash_total = 0;
+  currOrder!: IOrder;
 
+  cash_total = 0;
   card_subtotal = 0;
   comissions = 0;
   card_total = 0;
@@ -85,6 +87,8 @@ export class OrdersComponent implements OnInit {
 
   private selectedDriver$ = new BehaviorSubject<any>(null);
   driver: any = null;
+
+  @ViewChild('edit_prod_drawer') editDrawer!: MatDrawer;
 
   constructor(
     private readonly afs: Firestore,
@@ -279,5 +283,11 @@ export class OrdersComponent implements OnInit {
 
   changedTab(event: MatTabChangeEvent) {
     this.selectedType.next(this.status[event.index] as OrderStatus);
+  }
+
+
+  openOrder(order: IOrder) {
+    this.currOrder = order;
+    this.editDrawer.toggle();
   }
 }

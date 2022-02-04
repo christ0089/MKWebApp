@@ -18,16 +18,11 @@ import { DocumentData } from 'rxfire/firestore/interfaces';
 import { httpsCallable } from 'rxfire/functions';
 import {
   BehaviorSubject,
-  EMPTY,
   firstValueFrom,
   lastValueFrom,
   map,
-  Observable,
   of,
   switchMap,
-  takeLast,
-  tap,
-  withLatestFrom,
 } from 'rxjs';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
