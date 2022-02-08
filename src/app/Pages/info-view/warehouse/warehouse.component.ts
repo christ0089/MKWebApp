@@ -16,7 +16,7 @@ import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.se
 export class WarehouseComponent implements OnInit {
   questions: IQuestion[] = [];
   forms!: FormGroup[];
-  warehouse$ : Observable<any> = EMPTY
+  warehouse$: Observable<any> = EMPTY;
   loading = false;
 
   constructor(
@@ -24,66 +24,80 @@ export class WarehouseComponent implements OnInit {
     private readonly warehouse: WarehouseService,
     private readonly auth: AuthService
   ) {
+    this.warehouse$ = this.warehouse.selectedWarehouse$.pipe(
+      map((curr_warehouse) => {
+        this.questions = this.qcs.warehouse_questionaire();
+        if (!curr_warehouse) {
+          return null;
+        }
+        const warehouse_data = {
+          name: curr_warehouse?.name,
+          alchohol_time: curr_warehouse.alchohol_time || [0,0],
+          start_time: curr_warehouse.start_time  || [0,0],
+          close_time: curr_warehouse.close_time  || [0,0],
+        };
 
-    this.warehouse$ = this.warehouse.selectedWarehouse$.pipe(map((curr_warehouse) => {
+        const close_time = {
+          "hours": warehouse_data.start_time[0],
+          "mins": warehouse_data.start_time[1],
+        };
 
+        const start_time = {
+          "hours": warehouse_data.start_time[0],
+          "mins": warehouse_data.start_time[1],
+        };
 
-      this.questions = this.qcs.warehouse_questionaire();
-      if (!curr_warehouse) {
-        return null
-      }
-      const warehouse_data = {
-        name: curr_warehouse?.name,
-      };
-      const delivery = {
-        min_payment: curr_warehouse.delivery?.min_payment || 0,
-        min_fee: curr_warehouse.delivery?.min_fee || 0,
-        max_fee: curr_warehouse.delivery?.max_fee || 0,
-      };
-  
-      const warehouse_form_data = [
-        warehouse_data,
-        delivery
-      ]
-  
-      this.forms = warehouse_form_data.map((w,i) => {
-        const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(
-          this.questions[i].questions,
-          w
-        );
-        return this.qcs.toFormGroup(questions);
-      });
+        const alchohol_time = {
+          "hours": warehouse_data.alchohol_time[0],
+          "mins": warehouse_data.alchohol_time[1],
+        };
 
-      if (auth.userData$.value.role !== "admin" && curr_warehouse?.name === "General") {
-        this.forms.map(form => form.disable())
-      }
-      return null
-    }));
+        const delivery = {
+          min_payment: curr_warehouse.delivery?.min_payment || 0,
+          min_fee: curr_warehouse.delivery?.min_fee || 0,
+          max_fee: curr_warehouse.delivery?.max_fee || 0,
+        };
 
-    this.warehouse$.subscribe()
+        const warehouse_form_data = [warehouse_data, alchohol_time,start_time, close_time, delivery];
+
+        this.forms = warehouse_form_data.map((w, i) => {
+          const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(
+            this.questions[i].questions,
+            w
+          );
+          return this.qcs.toFormGroup(questions);
+        });
+
+        if (
+          auth.userData$.value.role !== 'admin' &&
+          curr_warehouse?.name === 'General'
+        ) {
+          this.forms.map((form) => form.disable());
+        }
+        return null;
+      })
+    );
+
+    this.warehouse$.subscribe();
   }
 
-  ngOnInit(): void {
-
-  }
-
+  ngOnInit(): void {}
 
   async save() {
-    const {name} = this.forms[0].value
-    const {
-      min_payment,
-      min_fee,
-      max_fee
-    } = this.forms[1].value
-
+    const { name } = this.forms[0].value;
+    const alchohol_time = Object.values(this.forms[1].value as number[])
+    const close_time = Object.values(this.forms[1].value as number[])
+    const start_time = Object.values(this.forms[1].value as number[])
+    const { min_payment, min_fee, max_fee } = this.forms[2].value;
 
     const delivery = {
-      min_payment:  parseInt(min_payment),
+      min_payment: parseInt(min_payment),
       min_fee: parseInt(min_fee),
-      max_fee: parseInt(max_fee)
+      max_fee: parseInt(max_fee),
     };
     this.loading = true;
-    await this.warehouse.saveWarehouse(name, delivery);
+
+    await this.warehouse.saveWarehouse(name, alchohol_time,close_time, start_time, delivery);
     this.loading = false;
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { collection, Firestore, doc } from '@angular/fire/firestore';
 import { FormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
-import { orderBy, query, setDoc, where } from '@firebase/firestore';
+import { deleteDoc, orderBy, query, setDoc, where } from '@firebase/firestore';
 import { collectionData } from 'rxfire/firestore';
 import { BehaviorSubject, EMPTY, map, Observable, of, switchMap } from 'rxjs';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
@@ -83,6 +83,16 @@ export class BrandsComponent implements OnInit {
       questions
     );
     this.form.enable()
+  }
+
+  async deleteBrand(brand: IBrands) {
+    let docRef = doc(
+      this.afs,
+      `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${brand.id}`
+    );
+    await deleteDoc(docRef).catch(e => {
+      
+    });
   }
 
   newQuestions() {

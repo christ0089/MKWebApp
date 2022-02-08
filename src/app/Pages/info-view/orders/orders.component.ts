@@ -88,7 +88,7 @@ export class OrdersComponent implements OnInit {
   private selectedDriver$ = new BehaviorSubject<any>(null);
   driver: any = null;
 
-  @ViewChild('edit_prod_drawer') editDrawer!: MatDrawer;
+  @ViewChild('edit_order_drawer') editDrawer!: MatDrawer;
 
   constructor(
     private readonly afs: Firestore,

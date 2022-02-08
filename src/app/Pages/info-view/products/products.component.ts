@@ -60,7 +60,10 @@ export interface IWarehouse {
   name: string;
   owner: string;
   delivery: IDelivery;
-  active: boolean
+  alchohol_time: number[];
+  start_time: number[];
+  close_time: number[];
+  active: boolean;
 }
 
 export const prodConverter: FirestoreDataConverter<IProducts> = {
@@ -224,7 +227,7 @@ export class ProductsComponent implements OnInit {
     if (this.warehouse.selectedWarehouse$.value?.name !== 'General') {
       metadata['warehouse'] = this.warehouse.selectedWarehouse$.value?.id;
     } else {
-      metadata['warehouse'] = "-";
+      metadata['warehouse'] = '-';
     }
 
     const stripe_product = {
@@ -306,7 +309,10 @@ export class ProductsComponent implements OnInit {
         this.currProd.description = product.description;
         this.currProd.stripe_metadata_brand = product.stripe_metadata_brand;
         this.currProd.stripe_metadata_type = product.stripe_metadata_type;
-        this.currProd.stripe_metadata_discount = product.stripe_metadata_discount == "" ? null : product.stripe_metadata_discount
+        this.currProd.stripe_metadata_discount =
+          product.stripe_metadata_discount == ''
+            ? null
+            : product.stripe_metadata_discount;
         this.currProd.images = stripe_product.images;
         await setDoc(docRef, { ...this.currProd });
       } catch (e) {

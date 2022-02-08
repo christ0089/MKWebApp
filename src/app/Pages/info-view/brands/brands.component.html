@@ -26,6 +26,9 @@
             <button mat-button (click)="editQuestions(brands)" style="color: #f70486;">
                 Editar
             </button>
+            <button mat-button *ngIf="selectedWarehouse?.name !== 'General'"  (click)="deleteBrand(brands)" style="color: #f70404;">
+                Borrar
+            </button>
         </div>
     </mat-list-item>
 

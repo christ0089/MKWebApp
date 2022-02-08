@@ -47,10 +47,13 @@ export class WarehouseService {
     this.warehouses$.subscribe();
   }
 
-  async saveWarehouse(name: string, delivery: any) {
+  async saveWarehouse(name: string, alchohol_time: number[],close_time: number[], start_time: number[], delivery: any) {
     const warehouse_ref = doc(this.afs,`warehouse/${this.selectedWarehouse$.value?.id}`)
     await setDoc(warehouse_ref, {
       name,
+      alchohol_time,
+      close_time,
+      start_time,
       delivery
     }, {merge: true})
   }

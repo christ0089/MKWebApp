@@ -150,7 +150,7 @@
         <div style="width: 100%; display: flex">
           <span>Orden: {{ order.orderId }}</span>
           <span class="example-spacer"></span>
-          <span style="padding: 5px"> Repartidor: {{ order.driver.name }}</span>
+          <span style="padding: 5px" *ngIf="order.driver"> Repartidor: {{ order.driver.name }}</span>
 
           <div
             style="
@@ -198,7 +198,7 @@
 </div>
 
 <mat-drawer
-  #edit_prod_drawer
+  #edit_order_drawer
   class="example-sidenav"
   mode="over"
   position="end"
@@ -210,12 +210,12 @@
       <button
         mat-icon-button
         style="float: right"
-        (click)="edit_prod_drawer.toggle()"
+        (click)="edit_order_drawer.toggle()"
       >
         <mat-icon>close</mat-icon>
       </button>
     </h2>
-    <p style="padding: 5px 0px"><strong>Repartidor:</strong> {{ currOrder.driver.name }}</p>
+    <p style="padding: 5px 0px" *ngIf="currOrder.driver"><strong>Repartidor:</strong> {{ currOrder.driver.name }}</p>
     <h3 style="margin-top: 10px;">
       Productos Entregados
     </h3>
