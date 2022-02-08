@@ -15,7 +15,7 @@
             <div style="height: 20px; margin-top: auto; margin-bottom: auto; margin-right: 10px; z-index: 1000; color: white;">
                 <p style=" height: 20px; color: whitesmoke;">{{i + 1}}</p>
             </div>
-            <div style="width: 80%; height: 50px; background-color: white; border-radius: 5px; overflow: hidden;  position: absolute; left: 0px; top:0px">
+            <div style="width: 70%; height: 50px; background-color: white; border-radius: 5px; overflow: hidden;  position: absolute; left: 0px; top:0px">
                 <img style="object-fit: cover; width: 100%; height: 100%;" [src]=brands.img>
             </div>
             <div style="width: fit-content; height: 20px; margin-top: auto; margin-bottom: auto; display: block; color: white; z-index: 100;">
@@ -23,7 +23,7 @@
             </div>
             <span class="example-spacer"></span>
 
-            <button mat-button (click)="editQuestions(brands)" style="color: #f70486;">
+            <button mat-button (click)="editQuestions(brands)" style="color: #f70486; margin-left: 10px;">
                 Editar
             </button>
             <button mat-button *ngIf="selectedWarehouse?.name !== 'General'"  (click)="deleteBrand(brands)" style="color: #f70404;">

@@ -36,6 +36,7 @@ import { CouponsComponent } from './coupons/coupons.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 import { UsersComponent } from '../users/users.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { ScriptService } from 'src/app/Services/script.service';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,6 @@ import { NotificationsComponent } from './notifications/notifications.component'
     ComponentModule,
   ],
   bootstrap: [InfoViewComponent],
-  providers: [QuestionControlService, WarehouseService, AuthGuard],
+  providers: [QuestionControlService, ScriptService, WarehouseService, AuthGuard],
 })
 export class InfoViewModule {}

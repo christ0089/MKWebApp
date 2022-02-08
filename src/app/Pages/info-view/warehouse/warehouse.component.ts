@@ -6,8 +6,10 @@ import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { IQuestion } from 'src/app/Models/question';
 import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
+import { ScriptService } from 'src/app/Services/script.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
-
+import { environment } from 'src/environments/environment';
+declare let mapboxgl: any;
 @Component({
   selector: 'warehouse',
   templateUrl: './warehouse.component.html',
@@ -17,6 +19,12 @@ export class WarehouseComponent implements OnInit {
   questions: IQuestion[] = [];
   forms!: FormGroup[];
   warehouse$: Observable<any> = EMPTY;
+
+  map: any;
+  private marker: any;
+  private coords = [];
+
+  
   loading = false;
 
   constructor(
@@ -38,8 +46,8 @@ export class WarehouseComponent implements OnInit {
         };
 
         const close_time = {
-          "hours": warehouse_data.start_time[0],
-          "mins": warehouse_data.start_time[1],
+          "hours": warehouse_data.close_time[0],
+          "mins": warehouse_data.close_time[1],
         };
 
         const start_time = {
@@ -81,14 +89,45 @@ export class WarehouseComponent implements OnInit {
     this.warehouse$.subscribe();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    mapboxgl.accessToken = environment.mapbox;
+    this.map = new mapboxgl.Map({
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: {
+        lng: -102.5528,
+        lat: 23.6345
+      },
+      zoom: 8,
+      pitch: 55,
+      container: 'mapbox',
+      antialias: true,
+    });
+
+    this.map.on('load', async  () => {
+      this.map.addSource('zones', {
+        type: 'geojson',
+        // Use a URL for the value for the `data` property.
+        data: "https://raw.githubusercontent.com/christ0089/PrtyGeoJson/main/map%20(2).geojson",
+      });
+      this.map.addLayer({
+        id: 'avail_zones',
+        type: 'fill',
+        source: 'zones', // reference the data source
+        layout: {},
+        paint: {
+          'fill-color': '#e70de0', // blue color fill
+          'fill-opacity': 0.1,
+        },
+      });
+    });
+  }
 
   async save() {
     const { name } = this.forms[0].value;
     const alchohol_time = Object.values(this.forms[1].value as number[])
-    const close_time = Object.values(this.forms[1].value as number[])
-    const start_time = Object.values(this.forms[1].value as number[])
-    const { min_payment, min_fee, max_fee } = this.forms[2].value;
+    const close_time = Object.values(this.forms[2].value as number[])
+    const start_time = Object.values(this.forms[3].value as number[])
+    const { min_payment, min_fee, max_fee } = this.forms[4].value;
 
     const delivery = {
       min_payment: parseInt(min_payment),

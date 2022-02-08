@@ -88,10 +88,10 @@ export class BrandsComponent implements OnInit {
   async deleteBrand(brand: IBrands) {
     let docRef = doc(
       this.afs,
-      `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${brand.id}`
+      `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/brands/${brand.id}`
     );
     await deleteDoc(docRef).catch(e => {
-      
+      console.log(e);
     });
   }
 
