@@ -125,8 +125,8 @@ export class WarehouseComponent implements OnInit {
   async save() {
     const { name } = this.forms[0].value;
     const alchohol_time = Object.values(this.forms[1].value as number[])
-    const close_time = Object.values(this.forms[2].value as number[])
-    const start_time = Object.values(this.forms[3].value as number[])
+    const start_time = Object.values(this.forms[2].value as number[])
+    const close_time = Object.values(this.forms[3].value as number[])
     const { min_payment, min_fee, max_fee } = this.forms[4].value;
 
     const delivery = {

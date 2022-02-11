@@ -150,6 +150,7 @@ export class OrdersComponent implements OnInit {
           idField: 'id',
         }).pipe(
           map((orders) => {
+            console.log(orders)
             this.cash_total = 0;
             this.card_total = 0;
             this.card_subtotal = 0;
@@ -198,8 +199,7 @@ export class OrdersComponent implements OnInit {
                   ) > -1 &&
                   order.status === 'completed'
                 ) {
-                  const comissions =
-                    (((order.payment.amount as number) * 36) / 100000) * rand;
+                  const comissions = (((order.payment.amount as number) * 36) / 100000) * rand;
                   const subtotal = (order.payment.amount / 100) * rand;
                   this.card_subtotal += subtotal;
                   this.card_total += subtotal - comissions - 3.5;
@@ -270,12 +270,12 @@ export class OrdersComponent implements OnInit {
       const curr_items = this.items_sold.get(items.price);
       curr_items.quantity += items.quantity * multiplier;
       this.quantity_total += items.quantity * multiplier;
-      this.items_sold.set(items.price, curr_items);
+      this.items_sold.set(items.id, curr_items);
     } else {
       this.quantity_total += items.quantity * multiplier;
       const curr_items = items;
       curr_items.quantity = items.quantity * multiplier;
-      this.items_sold.set(items.price, curr_items);
+      this.items_sold.set(items.id, curr_items);
     }
   }
 
@@ -287,6 +287,7 @@ export class OrdersComponent implements OnInit {
 
 
   openOrder(order: IOrder) {
+    console.log(order);
     this.currOrder = order;
     this.editDrawer.toggle();
   }
