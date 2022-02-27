@@ -29,6 +29,7 @@ import {
   tap,
 } from 'rxjs';
 import { AuthService } from 'src/app/Services/Auth/auth.service';
+import { ICoupon } from 'src/app/Services/QuestionsService/product_questionaire';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 import { genericConverter } from '../products/products.component';
 
@@ -47,6 +48,7 @@ export interface IOrder {
   payment: any;
   createdAt: Timestamp;
   status: OrderStatus;
+  coupons?: ICoupon;
 }
 
 type OrderStatus = 'processing' | 'in-transit' | 'completed' | 'canceled';
@@ -181,7 +183,7 @@ export class OrdersComponent implements OnInit {
                 }
               }
               if (order_status == 'completed') {
-                const rand: number = 1; //(Math.floor(Math.random() * 10) + 1 )* 3;
+                const rand: number = 1// (Math.floor(Math.random() * 10) + 1 )* 3;
                 if (
                   (order.payment.payment_method_types as string[]).indexOf(
                     'cash'
@@ -202,7 +204,7 @@ export class OrdersComponent implements OnInit {
                   const comissions = (((order.payment.amount as number) * 36) / 100000) * rand;
                   const subtotal = (order.payment.amount / 100) * rand;
                   this.card_subtotal += subtotal;
-                  this.card_total += subtotal - comissions - 3.5;
+                  this.card_total += subtotal - comissions - 3 - ((comissions + 3) * (16/100));
                   order.payment_meta_data.items.forEach((element: any) => {
                     this.orders(element, rand);
                   });
@@ -261,21 +263,26 @@ export class OrdersComponent implements OnInit {
     this.selectedDriver$.next(driver);
   }
 
+  // selectedPaymentMethod(method: string) {
+  //   if ()
+  // }
+
   compareObjects(o1: any, o2: any): boolean {
     return o1 && o2 && o1.id === o2.id;
   }
 
   orders(items: any, multiplier = 1) {
+    console.log(items);
     if (this.items_sold.has(items.price)) {
       const curr_items = this.items_sold.get(items.price);
       curr_items.quantity += items.quantity * multiplier;
       this.quantity_total += items.quantity * multiplier;
-      this.items_sold.set(items.id, curr_items);
+      this.items_sold.set(items.price, curr_items);
     } else {
       this.quantity_total += items.quantity * multiplier;
       const curr_items = items;
       curr_items.quantity = items.quantity * multiplier;
-      this.items_sold.set(items.id, curr_items);
+      this.items_sold.set(items.price, curr_items);
     }
   }
 

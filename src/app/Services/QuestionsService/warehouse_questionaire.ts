@@ -104,8 +104,8 @@ export const warehouse_questionaire = (): IQuestion[] => {
   const questions = [
     warehouse_centers(),
     times_centers("Cierre de Venta de Alcohol"),
-    times_centers("Cierre de Tienda"),
     times_centers("Apertura de Tienda"),
+    times_centers("Cierre de Tienda"),
     delivery_fee()
   ]
   return questions;

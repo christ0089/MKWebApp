@@ -107,8 +107,13 @@
           </div>
         </mat-list-item>
       </mat-list>
-      <p>
-        Total Vendido: <span class="example-spacer"></span>{{ quantity_total }}
+      <p style="padding: 5px">
+        Total Vendido:
+        <span
+          class="example-spacer"
+          style="font-weight: bold; color: rgb(0, 132, 255)"
+        ></span
+        >{{ quantity_total }}
       </p>
     </div>
   </mat-tab>
@@ -137,21 +142,47 @@
 </mat-tab-group>
 <div>
   <h2>Ordenes</h2>
+
   <mat-list
     role="list"
     style="overflow: scroll; margin-bottom: 40px; height: 500px"
   >
     <mat-list-item
       role="listitem"
-      *ngFor="let order of orders$ | async"
+      *ngFor="let order of orders$ | async; let i = index"
       style="margin-bottom: 10px; height: fit-content"
     >
       <div style="width: 100%">
         <div style="width: 100%; display: flex">
-          <span>Orden: {{ order.orderId }}</span>
-          <span class="example-spacer"></span>
-          <span style="padding: 5px" *ngIf="order.driver"> Repartidor: {{ order.driver.name }}</span>
+          <div
+            style="
+              height: 20px;
+              margin-top: auto;
+              margin-bottom: auto;
+              margin-right: 20px;
+            "
+          >
+            <p style="height: 20px; color: lightslategrey">{{ i + 1 }}</p>
+          </div>
 
+          <div style="width: fit-content; padding: 0px">
+            <p>Orden: {{ order.orderId }}</p>
+            <p>Cliente: {{ order.shipping.name }}</p>
+          </div>
+          
+          <span class="example-spacer"></span>
+          <span
+            style="padding: 5px; color: rgb(0, 132, 255)"
+            *ngIf="order.coupons"
+          >
+            {{ order.coupons.code }}</span
+          >
+          <span
+            style="padding: 5px; width: 200px; text-overflow: ellipsis"
+            *ngIf="order.driver"
+          >
+            Repartidor: {{ order.driver.name }}</span
+          >
           <div
             style="
               background: rgba(255, 255, 255, 0.274);
@@ -170,6 +201,7 @@
               background: rgba(132, 237, 100, 0.274);
               padding: 5px;
               border-radius: 5px;
+              height: 20px;
             "
           >
             <span style="color: rgb(100, 237, 152)">{{
@@ -189,9 +221,7 @@
           >
           <button mat-button (click)="openOrder(order)">Ver</button>
         </div>
-        <div style="width: fit-content; padding: 0px">
-          <p>Cliente: {{ order.shipping.name }}</p>
-        </div>
+        
       </div>
     </mat-list-item>
   </mat-list>
@@ -215,10 +245,10 @@
         <mat-icon>close</mat-icon>
       </button>
     </h2>
-    <p style="padding: 5px 0px" *ngIf="currOrder.driver"><strong>Repartidor:</strong> {{ currOrder.driver.name }}</p>
-    <h3 style="margin-top: 10px;">
-      Productos Entregados
-    </h3>
+    <p style="padding: 5px 0px" *ngIf="currOrder.driver">
+      <strong>Repartidor:</strong> {{ currOrder.driver.name }}
+    </p>
+    <h3 style="margin-top: 10px">Productos Entregados</h3>
     <mat-list
       role="list"
       style="overflow: scroll; height: fit-content; max-height: 500px"
