@@ -177,6 +177,13 @@
           >
             {{ order.coupons.code }}</span
           >
+
+          <span
+            style="padding: 5px; color: rgb(0, 132, 255)"
+            *ngIf="order.payment_meta_data.coupons"
+          >
+            {{ order.payment_meta_data.coupons.code }}</span
+          >
           <span
             style="padding: 5px; width: 200px; text-overflow: ellipsis"
             *ngIf="order.driver"
