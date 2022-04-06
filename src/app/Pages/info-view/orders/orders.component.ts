@@ -6,13 +6,13 @@ import {
   collection,
   CollectionReference,
 } from '@angular/fire/firestore';
+import { Functions } from '@angular/fire/functions';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import {
   FirestoreDataConverter,
-  limit,
   orderBy,
   QueryDocumentSnapshot,
   where,
@@ -33,6 +33,14 @@ import { ICoupon } from 'src/app/Services/QuestionsService/product_questionaire'
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 import { genericConverter } from '../products/products.component';
 
+import * as json2csv from 'json2csv';
+import { DomSanitizer } from '@angular/platform-browser';
+
+export interface IRatings {
+  question: string;
+  rating: number;
+}
+
 export interface IOrder {
   id: string;
   orderId: string;
@@ -49,6 +57,23 @@ export interface IOrder {
   createdAt: Timestamp;
   status: OrderStatus;
   coupons?: ICoupon;
+  ratings?: IRatings[];
+}
+
+export interface FlattenedOrder {
+  orderId: string;
+  customer_name: string;
+  payment_method: number;
+  item_name: string;
+  item_quantity: number
+  start_time: string;
+  delivered_time: string;
+  driver_name: string;
+  coupons_name: string;
+  coupon_discount: number;
+  discount?: number;
+  rating_avg?: number;
+  price: number;
 }
 
 type OrderStatus = 'processing' | 'in-transit' | 'completed' | 'canceled';
@@ -95,6 +120,8 @@ export class OrdersComponent implements OnInit {
   constructor(
     private readonly afs: Firestore,
     private readonly auth: AuthService,
+    private readonly functions: Functions,
+    private readonly domSanitizer: DomSanitizer,
     private readonly warehouse: WarehouseService
   ) {
     const today = new Date();
@@ -113,7 +140,7 @@ export class OrdersComponent implements OnInit {
       this.selectedType.asObservable(),
       this.warehouse.selectedWarehouse$.asObservable(),
       dateObserver,
-      this.selectedDriver$
+      this.selectedDriver$,
     ]).pipe(
       switchMap(([order_status, warehouse, dateObserver, driver]) => {
         const order_collection = collection(this.afs, 'orders').withConverter(
@@ -145,19 +172,31 @@ export class OrdersComponent implements OnInit {
         if (warehouse?.name === 'Torreón') {
           if (auth.userData$.value.role !== 'admin') {
             return of([]);
-          } 
+          }
+        }
+
+        if (warehouse?.name === 'General') {
+          if (auth.userData$.value.role === 'admin') {
+            q = query<IOrder>(
+              order_collection,
+              where('status', '==', order_status),
+              where('createdAt', '>=', start),
+              where('createdAt', '<=', end),
+              orderBy('createdAt', 'desc')
+            );
+          } else {
+            return of([]);
+          }
         }
 
         return collectionData<IOrder>(q, {
           idField: 'id',
         }).pipe(
           map((orders) => {
-            console.log(orders)
+            console.log(orders);
             this.cash_total = 0;
             this.card_total = 0;
             this.card_subtotal = 0;
-            this.quantity_total = 0;
-            this.items_sold = new Map();
 
             const o = orders.filter(
               (or) => or.customer != 'hQUt1wUTc0httdD9p2V7oQB5m4v2'
@@ -183,7 +222,7 @@ export class OrdersComponent implements OnInit {
                 }
               }
               if (order_status == 'completed') {
-                const rand: number = 1// (Math.floor(Math.random() * 10) + 1 )* 3;
+                const rand: number = 1; // (Math.floor(Math.random() * 10) + 1 )* 3;
                 if (
                   (order.payment.payment_method_types as string[]).indexOf(
                     'cash'
@@ -191,9 +230,6 @@ export class OrdersComponent implements OnInit {
                   order.status === 'completed'
                 ) {
                   this.cash_total += (order.payment.amount / 100) * rand;
-                  order.payment_meta_data.items.forEach((element: any) => {
-                    this.orders(element, rand);
-                  });
                 }
                 if (
                   (order.payment.payment_method_types as string[]).indexOf(
@@ -201,23 +237,41 @@ export class OrdersComponent implements OnInit {
                   ) > -1 &&
                   order.status === 'completed'
                 ) {
-                  const comissions = (((order.payment.amount as number) * 36) / 100000) * rand;
+                  const comissions =
+                    (((order.payment.amount as number) * 36) / 100000) * rand;
                   const subtotal = (order.payment.amount / 100) * rand;
                   this.card_subtotal += subtotal;
-                  this.card_total += subtotal - comissions - 3 - ((comissions + 3) * (16/100));
-                  order.payment_meta_data.items.forEach((element: any) => {
-                    this.orders(element, rand);
-                  });
+                  this.card_total +=
+                    subtotal - comissions - 3 - (comissions + 3) * (16 / 100);
                 }
               }
               order.orderId = order.id.substring(0, 5).toUpperCase();
               return order;
             });
-            return order_mapped
+            return order_mapped;
           })
         );
       })
     );
+
+    this.orders$.subscribe((orders) => {
+      this.items_sold = new Map();
+      this.quantity_total = 0;
+      orders.forEach(o => {
+        const items:any[] = o.payment_meta_data.items
+        items.forEach((element: any) => {
+          this.quantity_total += element.quantity;
+          if (this.items_sold.has(element.price)) {
+            const curr_items = this.items_sold.get(element.price);
+            curr_items.quantity += element.quantity;
+            this.items_sold.set(element.price, curr_items);
+          } else {
+            const curr_items = element;
+            this.items_sold.set(element.price, curr_items);
+          }
+        })
+      })
+    })
 
     this.drivers$ = combineLatest([
       this.auth.userData$,
@@ -234,10 +288,7 @@ export class OrdersComponent implements OnInit {
           genericConverter()
         );
 
-        let q = query(
-          col,
-          where('warehouse_id', '==', warehouse?.id)
-        );
+        let q = query(col, where('warehouse_id', '==', warehouse?.id));
 
         return collectionData<any>(q, {
           idField: 'id',
@@ -246,7 +297,7 @@ export class OrdersComponent implements OnInit {
             return drivers.map((driver: any) => {
               return {
                 img: driver.img,
-                name: driver.name,
+                name: driver.name || "",
                 id: driver.id,
               };
             });
@@ -255,35 +306,47 @@ export class OrdersComponent implements OnInit {
       })
     );
 
-    this.selectedDriver$.subscribe()
- 
+    this.selectedDriver$.subscribe();
   }
 
-  selectedDriver(driver : any) {
+  selectedDriver(driver: any) {
     this.selectedDriver$.next(driver);
   }
-
-  // selectedPaymentMethod(method: string) {
-  //   if ()
-  // }
 
   compareObjects(o1: any, o2: any): boolean {
     return o1 && o2 && o1.id === o2.id;
   }
 
-  orders(items: any, multiplier = 1) {
-    console.log(items);
-    if (this.items_sold.has(items.price)) {
-      const curr_items = this.items_sold.get(items.price);
-      curr_items.quantity += items.quantity * multiplier;
-      this.quantity_total += items.quantity * multiplier;
-      this.items_sold.set(items.price, curr_items);
-    } else {
-      this.quantity_total += items.quantity * multiplier;
-      const curr_items = items;
-      curr_items.quantity = items.quantity * multiplier;
-      this.items_sold.set(items.price, curr_items);
+  ordersToCSV(orders: IOrder[]) {
+    let flatOrder: FlattenedOrder[] = [];
+
+    orders.forEach((order) => {
+      order.payment_meta_data.items.forEach((element: any) => {
+        flatOrder.push({
+          price: order.payment.amount,
+          orderId: order.orderId,
+          driver_name: order.driver.name,
+          customer_name: order.shipping.name,
+          coupons_name: order.coupons?.code || "",
+          coupon_discount: order.coupons?.discount || 0,
+          payment_method: order.payment.payment_method_types[0],
+          rating_avg: 0,
+          item_name: element.name,
+          item_quantity: element.quantity,
+          start_time: order.createdAt.toString(),
+          delivered_time: order.delivered_time.toString()
+        });
+      });
+    });
+
+    if (flatOrder.length > 0) {
+      const fields = [...Object.keys(flatOrder[0])];
+      console.log(fields);
+      const ops = { fields, output: "report_file.csv"};
+      const csv = json2csv.parse(flatOrder, ops);
+      return this.domSanitizer.bypassSecurityTrustUrl('data:text/csv,' + encodeURIComponent(csv));
     }
+    return null
   }
 
   ngOnInit(): void {}
@@ -292,9 +355,7 @@ export class OrdersComponent implements OnInit {
     this.selectedType.next(this.status[event.index] as OrderStatus);
   }
 
-
   openOrder(order: IOrder) {
-    console.log(order);
     this.currOrder = order;
     this.editDrawer.toggle();
   }
