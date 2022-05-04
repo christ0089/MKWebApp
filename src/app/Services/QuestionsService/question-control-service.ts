@@ -90,6 +90,11 @@ export class QuestionControlService {
     return question
   };
 
+  ad_questionaire() {
+    const question = product_questionaire();
+    return question
+  };
+
   brand_questionaire() {
     const question = brand_questionaire();
     return question

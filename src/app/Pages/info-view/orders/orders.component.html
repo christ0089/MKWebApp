@@ -31,10 +31,14 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-
-  
 </div>
-<a download="report_file.csv" style="text-decoration: none; color:deeppink; font-family:'Roboto'; "  *ngIf="(orders$ | async); let orders_data"  [href]="ordersToCSV(orders_data)">CSV export</a>
+<a
+  download="report_file.csv"
+  style="text-decoration: none; color: deeppink; font-family: 'Roboto'"
+  *ngIf="orders$ | async; let orders_data"
+  [href]="ordersToCSV(orders_data)"
+  >CSV export</a
+>
 <mat-tab-group (selectedTabChange)="changedTab($event)" style="width: 100%">
   <mat-tab label="Processando"> </mat-tab>
   <mat-tab label="En Transito"></mat-tab>
@@ -54,6 +58,9 @@
           }})</span
         >
       </p>
+      <p>
+        Propina: <span style="color: rgb(255, 0, 200)">{{ propina | currency }}</span>
+      </p>
       <p style="font-weight: bolder">
         Total:
         <span style="color: rgb(237, 100, 230); font-weight: bolder">{{
@@ -62,7 +69,7 @@
       </p>
     </div>
     <h2>Ventas</h2>
-    <div  *ngIf="items_sold.size  > 0">
+    <div *ngIf="items_sold.size > 0">
       <mat-list
         role="list"
         style="overflow: scroll; height: fit-content; max-height: 500px"
@@ -100,7 +107,7 @@
                 />
               </div>
 
-              <span>{{ order.value.name }}</span>
+              <span>{{ order.value?.name }}</span>
               <span class="example-spacer"></span>
               <span style="color: lightslategray">{{
                 order.value.quantity
@@ -109,7 +116,7 @@
           </div>
         </mat-list-item>
       </mat-list>
-      <p style="padding: 5px" >
+      <p style="padding: 5px">
         Total Vendido:
         <span
           class="example-spacer"
@@ -168,8 +175,8 @@
           </div>
 
           <div style="width: fit-content; padding: 0px">
-            <p>Orden: {{ order.orderId }}</p>
-            <p>Cliente: {{ order.shipping.name }}</p>
+            <p>Orden: {{ order.id }}</p>
+            <p>Cliente: {{ order.shipping?.name || "" }}</p>
           </div>
 
           <span class="example-spacer"></span>
@@ -205,19 +212,24 @@
               order.payment.payment_method_types[0]
             }}</span>
           </div>
-          <div *ngIf=" order.payment.payment_method_types[0] === 'card'"
-          style="
-            background: rgba(255, 255, 255, 0.274);
-            padding: 5px;
-            margin-left: 10px;
-            margin-right: 10px;
-            border-radius: 5px;
-          "
-        >
-          <span style="color: rgb(255, 0, 200)">{{
-           (order.payment.amount / 100) - 3 - (order.payment.amount / 100 * (36/100)) - ((order.payment.amount * (36/100) / 100) * (16 / 100)) | currency
-          }}</span>
-        </div>
+          <div
+            *ngIf="order.payment.payment_method_types[0] === 'card'"
+            style="
+              background: rgba(255, 255, 255, 0.274);
+              padding: 5px;
+              margin-left: 10px;
+              margin-right: 10px;
+              border-radius: 5px;
+            "
+          >
+            <span style="color: rgb(255, 0, 200)">{{
+              order.payment.amount / 100 -
+                3 -
+                (order.payment.amount / 100) * (36 / 100) -
+                ((order.payment.amount * (36 / 100)) / 100) * (16 / 100)
+                | currency
+            }}</span>
+          </div>
           <div
             style="
               background: rgba(132, 237, 100, 0.274);
@@ -242,6 +254,13 @@
             >{{ order.createdAt.toDate() | date }}</span
           >
           <button mat-button (click)="openOrder(order)">Ver</button>
+          <button
+            mat-button
+            (click)="openOrder(order)"
+            *ngIf="order.status == 'canceled'"
+          >
+            Rembolsar
+          </button>
         </div>
       </div>
     </mat-list-item>
@@ -320,7 +339,7 @@
         <mat-list-item>
           <mat-icon mat-list-icon>star</mat-icon>
           <div mat-line>{{ ratings.question }}</div>
-          <div mat-line> {{ ratings.rating }} </div>
+          <div mat-line>{{ ratings.rating }}</div>
         </mat-list-item>
       </mat-list>
     </div>

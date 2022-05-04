@@ -68,6 +68,14 @@ export const product_questionaire = () => {
         verfication: false,
       }),
       new TextboxQuestion({
+        key: 'availability',
+        label: 'Existencias',
+        value: 100,
+        required: true,
+        order: 0,
+        verfication: false,
+      }),
+      new TextboxQuestion({
         key: 'stripe_metadata_color',
         label: 'Color',
         value: '',
@@ -110,6 +118,93 @@ export const product_questionaire = () => {
     ],
   };
 };
+
+
+export const ads_questionaire = () => {
+  return {
+    title: 'Agregar Anuncio',
+    subtitle: null,
+    questions: [
+      new UploadFileQuestion({
+        key: 'content_url',
+        label: 'Contenido',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [{ key: 'uploaded', value: false }],
+        required: true,
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'title',
+        label: 'Titulo',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'subtitle',
+        label: 'Subtitulo',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'active',
+        label: 'Disponible',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: true,
+            value: 'Disponible',
+          },
+          {
+            key: false,
+            value: 'Desactivado',
+          },
+        ],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'type',
+        label: 'Tipo de Archivo',
+        value: 'redirect',
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: 'redirect',
+            value: 'Redirigir',
+          },
+          {
+            key: 'coupon',
+            value: 'Coupon',
+          },
+          {
+            key: 'location',
+            value: 'Ubicacion',
+          },
+          {
+            key: 'video',
+            value: 'Video',
+          },
+          {
+            key: 'img',
+            value: 'Imagen',
+          },
+        ],
+        verfication: false,
+      }),
+    ],
+  };
+};
+
 
 export const brand_questionaire = () => {
   return {

@@ -65,12 +65,13 @@ export interface FlattenedOrder {
   customer_name: string;
   payment_method: number;
   item_name: string;
-  item_quantity: number
+  item_quantity: number;
   start_time: string;
   delivered_time: string;
   driver_name: string;
   coupons_name: string;
   coupon_discount: number;
+  status: string;
   discount?: number;
   rating_avg?: number;
   price: number;
@@ -106,6 +107,7 @@ export class OrdersComponent implements OnInit {
   card_total = 0;
   canceled_total = 0;
   quantity_total = 0;
+  propina : number = 0; 
 
   items_sold: Map<string, any> = new Map<string, any>();
   private selectedType = new BehaviorSubject<OrderStatus>(
@@ -197,6 +199,7 @@ export class OrdersComponent implements OnInit {
             this.cash_total = 0;
             this.card_total = 0;
             this.card_subtotal = 0;
+            this.propina = 0;
 
             const o = orders.filter(
               (or) => or.customer != 'hQUt1wUTc0httdD9p2V7oQB5m4v2'
@@ -230,6 +233,9 @@ export class OrdersComponent implements OnInit {
                   order.status === 'completed'
                 ) {
                   this.cash_total += (order.payment.amount / 100) * rand;
+
+                  this.propina = this.propina + (parseInt(order.payment.metadata.tip) || 0);
+                  console.log(this.propina)
                 }
                 if (
                   (order.payment.payment_method_types as string[]).indexOf(
@@ -243,6 +249,8 @@ export class OrdersComponent implements OnInit {
                   this.card_subtotal += subtotal;
                   this.card_total +=
                     subtotal - comissions - 3 - (comissions + 3) * (16 / 100);
+
+                  this.propina = this.propina + (parseInt(order.payment.metadata.tip) || 0);
                 }
               }
               order.orderId = order.id.substring(0, 5).toUpperCase();
@@ -257,8 +265,8 @@ export class OrdersComponent implements OnInit {
     this.orders$.subscribe((orders) => {
       this.items_sold = new Map();
       this.quantity_total = 0;
-      orders.forEach(o => {
-        const items:any[] = o.payment_meta_data.items
+      orders.forEach((o) => {
+        const items: any[] = o.payment_meta_data.items;
         items.forEach((element: any) => {
           this.quantity_total += element.quantity;
           if (this.items_sold.has(element.price)) {
@@ -269,9 +277,9 @@ export class OrdersComponent implements OnInit {
             const curr_items = element;
             this.items_sold.set(element.price, curr_items);
           }
-        })
-      })
-    })
+        });
+      });
+    });
 
     this.drivers$ = combineLatest([
       this.auth.userData$,
@@ -297,7 +305,7 @@ export class OrdersComponent implements OnInit {
             return drivers.map((driver: any) => {
               return {
                 img: driver.img,
-                name: driver.name || "",
+                name: driver?.name || '',
                 id: driver.id,
               };
             });
@@ -322,31 +330,38 @@ export class OrdersComponent implements OnInit {
 
     orders.forEach((order) => {
       order.payment_meta_data.items.forEach((element: any) => {
-        flatOrder.push({
-          price: order.payment.amount,
-          orderId: order.orderId,
-          driver_name: order.driver.name,
-          customer_name: order.shipping.name,
-          coupons_name: order.coupons?.code || "",
-          coupon_discount: order.coupons?.discount || 0,
-          payment_method: order.payment.payment_method_types[0],
-          rating_avg: 0,
-          item_name: element.name,
-          item_quantity: element.quantity,
-          start_time: order.createdAt.toString(),
-          delivered_time: order.delivered_time.toString()
-        });
+        try {
+          flatOrder.push({
+            price: order.payment.amount,
+            orderId: order.orderId,
+            driver_name: order.driver !== undefined  ||  order.driver !== null  ? order.driver.name : '',
+            customer_name: order.shipping.name !== undefined ||  order.shipping.name !== null  ? order.shipping.name : '',
+            coupons_name: order.coupons?.code || '',
+            coupon_discount: order.coupons?.discount || 0,
+            payment_method: order.payment.payment_method_types[0],
+            rating_avg: 0,
+            status: order.status,
+            item_name: element.name !== undefined || element.name !== null ? element.name : '',
+            item_quantity: element.quantity,
+            start_time: order.createdAt?.toString() || '',
+            delivered_time: order.delivered_time?.toString() || '',
+          });
+        }
+        catch (e) {
+          console.error(e)
+        }
       });
     });
 
     if (flatOrder.length > 0) {
       const fields = [...Object.keys(flatOrder[0])];
-      console.log(fields);
-      const ops = { fields, output: "report_file.csv"};
+      const ops = { fields, output: 'report_file.csv' };
       const csv = json2csv.parse(flatOrder, ops);
-      return this.domSanitizer.bypassSecurityTrustUrl('data:text/csv,' + encodeURIComponent(csv));
+      return this.domSanitizer.bypassSecurityTrustUrl(
+        'data:text/csv,' + encodeURIComponent(csv)
+      );
     }
-    return null
+    return null;
   }
 
   ngOnInit(): void {}

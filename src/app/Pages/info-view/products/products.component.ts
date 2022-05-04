@@ -35,6 +35,7 @@ export interface IProducts {
   images: string[] | string;
   name: string;
   description: string;
+  availability: number;
   metadata?: Map<string, string>[];
   stripe_metadata_color: string;
   stripe_metadata_type: string;
@@ -266,12 +267,13 @@ export class ProductsComponent implements OnInit {
     });
   }
 
+
   async updateProduct() {
     const product = this.form.value as IProducts;
     const stripe_product = {
       images: [''],
       description: product.description,
-      ...this.getProduct(),
+      ...this.getProduct(), // Returns the product object
     };
     this.loading = true;
 
@@ -287,7 +289,7 @@ export class ProductsComponent implements OnInit {
     }
 
     if (this.warehouse.selectedWarehouse$.value?.name == 'General') {
-      const prodFunction = httpsCallable(this.functions, 'stripeActionsFunc');
+      const prodFunction = httpsCallable(this.functions, 'stripeActionsFunc'); //Creates product in Strip
       const prod$ = prodFunction({
         event: 'product.update',
         product_id: this.currProd.id,
@@ -296,17 +298,18 @@ export class ProductsComponent implements OnInit {
         price_id: this.currProd.price_id,
       });
       await lastValueFrom(prod$);
-    } else {
+    } else { //Updates in Firestore
       let docRef = doc(
         this.afs,
         `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${this.currProd.id}`
       );
       try {
-        // this.currProd = product;
+        // Explicitly assigns products data to currProd
         this.currProd.price = product.price;
         this.currProd.active = product.active;
         this.currProd.name = product.name;
         this.currProd.description = product.description;
+        this.currProd.availability = product.availability || 100;
         this.currProd.stripe_metadata_brand = product.stripe_metadata_brand;
         this.currProd.stripe_metadata_type = product.stripe_metadata_type;
         this.currProd.stripe_metadata_discount =
@@ -314,6 +317,7 @@ export class ProductsComponent implements OnInit {
             ? null
             : product.stripe_metadata_discount;
         this.currProd.images = stripe_product.images;
+        
         await setDoc(docRef, { ...this.currProd });
       } catch (e) {
         console.error(e);
