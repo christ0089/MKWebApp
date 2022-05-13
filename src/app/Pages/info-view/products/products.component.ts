@@ -34,6 +34,7 @@ export interface IProducts {
   active: boolean;
   images: string[] | string;
   name: string;
+  ranking: number;
   description: string;
   availability: number;
   metadata?: Map<string, string>[];
@@ -318,7 +319,7 @@ export class ProductsComponent implements OnInit {
             : product.stripe_metadata_discount;
         this.currProd.images = stripe_product.images;
         
-        await setDoc(docRef, { ...this.currProd });
+        await setDoc(docRef, { ...this.currProd }, { merge : true});
       } catch (e) {
         console.error(e);
       }

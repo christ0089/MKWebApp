@@ -52,24 +52,7 @@
             <mat-icon>close</mat-icon>
         </button>
     </h4>
-    <mat-progress-bar  *ngIf="loading === true"  mode="indeterminate"></mat-progress-bar>
 
-    <form [formGroup]="form" *ngIf="questions != null">
-        <div class="form-row" style="
-        max-width: 400px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-      ">
-            <app-question *ngFor="let q of questions.questions" [question]="q" [form]="form" [idx]="0"
-                (fileUpload)="setImage($event)">
-            </app-question>
-            <app-warehouse></app-warehouse>
-        </div>
-        <button mat-button [disabled]="form.invalid" (click)="productFunction()">
-            Guardar
-        </button>
-    </form>
 </mat-drawer>
 
 <mat-drawer #edit_prod_drawer class="example-sidenav" mode="over" position="end" style="

@@ -256,8 +256,8 @@
           <button mat-button (click)="openOrder(order)">Ver</button>
           <button
             mat-button
-            (click)="openOrder(order)"
-            *ngIf="order.status == 'canceled'"
+            (click)="reinburse(order)"
+            *ngIf="order.status == 'canceled' && order.payment.payment_method_types[0] === 'card'"
           >
             Rembolsar
           </button>

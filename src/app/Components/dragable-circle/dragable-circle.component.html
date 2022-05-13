@@ -1,0 +1,30 @@
+<div class="example-container" cdkDropListGroup>
+  <div
+    *ngFor="let brand of brands; let i = index"
+    cdkDropList
+    [cdkDropListData]="i"
+  >
+    <div
+      cdkDrag
+      [cdkDragData]="i"
+      (cdkDragEntered)="dragEntered($event)"
+      class="example-box"
+    >
+      <img
+        [src]="brand.img_circle"
+        [ngStyle]="{
+          filter: brand.visible ? 'grayscale(0%)' : 'grayscale(100%)'
+        }"
+        style="
+          width: 120px;
+          height: 120px;
+          border-radius: 100%;
+          overflow: hidden;
+          object-fit: cover;
+        "
+        (click)="openBrand(brand)"
+      />
+      <p style="text-align: center">{{ brand.name }}</p>
+    </div>
+  </div>
+</div>

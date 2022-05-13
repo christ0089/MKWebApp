@@ -1,0 +1,163 @@
+<div style="width: 100%; display: flex; background-color: rgb(245, 245, 245)">
+  <div
+    style="
+      flex-grow: 1;
+      height: 500px;
+      padding: 5px;
+      margin-right: auto;
+      background-color: white;
+    "
+  >
+    <h3>Catalogo General</h3>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Buscar</mat-label>
+      <input matInput placeholder="Buscar" [formControl]="searchForm" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <mat-list style="overflow-y: scroll; height: 350px">
+      <mat-list-item
+        role="listitem"
+        style="margin-bottom: 10px; height: fit-content"
+        *ngFor="let product of gen_products$ | async; let i = index"
+      >
+        <div
+          style="
+            width: 75px;
+            height: 75px;
+            margin-right: 20px;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+          "
+        >
+          <img
+            style="object-fit: contain; width: 100%; height: 100%"
+            [src]="product.images[0]"
+          />
+        </div>
+        <div style="width: fit-content; margin: 10 0px; display: block">
+          <p style="font-weight: 600; margin-bottom: 5px">
+            {{ product.name }}
+          </p>
+          <span
+            style="
+              font-weight: 300;
+              font-size: medium;
+              margin-left: auto;
+              margin-right: auto;
+            "
+            [style.text-decoration-line]="
+              product?.stripe_metadata_discount ? 'line-through' : ' '
+            "
+            >{{ product.price / 100 | currency }}</span
+          >
+          <span
+            style="font-weight: 300; font-size: medium; margin-right: auto"
+            *ngIf="product.stripe_metadata_discount"
+          >
+            {{ product.stripe_metadata_discount | currency }}</span
+          >
+        </div>
+        <span class="example-spacer"></span>
+        <button
+          mat-button
+          style="color: #f70486; margin-left: 10px"
+          *ngIf="this.selectedWarehouse?.name !== 'General'"
+          (click)="addProduct(product)"
+        >
+          Agregar
+        </button>
+
+        <button
+          mat-button
+          style="color: #8a04f7; margin-left: 10px"
+          *ngIf="this.selectedWarehouse?.name === 'General'"
+          (click)="editProduct(product)"
+        >
+          Editar
+        </button>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div
+    style="width: 50%; height: 500px; padding: 5px; background-color: white"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+    *ngIf="this.selectedWarehouse?.name !== 'General'"
+  >
+    <h3 *ngIf="this.selectedWarehouse">
+      Catalogo:
+      <span style="color: #0475f7">{{ this.selectedWarehouse?.name }}</span>
+    </h3>
+
+    <button
+      mat-button
+      style="color: #0475f7; margin-left: 10px; width: 100%"
+      (click)="save()"
+    >
+      Guardar
+    </button>
+    <mat-list style="overflow-y: scroll; height: 350px">
+      <mat-list-item
+        role="listitem"
+        *ngFor="let product of all_products$ | async; let i = index"
+        style="margin-bottom: 10px; height: fit-content"
+        cdkDrag
+      >
+        <div
+          style="
+            width: 75px;
+            height: 75px;
+            margin-right: 20px;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+          "
+        >
+          <img
+            style="object-fit: contain; width: 100%; height: 100%"
+            [src]="product.images[0]"
+          />
+        </div>
+        <div style="width: fit-content; margin: 10 0px; display: block">
+          <p style="font-weight: 600; margin-bottom: 5px">
+            {{ product.name }}
+          </p>
+          <span
+            style="
+              font-weight: 300;
+              font-size: medium;
+              margin-left: auto;
+              margin-right: auto;
+            "
+            [style.text-decoration-line]="
+              product?.stripe_metadata_discount ? 'line-through' : ' '
+            "
+            >{{ product.price / 100 | currency }}</span
+          >
+          <span
+            style="font-weight: 300; font-size: medium; margin-right: auto"
+            *ngIf="product.stripe_metadata_discount"
+          >
+            {{ product.stripe_metadata_discount | currency }}</span
+          >
+        </div>
+        <span class="example-spacer"></span>
+        <button
+          mat-button
+          style="color: #8a04f7; margin-left: 10px"
+          (click)="editProduct(product)"
+        >
+          Editar
+        </button>
+        <button
+          mat-button
+          style="color: #f70404; margin-left: 10px"
+          (click)="removeProduct(product)"
+        >
+          Remover
+        </button>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>

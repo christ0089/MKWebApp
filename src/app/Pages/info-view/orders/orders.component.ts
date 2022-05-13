@@ -35,6 +35,7 @@ import { genericConverter } from '../products/products.component';
 
 import * as json2csv from 'json2csv';
 import { DomSanitizer } from '@angular/platform-browser';
+import { httpsCallable } from '@firebase/functions';
 
 export interface IRatings {
   question: string;
@@ -58,6 +59,7 @@ export interface IOrder {
   status: OrderStatus;
   coupons?: ICoupon;
   ratings?: IRatings[];
+  reinbured?: boolean
 }
 
 export interface FlattenedOrder {
@@ -122,8 +124,8 @@ export class OrdersComponent implements OnInit {
   constructor(
     private readonly afs: Firestore,
     private readonly auth: AuthService,
-    private readonly functions: Functions,
     private readonly domSanitizer: DomSanitizer,
+    private readonly functions: Functions,
     private readonly warehouse: WarehouseService
   ) {
     const today = new Date();
@@ -332,7 +334,7 @@ export class OrdersComponent implements OnInit {
       order.payment_meta_data.items.forEach((element: any) => {
         try {
           flatOrder.push({
-            price: order.payment.amount,
+            price: order.payment.amount / 100,
             orderId: order.orderId,
             driver_name: order.driver !== undefined  ||  order.driver !== null  ? order.driver.name : '',
             customer_name: order.shipping.name !== undefined ||  order.shipping.name !== null  ? order.shipping.name : '',
@@ -368,6 +370,13 @@ export class OrdersComponent implements OnInit {
 
   changedTab(event: MatTabChangeEvent) {
     this.selectedType.next(this.status[event.index] as OrderStatus);
+  }
+
+  reinburse(order: IOrder) {
+    const prodFunction = httpsCallable(this.functions, 'stripeActionsFunc'); //Creates product in Strip
+    const prod$ = prodFunction({
+      event: 'product.update',
+    });
   }
 
   openOrder(order: IOrder) {

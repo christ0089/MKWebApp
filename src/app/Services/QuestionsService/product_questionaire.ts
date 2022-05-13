@@ -2,10 +2,9 @@ import { Firestore, GeoPoint, Timestamp } from '@firebase/firestore';
 import { DatePickerQuestion } from 'src/app/Models/Forms/datePicker';
 import { DropdownQuestion } from 'src/app/Models/Forms/dropdown';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
-import { RadioQuestion } from 'src/app/Models/Forms/radio';
 import { TextboxQuestion } from 'src/app/Models/Forms/textbox';
 import { UploadFileQuestion } from 'src/app/Models/Forms/upload_file';
-import { IQuestion } from 'src/app/Models/question';
+import { IProducts } from 'src/app/Pages/info-view/products/products.component';
 
 export const product_questionaire = () => {
   return {
@@ -119,6 +118,20 @@ export const product_questionaire = () => {
   };
 };
 
+export interface IAds {
+  id: string;
+  title: string;
+  expirationDate?: Timestamp;
+  subtitle?: string;
+  img? : string;
+  content_url: string;
+  description?: string;
+  products: IProducts[];
+  warehouse_id?: string; 
+  type?: 'redirect' |  'coupon' | 'location' | 'video' | "img";
+}
+
+
 
 export const ads_questionaire = () => {
   return {
@@ -154,22 +167,46 @@ export const ads_questionaire = () => {
         verfication: false,
       }),
       new DropdownQuestion({
-        key: 'active',
-        label: 'Disponible',
+        key: 'buildActive',
+        label: 'Build Active',
         value: true,
         required: true,
         order: 0,
         options: [
           {
             key: true,
-            value: 'Disponible',
+            value: 'True',
           },
           {
             key: false,
-            value: 'Desactivado',
+            value: 'False',
           },
         ],
         verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'visible',
+        label: 'Visible',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: true,
+            value: 'True',
+          },
+          {
+            key: false,
+            value: 'False',
+          },
+        ],
+        verfication: false,
+      }),
+      new DatePickerQuestion({
+        key: 'expirationDate',
+        label: 'Fecha de Expiracion',
+        value: new Date(Date.now()),
+        required: true,
       }),
       new DropdownQuestion({
         key: 'type',
@@ -178,18 +215,6 @@ export const ads_questionaire = () => {
         required: true,
         order: 0,
         options: [
-          {
-            key: 'redirect',
-            value: 'Redirigir',
-          },
-          {
-            key: 'coupon',
-            value: 'Coupon',
-          },
-          {
-            key: 'location',
-            value: 'Ubicacion',
-          },
           {
             key: 'video',
             value: 'Video',
@@ -213,7 +238,17 @@ export const brand_questionaire = () => {
     questions: [
       new UploadFileQuestion({
         key: 'img',
-        label: 'Image',
+        label: 'Imagen Fila',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [{ key: 'uploaded', value: false }],
+        required: true,
+        verfication: false,
+      }),
+      new UploadFileQuestion({
+        key: 'img_circle',
+        label: 'Imagen Circulo',
         value: '',
         disabled: false,
         order: 0,
@@ -538,6 +573,8 @@ export const notification_question = () => {
     ],
   };
 };
+
+
 
 export interface Warehouse {
   name: string;
