@@ -1,9 +1,8 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { Firestore } from '@angular/fire/firestore';
-import { deleteDoc, doc, setDoc } from '@firebase/firestore';
 import { IBrands } from 'src/app/Models/DataModels';
 import { IWarehouse } from 'src/app/Pages/info-view/products/products.component';
+import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 
 @Component({
@@ -20,14 +19,16 @@ export class DragableListComponent implements OnInit {
     IBrands[]
   >();
   selectedWarehouse!: IWarehouse;
-
+  userRole: boolean = false;
+  
   constructor(
-    private readonly afs: Firestore,
-    private readonly warehouse: WarehouseService
+    private readonly warehouse: WarehouseService,
+    private readonly user: AuthService,
   ) {
     this.warehouse.selectedWarehouse$.subscribe(() => {
       this.selectedWarehouse;
     });
+    this.userRole = this.user.isSuperAdmin;
   }
 
   ngOnInit(): void {}

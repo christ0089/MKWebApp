@@ -5,8 +5,6 @@ import { FormControl } from '@angular/forms';
 import {
   collection,
   doc,
-  getDocs,
-  orderBy,
   query,
   setDoc,
 } from '@firebase/firestore';
@@ -33,6 +31,7 @@ export class DragrableProductListComponent implements OnInit {
 
   searchForm = new FormControl();
   selectedWarehouse!: IWarehouse | null;
+  userRole: boolean = false;
 
   constructor(
     private readonly afs: Firestore,
@@ -45,6 +44,8 @@ export class DragrableProductListComponent implements OnInit {
       }
       this.selectedWarehouse = warehouse;
     });
+
+
 
     this.brand.brand$
       .pipe(

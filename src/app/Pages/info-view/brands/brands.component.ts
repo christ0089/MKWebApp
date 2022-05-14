@@ -20,7 +20,6 @@ import { BrandService } from 'src/app/Services/brand.service';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { StorageService } from 'src/app/Services/storage.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
-import { threadId } from 'worker_threads';
 import { genericConverter, IWarehouse } from '../products/products.component';
 
 @Component({
@@ -89,7 +88,9 @@ export class BrandsComponent implements OnInit {
               } else {
                 brand.ranking = brand.ranking || 0;
                 categories[brand.category].push(brand);
-                categories[brand.category].sort((a,b) => a.ranking - b.ranking)
+                categories[brand.category].sort(
+                  (a, b) => a.ranking - b.ranking
+                );
               }
             });
 
@@ -180,14 +181,13 @@ export class BrandsComponent implements OnInit {
         );
       } catch (e) {
         alert(e);
-        return null
+        return null;
       }
     });
 
     if (promises) {
-      Promise.all(promises)
+      Promise.all(promises);
     }
-
   }
 
   async deleteBrand(brand: IBrands) {
@@ -205,8 +205,9 @@ export class BrandsComponent implements OnInit {
   }
 
   openBrandProd(brand: IBrands) {
-    this.prodDrawer.toggle();
+    this.brands.prod$.next(null);
     this.brands.brand$.next(brand);
+    this.prodDrawer.toggle();
   }
 
   async searchProd(search: string) {

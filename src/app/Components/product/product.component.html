@@ -8,7 +8,6 @@
     class="form-row"
     style="
       max-width: 400px;
-      display: flex;
       height: fit-content;
       flex-flow: wrap;
       margin-left: auto;
@@ -23,7 +22,12 @@
       (fileUpload)="setImage($event)"
     >
     </app-question>
-    <button mat-button [disabled]="form.invalid" (click)="productFunction()">
+    <button
+      mat-button
+      [disabled]="form.invalid"
+      class="example-full-width"
+      (click)="productFunction()"
+    >
       Guardar
     </button>
   </div>

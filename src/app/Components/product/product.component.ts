@@ -4,9 +4,17 @@ import { Functions } from '@angular/fire/functions';
 import { FormGroup } from '@angular/forms';
 import { doc, setDoc } from '@firebase/firestore';
 import { httpsCallable } from '@firebase/functions';
-import { BehaviorSubject, lastValueFrom, Observable } from 'rxjs';
+import {
+  combineLatest,
+  EMPTY,
+} from 'rxjs';
+import { IBrands } from 'src/app/Models/DataModels';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
-import { IProducts, IWarehouse } from 'src/app/Pages/info-view/products/products.component';
+import {
+  IProducts,
+  IWarehouse,
+} from 'src/app/Pages/info-view/products/products.component';
+import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { BrandService } from 'src/app/Services/brand.service';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { StorageService } from 'src/app/Services/storage.service';
@@ -15,7 +23,7 @@ import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.se
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
-  styleUrls: ['./product.component.sass']
+  styleUrls: ['./product.component.sass'],
 })
 export class ProductComponent implements OnInit {
   selectedWarehouse: IWarehouse | null = null;
@@ -31,27 +39,37 @@ export class ProductComponent implements OnInit {
     private readonly storage: StorageService,
     private readonly warehouse: WarehouseService,
     private readonly brandService: BrandService,
+    private readonly auth: AuthService,
     private qcs: QuestionControlService
-  ) { 
-    this.brandService.prod$.subscribe((prod) => {
+  ) {
+    combineLatest([
+      this.brandService.prod$,
+      this.brandService.brand$,
+      this.warehouse.selectedWarehouse$,
+      this.auth.userData$
+    ]).subscribe(([prod, brand, selectedWarehouse]) => {
       if (!prod) {
+        if (this.auth.isSuperAdmin === true && selectedWarehouse?.name === 'General') {
+          this.newQuestions(brand);
+        } else {
+          this.questions = null;
+        }
         return;
       }
       this.editQuestions(prod);
-    })
+    });
   }
 
-  ngOnInit(): void {
-    this.questions = this.qcs.product_questionaire();
-    this.form = this.qcs.toFormGroup(this.questions.questions);
-  }
+  ngOnInit(): void {}
 
   setImage(fileEvent: File) {
     this.file = fileEvent;
   }
 
   editQuestions(product: IProducts) {
-    this.form.enable();
+    if (this.form) {
+      this.form.enable();
+    } 
     this.questions = this.qcs.product_questionaire();
     this.currProd = product;
     this.questions.questions[0].options[0].value = true;
@@ -62,12 +80,17 @@ export class ProductComponent implements OnInit {
     this.form = this.qcs.toFormGroup(question);
   }
 
-  newQuestions() {
-    this.form.enable();
+  newQuestions(brand: IBrands | null) {
+    if (this.form) {
+      this.form.enable();
+    }
     this.questions = this.qcs.product_questionaire();
+    this.questions.questions[7].value = brand?.type || '';
+    this.questions.questions[8].value = brand?.brand || '';
+
+    console.log(this.questions);
     this.form = this.qcs.toFormGroup(this.questions.questions);
   }
-
 
   getProduct() {
     const product = this.form.value as IProducts;
@@ -143,7 +166,10 @@ export class ProductComponent implements OnInit {
     }
 
     if (this.warehouse.selectedWarehouse$.value?.name == 'General') {
-      const prodFunction = httpsCallable<any>(this.functions, 'stripeActionsFunc'); //Creates product in Strip
+      const prodFunction = httpsCallable<any>(
+        this.functions,
+        'stripeActionsFunc'
+      ); //Creates product in Strip
       const prod$ = prodFunction({
         event: 'product.update',
         product_id: this.currProd.id,
@@ -151,8 +177,9 @@ export class ProductComponent implements OnInit {
         price: product.price,
         price_id: this.currProd.price_id,
       });
-      await prod$
-    } else { //Updates in Firestore
+      await prod$;
+    } else {
+      //Updates in Firestore
       let docRef = doc(
         this.afs,
         `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${this.currProd.id}`
@@ -171,8 +198,8 @@ export class ProductComponent implements OnInit {
             ? null
             : product.stripe_metadata_discount;
         this.currProd.images = stripe_product.images;
-        
-        await setDoc(docRef, { ...this.currProd }, { merge : true});
+
+        await setDoc(docRef, { ...this.currProd }, { merge: true });
       } catch (e) {
         console.error(e);
       }
@@ -180,5 +207,4 @@ export class ProductComponent implements OnInit {
     this.file = null;
     this.loading = false;
   }
-
 }
