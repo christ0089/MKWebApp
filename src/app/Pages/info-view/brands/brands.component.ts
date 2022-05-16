@@ -88,13 +88,13 @@ export class BrandsComponent implements OnInit {
               } else {
                 brand.ranking = brand.ranking || 0;
                 categories[brand.category].push(brand);
-                categories[brand.category].sort(
-                  (a, b) => a.ranking - b.ranking
-                );
+                
               }
             });
-
-            return categories;
+            Object.keys(categories).forEach(element => {
+              categories[element] = categories[element].sort((a,b) => a.ranking - b.ranking)
+            })
+            return categories
           })
         );
       })

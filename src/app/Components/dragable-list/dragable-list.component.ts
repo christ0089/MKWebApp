@@ -43,6 +43,7 @@ export class DragableListComponent implements OnInit {
     this.toggleEdit.emit(brand);
   }
 
+
   deleteBrand(brand: IBrands) {
     this.toggleDel.emit(brand);
   }

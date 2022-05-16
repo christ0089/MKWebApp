@@ -65,14 +65,15 @@
       mat-button
       (click)="editBrand(brand)"
       style="color: #f70486; margin-left: 10px"
-      *ngIf="userRole === true" 
     >
-    
       Editar
     </button>
     <button
       mat-button
-      *ngIf="userRole === false || (userRole === true && selectedWarehouse?.name !== 'General')"
+      *ngIf="
+        userRole === true ||
+        (userRole === false && selectedWarehouse?.name !== 'General')
+      "
       (click)="deleteBrand(brand)"
       style="color: #f70404"
     >
