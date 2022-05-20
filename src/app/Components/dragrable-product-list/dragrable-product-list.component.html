@@ -85,7 +85,6 @@
     style="width: 50%; height: 500px; padding: 5px; background-color: white"
     cdkDropList
     (cdkDropListDropped)="drop($event)"
-    *ngIf="this.selectedWarehouse?.name !== 'General'"
   >
     <h3 *ngIf="this.selectedWarehouse">
       Catalogo:

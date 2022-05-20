@@ -6,6 +6,68 @@ import { TextboxQuestion } from 'src/app/Models/Forms/textbox';
 import { UploadFileQuestion } from 'src/app/Models/Forms/upload_file';
 import { IProducts } from 'src/app/Pages/info-view/products/products.component';
 
+export interface IAds {
+  id: string;
+  title: string;
+  expirationDate?: any;
+  subtitle?: string;
+  img?: string;
+  content_url: string;
+  description?: string;
+  products: IProducts[];
+  warehouse_id?: string;
+  type?: 'redirect' | 'coupon' | 'location' | 'video' | 'img';
+}
+
+export interface ICoupon {
+  expirationDate: any;
+  active: boolean;
+  code: string;
+  requiered_products: boolean;
+  requiered_product_quantity: number;
+  requiered_min_purchase: boolean;
+  min_purchase: number;
+  key: string[];
+  type: 'brands' | 'types' | 'products';
+  discount_type: 'fixed' | 'percent';
+  coupon_type: 'user' | 'store' | 'referral';
+  discount: number;
+  id: string;
+}
+
+export type NotificationIssueStatus =
+  | 'testing'
+  | 'tested'
+  | 'approved'
+  | 'delivered';
+
+export interface INotification {
+  id?: string;
+  title: string;
+  message: string;
+  type: 'user' | 'region' | 'general';
+  createdAt: Timestamp;
+  issuer: string;
+  approver?: string;
+  issue_status: NotificationIssueStatus;
+  warehouse_id: string;
+  status: 'delivered' | 'pending' | 'processing';
+}
+
+export interface IQuestions {
+  title: string;
+  subtitle: string | null;
+  questions: QuestionBase<any>[];
+  action: string;
+}
+
+export interface Warehouse {
+  name: string;
+  cities: string[];
+  alchohol_time: string[];
+  warehouse_centers: GeoPoint[];
+}
+
 export const product_questionaire = () => {
   return {
     title: 'Agregar Producto',
@@ -118,21 +180,6 @@ export const product_questionaire = () => {
   };
 };
 
-export interface IAds {
-  id: string;
-  title: string;
-  expirationDate?: Timestamp;
-  subtitle?: string;
-  img? : string;
-  content_url: string;
-  description?: string;
-  products: IProducts[];
-  warehouse_id?: string; 
-  type?: 'redirect' |  'coupon' | 'location' | 'video' | "img";
-}
-
-
-
 export const ads_questionaire = () => {
   return {
     title: 'Agregar Anuncio',
@@ -230,6 +277,60 @@ export const ads_questionaire = () => {
   };
 };
 
+export const recomendationList = () => {
+  return {
+    title: 'Agregar Producto',
+    subtitle: null,
+    questions: [
+      new UploadFileQuestion({
+        key: 'img',
+        label: 'Imagen Fila',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [{ key: 'uploaded', value: false }],
+        required: true,
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'name',
+        label: 'Name',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'description',
+        label: 'Description',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'buildActive',
+        label: 'Build Active',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: true,
+            value: 'True',
+          },
+          {
+            key: false,
+            value: 'False',
+          },
+        ],
+        verfication: false,
+      }),
+    ],
+  };
+};
 
 export const brand_questionaire = () => {
   return {
@@ -332,21 +433,6 @@ export const brand_questionaire = () => {
   };
 };
 
-export interface ICoupon {
-  expirationDate: any;
-  active: boolean;
-  code: string;
-  requiered_products: boolean;
-  requiered_product_quantity: number;
-  requiered_min_purchase: boolean;
-  min_purchase: number;
-  key: string[];
-  type: 'brands' | 'types' | 'products';
-  discount_type: 'fixed' | 'percent';
-  coupon_type: 'user' | 'store' | 'referral';
-  discount: number;
-  id: string;
-}
 export const coupon_questionaire = () => {
   return {
     title: 'Agregar Producto',
@@ -526,32 +612,6 @@ export const coupon_questionaire = () => {
   };
 };
 
-export type NotificationIssueStatus =
-  | 'testing'
-  | 'tested'
-  | 'approved'
-  | 'delivered';
-
-export interface INotification {
-  id?: string;
-  title: string;
-  message: string;
-  type: 'user' | 'region' | 'general';
-  createdAt: Timestamp;
-  issuer: string;
-  approver?: string;
-  issue_status: NotificationIssueStatus;
-  warehouse_id: string;
-  status: 'delivered' | 'pending' | 'processing';
-}
-
-export interface IQuestions {
-  title: string;
-  subtitle: string | null;
-  questions: QuestionBase<any>[];
-  action: string;
-}
-
 export const notification_question = () => {
   return {
     title: 'Crear Notificación',
@@ -573,12 +633,3 @@ export const notification_question = () => {
     ],
   };
 };
-
-
-
-export interface Warehouse {
-  name: string;
-  cities: string[];
-  alchohol_time: string[];
-  warehouse_centers: GeoPoint[];
-}

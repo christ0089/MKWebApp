@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { Functions } from '@angular/fire/functions';
 import { FormGroup } from '@angular/forms';
-import { doc, setDoc } from '@firebase/firestore';
+import { doc, QueryConstraint, setDoc } from '@firebase/firestore';
 import { httpsCallable } from '@firebase/functions';
 import {
   combineLatest,
@@ -26,12 +26,14 @@ import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.se
   styleUrls: ['./product.component.sass'],
 })
 export class ProductComponent implements OnInit {
+  
   selectedWarehouse: IWarehouse | null = null;
   questions: any = null;
   form!: FormGroup;
   file!: File | null;
   currProd!: IProducts;
   loading = false;
+  event = "product.update"
 
   constructor(
     private readonly afs: Firestore,
@@ -51,6 +53,7 @@ export class ProductComponent implements OnInit {
       if (!prod) {
         if (this.auth.isSuperAdmin === true && selectedWarehouse?.name === 'General') {
           this.newQuestions(brand);
+          this.event = "product.create"
         } else {
           this.questions = null;
         }
@@ -118,7 +121,7 @@ export class ProductComponent implements OnInit {
     return stripe_product;
   }
 
-  async productFunction(event = 'product.create') {
+  async newProduct() {
     const stripe_product = this.getProduct();
     const product = this.form.value as IProducts;
     this.form.disable();
@@ -133,7 +136,7 @@ export class ProductComponent implements OnInit {
     const prodFunction = httpsCallable(this.functions, 'stripeActionsFunc');
 
     const prod$ = prodFunction({
-      event,
+      event: this.event,
       product: stripe_product,
       price: product.price,
       images: [downloadUrl],
@@ -143,6 +146,14 @@ export class ProductComponent implements OnInit {
       this.loading = false;
       this.file = null;
     });
+  }
+
+  productFunction() {
+    if (this.event === "product.update") {
+      this.updateProduct()
+    } else {
+      this.newProduct()
+    }
   }
 
   async updateProduct() {

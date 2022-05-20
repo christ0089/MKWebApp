@@ -16,8 +16,8 @@
   Agregar Anuncio
 </button>
 
-<mat-tab-group style="width: 100%">
-  <mat-tab label="Expirados"></mat-tab>
+<mat-tab-group style="width: 100%" (selectedTabChange)="changedTab($event)">
+  <mat-tab label="Expirados" ></mat-tab>
   <mat-tab label="Activos"></mat-tab>
 </mat-tab-group>
 
@@ -33,52 +33,18 @@
 >
   <div
     style="width: fit-content; height: fit-content; display: block"
-    *ngFor="let ads of data$ | async; let i = index"
+    *ngIf="data$ | async; let ads"
   >
-    <div
-      style="
-        height: 20px;
-        margin-top: auto;
-        margin-bottom: auto;
-        margin-right: 10px;
-      "
-    >
-      <p style="height: 20px; color: lightslategrey">{{ i + 1 }}</p>
-    </div>
-    <div
-      style="
-        width: 350px;
-        height: 200px;
-        margin-right: 20px;
-        background-color: white;
-        border-radius: 5px;
-        overflow: hidden;
-      "
-    >
-      <img
-        style="object-fit: cover; width: 100%; height: 100%"
-        [src]="ads.content_url"
-      />
-    </div>
-    <div style="width: fit-content; margin: 10 10px; display: block">
-      <p style="font-weight: 600; margin-bottom: 5px">{{ ads.title }}</p>
-    </div>
-    <span class="example-spacer"></span>
-
-    <button mat-button (click)="editQuestions(ads)" style="color: #f70486; width: 100%;">
-      Editar
-    </button>
-
-    <button
-      mat-button
-      *ngIf="selectedWarehouse?.name !== 'General'"
-      (click)="deleteObj(ads)"
-      style="color: #f70404;  width: 100%;"
-    >
-      Borrar
-    </button>
+    <app-dragable-horizontal-list
+      [elements]="ads"
+      (openBrandProd)="listProds($event)"
+      (toggleEdit)="editQuestions($event)"
+      (orderRanking)="storeOrder($event)"
+    ></app-dragable-horizontal-list>
   </div>
 </div>
+
+<!--New Ad Drawer -->
 <mat-drawer #new_prod_drawer class="example-sidenav" mode="over" position="end">
   <h4>
     Agregar Anuncio
@@ -176,4 +142,30 @@
       Guardar
     </button>
   </form>
+</mat-drawer>
+
+<mat-drawer
+  #list_drawer
+  class="example-sidenav"
+  mode="over"
+  position="end"
+  style="margin-bottom: 40px; overflow-y: scroll"
+>
+<h4>
+  Agregar Anuncio
+  <button
+    mat-icon-button
+    style="float: right"
+    (click)="list_drawer.toggle()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</h4>
+  <div style="width: 800px">
+    <app-dragrable-product-list
+      (saveProdEvent)="saveProd($event)"
+      (deleteProdEvent)="deleteProd($event)"
+      [gen_path]="prod_path"
+    ></app-dragrable-product-list>
+  </div>
 </mat-drawer>

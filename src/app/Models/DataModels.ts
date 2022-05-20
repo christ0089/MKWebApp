@@ -15,3 +15,10 @@ export interface IBrands {
 export interface ICategory {
   [key: string]: IBrands[];
 }
+
+
+export interface IRecommendedList {
+  id: string,
+  name: string,
+  description: string,
+}

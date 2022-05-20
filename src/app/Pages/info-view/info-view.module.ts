@@ -40,6 +40,7 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { AdsComponent } from './ads/ads.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OrdersComponent } from './orders/orders.component';
+import { RecomendationListsComponent } from './recomendation-lists/recomendation-lists.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { OrdersComponent } from './orders/orders.component';
     WarehouseComponent,
     AdsComponent,
     NotificationsComponent,
+    RecomendationListsComponent,
   ],
   imports: [
     CommonModule,

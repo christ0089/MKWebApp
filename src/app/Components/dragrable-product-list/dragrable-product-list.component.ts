@@ -6,10 +6,18 @@ import {
   collection,
   doc,
   query,
+  QueryConstraint,
   setDoc,
 } from '@firebase/firestore';
 import { collectionData } from 'rxfire/firestore';
-import { BehaviorSubject, filter, firstValueFrom, of, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  filter,
+  firstValueFrom,
+  of,
+  switchMap,
+} from 'rxjs';
 import { IBrands } from 'src/app/Models/DataModels';
 import {
   genericConverter,
@@ -25,9 +33,14 @@ import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.se
   styleUrls: ['./dragrable-product-list.component.sass'],
 })
 export class DragrableProductListComponent implements OnInit {
+
+  @Input() gen_path: string = "stripe_products";
   all_products$ = new BehaviorSubject<IProducts[]>([]);
   gen_products$ = new BehaviorSubject<IProducts[]>([]);
+  del_prods = [];
   @Output() editProdEvent = new EventEmitter<boolean>();
+  @Output() saveProdEvent = new EventEmitter<IProducts[]>();
+  @Output() deleteProdEvent = new EventEmitter<IProducts>();
 
   searchForm = new FormControl();
   selectedWarehouse!: IWarehouse | null;
@@ -45,49 +58,23 @@ export class DragrableProductListComponent implements OnInit {
       this.selectedWarehouse = warehouse;
     });
 
-
-
-    this.brand.brand$
+    combineLatest([this.brand.brand$, this.brand.brand_filters$])
       .pipe(
-        switchMap((brand) => {
-          console.log(brand);
-          if (!brand) {
-            return of([]);
-          }
-          let docRef = collection(
-            this.afs,
-            `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products`
-          ).withConverter<IProducts>(genericConverter<IProducts>());
-
-          console.log(
-            `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products`
+        switchMap(([_,filters]) => {
+          return this.loadProducts(
+            `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products`,
+            filters[0]
           );
-
-          const q = query(
-            docRef,
-            where('stripe_metadata_brand', '==', brand.brand),
-            where('stripe_metadata_type', '==', brand.type)
-          );
-
-          return collectionData<IProducts>(q, {
-            idField: 'id',
-          });
         })
       )
       .subscribe((prods) => {
-        prods = prods
-          .map((p) => {
-            p.ranking = p.ranking || 0;
-            return p;
-          })
-          .sort((a, b) => a.ranking - b.ranking);
         this.all_products$.next(prods);
       });
 
-    this.brand.brand$
+    combineLatest([this.brand.brand$, this.brand.brand_filters$])
       .pipe(
-        switchMap((brand: IBrands | null) => {
-          return this.loadProducts(brand);
+        switchMap(([_, filters]) => {
+          return this.loadProducts(`${this.gen_path}`, filters[1]);
         })
       )
       .subscribe((prods) => {
@@ -101,20 +88,14 @@ export class DragrableProductListComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  loadProducts(brand: IBrands | null) {
-    if (!brand) {
-      return of([]);
-    }
-    let docRef = collection(
-      this.afs,
-      `stripe_products`
-    ).withConverter<IProducts>(genericConverter<IProducts>());
-
-    const q = query(
-      docRef,
-      where('stripe_metadata_brand', '==', brand.brand),
-      where('stripe_metadata_type', '==', brand.type)
+  loadProducts(
+    path: string,
+    filters: QueryConstraint[] = []
+  ) {
+    let docRef = collection(this.afs, path).withConverter<IProducts>(
+      genericConverter<IProducts>()
     );
+    const q = query(docRef, ...filters);
 
     return collectionData<IProducts>(q, {
       idField: 'id',
@@ -122,13 +103,7 @@ export class DragrableProductListComponent implements OnInit {
   }
 
   save() {
-    this.all_products$.value.forEach((product, i) => {
-      let docRef = doc(
-        this.afs,
-        `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${product.id}`
-      );
-      setDoc(docRef, { ranking: i }, { merge: true });
-    });
+    this.saveProdEvent.emit(this.all_products$.value)
   }
 
   addProduct(product: IProducts) {
@@ -156,15 +131,16 @@ export class DragrableProductListComponent implements OnInit {
       prods.splice(exists, 1);
       this.all_products$.next(prods);
     }
+
+    this.deleteProdEvent.emit(product);
   }
 
   async searchProd(search: string) {
     const prodName: string = search.toLowerCase();
     if (prodName == '' || this.gen_products$.value == []) {
       const prods = await firstValueFrom(
-        this.loadProducts(this.brand.brand$.value)
+        this.loadProducts(`${this.gen_path}`, this.brand.brand_filters$.value[0])
       );
-      console.log(prods);
       this.gen_products$.next(prods);
     } else {
       const prods = this.gen_products$.value.filter((v) => {
@@ -178,7 +154,7 @@ export class DragrableProductListComponent implements OnInit {
     }
   }
 
-  drop(event: CdkDragDrop<IBrands[]>) {
+  drop(event: CdkDragDrop<IProducts[]>) {
     moveItemInArray(
       this.all_products$.value,
       event.previousIndex,

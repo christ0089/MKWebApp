@@ -43,6 +43,18 @@ export interface IProducts {
   stripe_metadata_brand: string;
   stripe_metadata_discount?: number | string | null;
   stripe_metadata_status?: IProductStatus;
+  tags: {
+    [key :string ]: {
+      ranking : number
+      id: string
+    }
+  }
+  list_tags: {
+    [key :string ]: {
+      ranking : number
+      id: string
+    }
+  }
   price_id: string;
   price: number;
 }

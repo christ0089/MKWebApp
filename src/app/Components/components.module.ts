@@ -19,6 +19,7 @@ import { DragableCircleComponent } from './dragable-circle/dragable-circle.compo
 import { DragrableProductListComponent } from './dragrable-product-list/dragrable-product-list.component';
 import { ProductComponent } from './product/product.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { DragableHorizontalListComponent } from './dragable-horizontal-list/dragable-horizontal-list.component';
 
 @NgModule({
   imports: [
@@ -45,6 +46,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     DragableCircleComponent,
     DragrableProductListComponent,
     ProductComponent,
+    DragableHorizontalListComponent,
   ],
   providers: [],
   exports: [
@@ -53,6 +55,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     DragableListComponent,
     DragableCircleComponent,
     DragrableProductListComponent,
+    DragableHorizontalListComponent,
     ProductComponent,
   ],
 })

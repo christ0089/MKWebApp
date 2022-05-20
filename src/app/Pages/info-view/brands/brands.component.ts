@@ -20,7 +20,11 @@ import { BrandService } from 'src/app/Services/brand.service';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { StorageService } from 'src/app/Services/storage.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
-import { genericConverter, IWarehouse } from '../products/products.component';
+import {
+  genericConverter,
+  IProducts,
+  IWarehouse,
+} from '../products/products.component';
 
 @Component({
   selector: 'app-brands',
@@ -88,13 +92,14 @@ export class BrandsComponent implements OnInit {
               } else {
                 brand.ranking = brand.ranking || 0;
                 categories[brand.category].push(brand);
-                
               }
             });
-            Object.keys(categories).forEach(element => {
-              categories[element] = categories[element].sort((a,b) => a.ranking - b.ranking)
-            })
-            return categories
+            Object.keys(categories).forEach((element) => {
+              categories[element] = categories[element].sort(
+                (a, b) => a.ranking - b.ranking
+              );
+            });
+            return categories;
           })
         );
       })
@@ -170,6 +175,10 @@ export class BrandsComponent implements OnInit {
         this.afs,
         `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/brands/${element.id}`
       );
+      if (this.warehouse.selectedWarehouse$.value?.name === 'General') {
+        docRef = doc(this.afs, `brands/${element.id}`);
+      }
+
       try {
         this.file = null;
         return setDoc(
@@ -190,11 +199,14 @@ export class BrandsComponent implements OnInit {
     }
   }
 
-  async deleteBrand(brand: IBrands) {
+  async deleteBrand(brand: IBrands | IProducts) {
     let docRef = doc(
       this.afs,
       `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/brands/${brand.id}`
     );
+    if (this.warehouse.selectedWarehouse$.value?.name === 'General') {
+      docRef = doc(this.afs, `brands/${brand.id}`);
+    }
     await deleteDoc(docRef).catch((e) => {
       console.log(e);
     });
@@ -206,7 +218,19 @@ export class BrandsComponent implements OnInit {
 
   openBrandProd(brand: IBrands) {
     this.brands.prod$.next(null);
-    this.brands.brand$.next(brand);
+    this.brands.brand$.next(brand as IBrands);
+    this.brands.brand_filters$.next([
+      [
+        where('stripe_metadata_brand', '==', brand.brand),
+        where('stripe_metadata_type', '==', brand.type),
+        orderBy("ranking")
+      ],
+      [
+        where('stripe_metadata_brand', '==', brand.brand),
+        where('stripe_metadata_type', '==', brand.type),
+        orderBy("ranking")
+      ],
+    ]);
     this.prodDrawer.toggle();
   }
 
@@ -226,5 +250,16 @@ export class BrandsComponent implements OnInit {
       });
       this.brands$.next(brandData);
     }
+  }
+
+  saveProd(prods: IProducts[]) {
+    prods.forEach((product, i) => {
+      let docRef = doc(
+        this.afs,
+        `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${product.id}`
+      );
+      product.ranking = i
+      setDoc(docRef, product, { merge: true });
+    });
   }
 }

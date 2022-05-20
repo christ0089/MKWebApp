@@ -1,0 +1,45 @@
+<div class="example-container" cdkDropListGroup>
+  <button
+    mat-button
+    (click)="storeOrder()"
+    style="color: #0482f7; margin-left: 10px"
+  >
+    Guardar
+  </button>
+  <div
+    *ngFor="let element of elements; let i = index"
+    cdkDropList
+    [cdkDropListData]="i"
+  >
+    <div
+      cdkDrag
+      [cdkDragData]="i"
+      (cdkDragEntered)="dragEntered($event)"
+      class="example-box"
+    >
+      <img
+        *ngIf="element.content_url"
+        [src]="element.content_url"
+        style="
+          width: 300px;
+          height: 200px;
+          border-radius: 20px;
+          overflow: hidden;
+          object-fit: cover;
+        "
+        (click)="open(element)"
+      />
+      <p style="text-align: center">{{ element.name }}</p>
+      <button
+        mat-button
+        (click)="edit(element)"
+        style="color: #f70486; margin-left: 10px"
+      >
+        Editar
+      </button>
+      <button mat-button (click)="deleteEle(element)" style="color: #f70404">
+        Borrar
+      </button>
+    </div>
+  </div>
+</div>

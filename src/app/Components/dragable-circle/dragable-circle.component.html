@@ -10,7 +10,8 @@
       (cdkDragEntered)="dragEntered($event)"
       class="example-box"
     >
-      <img
+      <img 
+        *ngIf="brand.img_circle"
         [src]="brand.img_circle"
         [ngStyle]="{
           filter: brand.visible ? 'grayscale(0%)' : 'grayscale(100%)'
