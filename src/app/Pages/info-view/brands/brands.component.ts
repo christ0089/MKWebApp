@@ -223,12 +223,12 @@ export class BrandsComponent implements OnInit {
       [
         where('stripe_metadata_brand', '==', brand.brand),
         where('stripe_metadata_type', '==', brand.type),
-        orderBy("ranking")
+       // orderBy("ranking")
       ],
       [
         where('stripe_metadata_brand', '==', brand.brand),
         where('stripe_metadata_type', '==', brand.type),
-        orderBy("ranking")
+       // orderBy("ranking")
       ],
     ]);
     this.prodDrawer.toggle();

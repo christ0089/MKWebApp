@@ -14,6 +14,9 @@
       </div>
     </div>
     <div style="background: white; height: 700px; overflow-y: scroll; padding: 40px 20px; width: 35%; display: block;">
+      <button mat-button color="primary" style="width: 100%" (click)="save()">
+        Guardar
+      </button>
       <div *ngFor="let form of forms; let i = index" style="display: block">
         <form [formGroup]="form" *ngIf="questions != null">
           <div
@@ -40,9 +43,7 @@
           </div>
         </form>
       </div>
-      <button mat-button color="primary" style="width: 100%" (click)="save()">
-        Guardar
-      </button>
+     
     </div>
   </div>
 </div>

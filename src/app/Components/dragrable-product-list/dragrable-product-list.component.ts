@@ -74,6 +74,7 @@ export class DragrableProductListComponent implements OnInit {
     combineLatest([this.brand.brand$, this.brand.brand_filters$])
       .pipe(
         switchMap(([_, filters]) => {
+          console.log(filters)
           return this.loadProducts(`${this.gen_path}`, filters[1]);
         })
       )

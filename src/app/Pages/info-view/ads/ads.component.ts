@@ -114,9 +114,9 @@ export class AdsComponent implements OnInit {
         let q = query(collectionRef);
         const currDate = new Date(Date.now())
         if (selectedType === "expired") {
-          q = query(collectionRef, where("expirationDate", "<", Timestamp.fromDate(currDate)),orderBy("ranking", "asc"))
+          q = query(collectionRef, where("expirationDate", "<", Timestamp.fromDate(currDate)))
         } else {
-         q = query(collectionRef, where("expirationDate", ">",  Timestamp.fromDate(currDate)),orderBy("ranking", "asc"))
+         q = query(collectionRef, where("expirationDate", ">",  Timestamp.fromDate(currDate)))
         }
         return collectionData<IAds>(q, {
           idField: 'id',

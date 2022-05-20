@@ -31,6 +31,7 @@
           "
         >
           <img
+            *ngIf="product.images"
             style="object-fit: contain; width: 100%; height: 100%"
             [src]="product.images[0]"
           />
@@ -76,8 +77,6 @@
         >
           Editar
         </button>
-
-
       </mat-list-item>
     </mat-list>
   </div>
@@ -116,6 +115,7 @@
           "
         >
           <img
+            *ngIf="product.images"
             style="object-fit: contain; width: 100%; height: 100%"
             [src]="product.images[0]"
           />
@@ -155,7 +155,6 @@
           mat-button
           style="color: #f70404; margin-left: 10px"
           (click)="removeProduct(product)"
-         
         >
           Remover
         </button>
