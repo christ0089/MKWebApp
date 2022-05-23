@@ -14,23 +14,29 @@ import { WarehouseComponent } from './warehouse/warehouse.component';
 
 const routes: Routes = [
   {
-    path: '', component: InfoViewComponent,
+    path: '',
+    component: InfoViewComponent,
     canActivate: [AuthGuard],
     children: [
       { path: 'orders', component: OrdersComponent },
       { path: 'warehouse', component: WarehouseComponent },
-    //  { path: 'products', component: ProductsComponent },
+      //  { path: 'products', component: ProductsComponent },
+      {
+        path: 'analytics',
+        loadChildren: () =>
+          import('./analytics/analytics.module').then((m) => m.AnalyticsModule),
+      },
       { path: 'brands', component: BrandsComponent },
       { path: 'ads', component: AdsComponent },
       { path: 'users', component: UsersComponent },
       { path: 'notifications', component: NotificationsComponent },
-      { path: 'coupons', component: CouponsComponent }
-    ]
+      { path: 'coupons', component: CouponsComponent },
+    ],
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class InfoViewRoutingModule { }
+export class InfoViewRoutingModule {}

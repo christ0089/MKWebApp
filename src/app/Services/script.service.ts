@@ -9,6 +9,7 @@ export const scriptStore: any[] = [
     src: `https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js`
   },
   { name: 'stripe', src: 'https://js.stripe.com/v3/' },
+  { name: 'charts', src: 'https://cdn.jsdelivr.net/npm/chart.js' },
 ];
 
 @Injectable({

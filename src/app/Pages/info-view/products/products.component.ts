@@ -48,7 +48,13 @@ export interface IProducts {
       ranking : number
       id: string
     }
-  }
+  }, 
+  secondary_tags: {
+    [key :string ]: {
+      ranking : number
+      id: string
+    }
+  },
   list_tags: {
     [key :string ]: {
       ranking : number

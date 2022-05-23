@@ -1,11 +1,11 @@
+<button
+  mat-button
+  (click)="storeOrder()"
+  style="color: #0482f7; margin-left: 10px"
+>
+  Guardar
+</button>
 <div cdkDropList (cdkDropListDropped)="drop($event)">
-  <button
-    mat-button
-    (click)="storeOrder()"
-    style="color: #0482f7; margin-left: 10px"
-  >
-    Guardar
-  </button>
   <mat-list-item
     role="listitem"
     *ngFor="let brand of brands; let i = index"

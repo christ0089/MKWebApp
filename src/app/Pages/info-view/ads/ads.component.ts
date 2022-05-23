@@ -1,10 +1,23 @@
 import { Component, OnInit, Type, ViewChild } from '@angular/core';
-import { collection, Firestore, orderBy, query, updateDoc, where } from '@angular/fire/firestore';
+import {
+  collection,
+  Firestore,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from '@angular/fire/firestore';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
-import { deleteDoc, doc, deleteField, setDoc, Timestamp } from '@firebase/firestore';
+import {
+  deleteDoc,
+  doc,
+  deleteField,
+  setDoc,
+  Timestamp,
+} from '@firebase/firestore';
 import { collectionData } from 'rxfire/firestore';
 
 import {
@@ -27,7 +40,8 @@ import {
   IWarehouse,
 } from '../products/products.component';
 
-export type AdStatus = "expired" | "active"
+export type AdStatus = 'expired' | 'active';
+export type AdListType = 'tags' | 'secondary_tags' | 'list_tags';
 
 @Component({
   selector: 'app-products',
@@ -36,6 +50,7 @@ export type AdStatus = "expired" | "active"
 })
 export class AdsComponent implements OnInit {
   data$ = new BehaviorSubject<IAds[]>([]);
+  selectedAdType$ = new BehaviorSubject<AdListType>('tags');
   selectedWarehouse: IWarehouse | null = null;
   selectedAd!: IAds;
   questions: any = null;
@@ -43,9 +58,10 @@ export class AdsComponent implements OnInit {
   file!: File | null;
   loading = false;
   path: string = 'ads';
-  prod_path: string = "";
+  prod_path: string = '';
 
-  status: AdStatus[]= ["expired", "active"]
+  status: AdStatus[] = ['expired', 'active'];
+  tags: AdListType[] = ['tags', 'secondary_tags', 'list_tags'];
 
   @ViewChild('edit_prod_drawer') editDrawer!: MatDrawer;
   @ViewChild('new_prod_drawer') newDrawer!: MatDrawer;
@@ -53,15 +69,13 @@ export class AdsComponent implements OnInit {
 
   searchForm = new FormControl();
 
-  private selectedType = new BehaviorSubject<AdStatus>(
-    "expired"
-  );
+  private selectedType = new BehaviorSubject<AdStatus>('expired');
 
   constructor(
     private readonly afs: Firestore,
     private readonly storage: StorageService,
     private readonly warehouse: WarehouseService,
-    private readonly brand : BrandService,
+    private readonly brand: BrandService,
     private qcs: QuestionControlService
   ) {
     this.loadData().subscribe((ads) => {
@@ -72,10 +86,9 @@ export class AdsComponent implements OnInit {
       this.searchProd(userInput);
     });
 
-
     this.warehouse.selectedWarehouse$.subscribe((w) => {
-      this.prod_path = `warehouse/${w?.id}/stripe_products`
-    })
+      this.prod_path = `warehouse/${w?.id}/stripe_products`;
+    });
   }
 
   ngOnInit(): void {
@@ -95,15 +108,18 @@ export class AdsComponent implements OnInit {
   }
 
   loadData() {
-    return combineLatest([this.warehouse.selectedWarehouse$, this.selectedType]).pipe(
-      switchMap(([warehouse, selectedType]) => {
+    return combineLatest([
+      this.warehouse.selectedWarehouse$,
+      this.selectedType,
+      this.selectedAdType$,
+    ]).pipe(
+      switchMap(([warehouse, selectedType, adType]) => {
         if (warehouse === null) {
           return of([]);
         }
-        let collectionRef = collection(
-          this.afs,
-          this.path
-        ).withConverter<IAds>(genericConverter<IAds>());
+        let collectionRef = collection(this.afs, this.path).withConverter<IAds>(
+          genericConverter<IAds>()
+        );
         this.selectedWarehouse = warehouse;
         if (warehouse?.name !== 'General') {
           collectionRef = collection(
@@ -112,27 +128,38 @@ export class AdsComponent implements OnInit {
           ).withConverter<IAds>(genericConverter<IAds>());
         }
         let q = query(collectionRef);
-        const currDate = new Date(Date.now())
-        if (selectedType === "expired") {
-          q = query(collectionRef, where("expirationDate", "<", Timestamp.fromDate(currDate)))
+        const currDate = new Date(Date.now());
+        if (selectedType === 'expired') {
+          q = query(
+            collectionRef,
+            where('expirationDate', '<', Timestamp.fromDate(currDate)),
+            where('ad_type', '==', adType)
+          );
         } else {
-         q = query(collectionRef, where("expirationDate", ">",  Timestamp.fromDate(currDate)))
+          q = query(
+            collectionRef,
+            where('expirationDate', '>', Timestamp.fromDate(currDate)),
+            where('ad_type', '==', adType)
+          );
         }
         return collectionData<IAds>(q, {
           idField: 'id',
         }).pipe(
           map((prods) => {
-            prods = prods.map(p => {
-              p.expirationDate = (p.expirationDate as Timestamp).toDate()
-              return p
-            })
+            prods = prods.map((p) => {
+              p.expirationDate = (p.expirationDate as Timestamp).toDate();
+              p.ranking = p.ranking == undefined ? 0 : p.ranking
+              return p;
+            });
+           
+            prods.sort((a,b) => a.ranking - b.ranking)
             return prods;
           })
         );
       })
     );
   }
- 
+
   async searchProd(search: string) {
     const searchField: string = search.toLowerCase();
     if (searchField == '' || this.data$.value == []) {
@@ -165,15 +192,22 @@ export class AdsComponent implements OnInit {
     this.selectedType.next(this.status[event.index] as AdStatus);
   }
 
+  compareObjects(o1: any, o2: any): boolean {
+    return o1.id === o2.id;
+  }
+
+  selectAdEvent(ad_type: AdListType) {
+    this.selectedAdType$.next(ad_type);
+  }
 
   storeOrder(adList: IAds[]) {
     const promises = adList.map((element, i) => {
       let docRef = doc(
         this.afs,
-        `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/brands/${element.id}`
+        `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/${this.path}/${element.id}`
       );
       if (this.warehouse.selectedWarehouse$.value?.name === 'General') {
-        docRef = doc(this.afs, `brands/${element.id}`);
+        docRef = doc(this.afs, `${this.path}/${element.id}`);
       }
 
       try {
@@ -196,20 +230,20 @@ export class AdsComponent implements OnInit {
     }
   }
 
-
   listProds(ads: IAds) {
     this.listDrawer.toggle();
     this.selectedAd = ads;
-    this.brand.brand_filters$.next([[where(`tags.${ads.id}.id`, "==", ads.id)],[]])
+    this.brand.brand_filters$.next([
+      [where(`${this.selectedAdType$.value}.${ads.id}.id`, '==', ads.id)],
+      [],
+    ]);
   }
-
 
   async objectAction(event: string, drawer: MatDrawer) {
     const collectionRef = collection(this.afs, this.path);
     let data = this.form.value as IAds;
 
-
-    data.expirationDate = Timestamp.fromDate(data.expirationDate as Date)
+    data.expirationDate = Timestamp.fromDate(data.expirationDate as Date);
 
     let id = doc(collectionRef).id;
 
@@ -258,7 +292,6 @@ export class AdsComponent implements OnInit {
     await deleteDoc(docRef);
   }
 
-
   saveProd(prods: IProducts[]) {
     prods.forEach((product, i) => {
       let docRef = doc(
@@ -266,11 +299,11 @@ export class AdsComponent implements OnInit {
         `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${product.id}`
       );
 
-      product.tags = product.tags !== undefined ? product.tags : {}
-      product.tags[this.selectedAd.id] = {
-        ranking : i,
-        id: this.selectedAd.id
-      }
+      product[this.selectedAdType$.value] = product[this.selectedAdType$.value] !== undefined ? product[this.selectedAdType$.value] : {};
+      product[this.selectedAdType$.value][this.selectedAd.id] = {
+        ranking: i,
+        id: this.selectedAd.id,
+      };
       setDoc(docRef, product, { merge: true });
     });
   }
@@ -281,6 +314,6 @@ export class AdsComponent implements OnInit {
       this.afs,
       `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${product.id}`
     );
-    updateDoc(docRef, { [`tags.${ad.id}`]:  deleteField()});
+    updateDoc(docRef, { [`${[this.selectedAdType$.value] }.${ad.id}`]: deleteField() });
   }
 }

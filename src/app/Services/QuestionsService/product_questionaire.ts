@@ -12,6 +12,7 @@ export interface IAds {
   expirationDate?: any;
   subtitle?: string;
   img?: string;
+  ranking: number;
   content_url: string;
   description?: string;
   products: IProducts[];
@@ -39,7 +40,8 @@ export type NotificationIssueStatus =
   | 'testing'
   | 'tested'
   | 'approved'
-  | 'delivered';
+  | 'delivered'
+  | 'failed';
 
 export interface INotification {
   id?: string;
@@ -273,57 +275,24 @@ export const ads_questionaire = () => {
         ],
         verfication: false,
       }),
-    ],
-  };
-};
-
-export const recomendationList = () => {
-  return {
-    title: 'Agregar Producto',
-    subtitle: null,
-    questions: [
-      new UploadFileQuestion({
-        key: 'img',
-        label: 'Imagen Fila',
-        value: '',
-        disabled: false,
-        order: 0,
-        options: [{ key: 'uploaded', value: false }],
-        required: true,
-        verfication: false,
-      }),
-      new TextboxQuestion({
-        key: 'name',
-        label: 'Name',
-        value: '',
-        disabled: false,
-        order: 0,
-        options: [],
-        verfication: false,
-      }),
-      new TextboxQuestion({
-        key: 'description',
-        label: 'Description',
-        value: '',
-        disabled: false,
-        order: 0,
-        options: [],
-        verfication: false,
-      }),
       new DropdownQuestion({
-        key: 'buildActive',
-        label: 'Build Active',
-        value: true,
+        key: 'ad_type',
+        label: 'Tipo de Lista',
+        value: 'tags',
         required: true,
         order: 0,
         options: [
           {
-            key: true,
-            value: 'True',
+            key: 'tags',
+            value: 'Anuncio',
           },
           {
-            key: false,
-            value: 'False',
+            key: 'secondary_tags',
+            value: 'Anuncio Secudatio',
+          },
+          {
+            key: 'list_tags',
+            value: 'lista',
           },
         ],
         verfication: false,
@@ -331,6 +300,8 @@ export const recomendationList = () => {
     ],
   };
 };
+
+
 
 export const brand_questionaire = () => {
   return {

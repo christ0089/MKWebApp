@@ -1,11 +1,11 @@
+<button
+  mat-button
+  (click)="storeOrder()"
+  style="color: #0482f7; margin-left: 10px"
+>
+  Guardar
+</button>
 <div class="example-container" cdkDropListGroup>
-  <button
-    mat-button
-    (click)="storeOrder()"
-    style="color: #0482f7; margin-left: 10px"
-  >
-    Guardar
-  </button>
   <div
     *ngFor="let element of elements; let i = index"
     cdkDropList
@@ -20,6 +20,9 @@
       <img
         *ngIf="element.content_url"
         [src]="element.content_url"
+        [ngStyle]="{
+          filter: element.visible ? 'grayscale(0%)' : 'grayscale(100%)'
+        }"
         style="
           width: 300px;
           height: 200px;

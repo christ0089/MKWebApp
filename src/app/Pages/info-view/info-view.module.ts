@@ -40,7 +40,6 @@ import { NotificationsComponent } from './notifications/notifications.component'
 import { AdsComponent } from './ads/ads.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OrdersComponent } from './orders/orders.component';
-import { RecomendationListsComponent } from './recomendation-lists/recomendation-lists.component';
 
 @NgModule({
   declarations: [
@@ -52,9 +51,8 @@ import { RecomendationListsComponent } from './recomendation-lists/recomendation
     CouponsComponent,
     WarehouseComponent,
     AdsComponent,
-    NotificationsComponent,
-    RecomendationListsComponent,
-  ],
+    NotificationsComponent
+],
   imports: [
     CommonModule,
     MatSidenavModule,

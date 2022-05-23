@@ -5,6 +5,15 @@
   <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
 <app-warehouse></app-warehouse>
+<mat-form-field appearance="fill" *ngIf="(selectedAdType$ | async) let selected_ad_type">
+  <mat-label>Tipo de Anuncio</mat-label>
+  <mat-select (valueChange)="selectAdEvent($event)" required [compareWith]="compareObjects"
+      [value]="selected_ad_type">
+      <mat-option *ngFor="let ad_type of tags" [value]="ad_type">
+          {{ad_type}}
+      </mat-option>
+  </mat-select>
+</mat-form-field>
 
 <button
   mat-raised-button

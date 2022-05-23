@@ -14,11 +14,25 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { setDoc, Timestamp } from '@firebase/firestore';
 import { auditTrail, collectionData, snapToData } from 'rxfire/firestore';
-import { BehaviorSubject, combineLatest, EMPTY, map, Observable, of, shareReplay, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { DropdownQuestion } from 'src/app/Models/Forms/dropdown';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { AuthService, UserData } from 'src/app/Services/Auth/auth.service';
-import { INotification, IQuestions, NotificationIssueStatus } from 'src/app/Services/QuestionsService/product_questionaire';
+import {
+  INotification,
+  IQuestions,
+  NotificationIssueStatus,
+} from 'src/app/Services/QuestionsService/product_questionaire';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 import { genericConverter } from '../products/products.component';
@@ -30,9 +44,14 @@ import { genericConverter } from '../products/products.component';
 })
 export class NotificationsComponent implements OnInit {
   w$: Observable<any> = EMPTY;
-  notifications$ : Observable<INotification[]> = EMPTY;
-  selectedType$ = new BehaviorSubject<NotificationIssueStatus>("testing")
-  status: NotificationIssueStatus[] = ["testing", "tested", "delivered", "approved"];
+  notifications$: Observable<INotification[]> = EMPTY;
+  selectedType$ = new BehaviorSubject<NotificationIssueStatus>('testing');
+  status: NotificationIssueStatus[] = [
+    'testing',
+    'delivered',
+    'approved',
+    'failed',
+  ];
   size = 0;
 
   questions!: IQuestions;
@@ -49,8 +68,7 @@ export class NotificationsComponent implements OnInit {
     private auth: AuthService,
     private readonly warehouse: WarehouseService
   ) {
-
-    const warehouse$ = this.warehouse.selectedWarehouse$.pipe(shareReplay(1))
+    const warehouse$ = this.warehouse.selectedWarehouse$.pipe(shareReplay(1));
     this.w$ = warehouse$.pipe(
       switchMap((warehouse) => {
         if (
@@ -80,24 +98,27 @@ export class NotificationsComponent implements OnInit {
       })
     );
 
-    this.notifications$ = combineLatest([warehouse$, this.selectedType$]).pipe(switchMap(([warehouse, selectedType]) => {
-      if (
-        warehouse === null ||
-        (warehouse.active === false && warehouse.name !== 'General')
-      ) {
-        return of([]);
-      }
-      const collectionRef = collection(this.firestore, 'notifications').withConverter<INotification>(
-        genericConverter<INotification>()
-      )
-      const queryRef = query(
-        collectionRef,
-        where('warehouse_id', '==', warehouse.id),
-        where("type", "!=", "user"),
-        where('issue_status', "==", selectedType)
-      );
-      return collectionData<INotification>(queryRef)
-    }))
+    this.notifications$ = combineLatest([warehouse$, this.selectedType$]).pipe(
+      switchMap(([warehouse, selectedType]) => {
+        if (
+          warehouse === null //  ||
+          //(warehouse.active === false && warehouse.name !== 'General')
+        ) {
+          return of([]);
+        }
+        const collectionRef = collection(
+          this.firestore,
+          'notifications'
+        ).withConverter<INotification>(genericConverter<INotification>());
+        const queryRef = query(
+          collectionRef,
+          where('warehouse_id', '==', warehouse.id),
+          where('type', '!=', 'user'),
+          where('status', '==', selectedType)
+        );
+        return collectionData<INotification>(queryRef, { idField: 'id' });
+      })
+    );
 
     this.w$.subscribe((set) => {
       this.size = 0;
@@ -139,62 +160,77 @@ export class NotificationsComponent implements OnInit {
 
   editNotification(notification: INotification) {
     this.questions = this.qcs.notification_questionaire();
-    this.questions.action = "notification.update"
+    this.questions.action = 'notification.update';
     this.currNotification = notification;
-    const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(this.questions.questions, notification)
-    this.form = this.qcs.toFormGroup(
-      questions
+    const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(
+      this.questions.questions,
+      notification
     );
-    this.newDrawer.toggle()
+    this.form = this.qcs.toFormGroup(questions);
+    this.newDrawer.toggle();
   }
 
-
-
-  async notificationAction(event: string, notification? : INotification) {
-    const collectionRef = collection(this.firestore, "notifications")
+  async notificationAction(event: string, notification?: INotification) {
+    const collectionRef = collection(this.firestore, 'notifications');
     let id = doc(collectionRef).id;
-    let notificationData!: INotification;
+    let notificationData: INotification = this.currNotification;
 
-    if (event === "notification.approve") {
+    console.log(notification);
+    if (event === 'notification.approve') {
       if (notification) {
+        id = notification.id as string;
         notificationData = notification;
-        notificationData.issue_status = "approved";
+        notificationData.issue_status = 'approved';
+        notification.status === 'pending';
         notificationData.approver = this.auth.userData$.value.uid;
       } else {
-        alert("Error: Notification is not defined")
+        alert('Error: Notification is not defined');
       }
     } else {
-       notificationData = this.form.value as INotification;
-       this.form.disable();
-       this.loading = true;
+      notificationData = this.form.value as INotification;
+      this.form.disable();
+      this.loading = true;
     }
-    if (event == "notification.update") {
-      id = notificationData.id as string;
-      notificationData.issue_status = "testing";
+    if (event == 'notification.update') {
+      if (this.currNotification) {
+        id = this.currNotification.id as string;
+        notificationData.issue_status = 'testing';
+        notificationData.issuer = this.auth.userData$.value.uid;
+      } else {
+        alert('Error: Notification is not defined');
+      }
+    }
+
+    if (event == 'notification.create') {
+      notificationData.issue_status = 'testing';
       notificationData.issuer = this.auth.userData$.value.uid;
+
+      this.loading = false;
+      this.form.enable();
     }
 
-    let docRef = doc(this.firestore, `notifications/${id}`)
+    let docRef = doc(this.firestore, `notifications/${id}`);
 
-    if ( this.warehouse.selectedWarehouse$.value?.id) {
-      notificationData.warehouse_id = this.warehouse.selectedWarehouse$.value.id
+    if (this.warehouse.selectedWarehouse$.value?.id) {
+      notificationData.warehouse_id =
+        this.warehouse.selectedWarehouse$.value.id;
     } else {
-      alert("No se selecciono una zona");
+      alert('No se selecciono una zona');
     }
     notificationData.createdAt = Timestamp.now();
+
     try {
-      await setDoc(docRef, notificationData);
+      await setDoc(docRef, notificationData, { merge: true });
     } catch (e) {
       alert(e);
       console.error(e);
     }
-
-    this.loading = false;
-    this.form.enable();
   }
 
   changedTab(event: MatTabChangeEvent) {
-   this.selectedType$.next(this.status[event.index] as NotificationIssueStatus)
+    this.selectedType$.next(
+      this.status[event.index] as NotificationIssueStatus
+    );
   }
 
   ngOnInit(): void {}
