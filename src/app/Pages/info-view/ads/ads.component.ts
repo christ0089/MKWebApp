@@ -51,6 +51,8 @@ export type AdListType = 'tags' | 'secondary_tags' | 'list_tags';
 export class AdsComponent implements OnInit {
   data$ = new BehaviorSubject<IAds[]>([]);
   selectedAdType$ = new BehaviorSubject<AdListType>('tags');
+  selectedType = new BehaviorSubject<AdStatus>('expired');
+
   selectedWarehouse: IWarehouse | null = null;
   selectedAd!: IAds;
   questions: any = null;
@@ -69,14 +71,12 @@ export class AdsComponent implements OnInit {
 
   searchForm = new FormControl();
 
-  private selectedType = new BehaviorSubject<AdStatus>('expired');
-
   constructor(
     private readonly afs: Firestore,
     private readonly storage: StorageService,
     private readonly warehouse: WarehouseService,
     private readonly brand: BrandService,
-    private qcs: QuestionControlService
+    private readonly qcs: QuestionControlService
   ) {
     this.loadData().subscribe((ads) => {
       this.data$.next(ads);
