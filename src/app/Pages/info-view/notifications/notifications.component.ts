@@ -181,7 +181,7 @@ export class NotificationsComponent implements OnInit {
         id = notification.id as string;
         notificationData = notification;
         notificationData.issue_status = 'approved';
-        notification.status === 'pending';
+        notification.status ='pending';
         notificationData.approver = this.auth.userData$.value.uid;
       } else {
         alert('Error: Notification is not defined');

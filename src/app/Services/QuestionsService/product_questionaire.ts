@@ -288,11 +288,11 @@ export const ads_questionaire = () => {
           },
           {
             key: 'secondary_tags',
-            value: 'Anuncio Secudatio',
+            value: 'Anuncio Secundario',
           },
           {
             key: 'list_tags',
-            value: 'lista',
+            value: 'Lista',
           },
         ],
         verfication: false,
