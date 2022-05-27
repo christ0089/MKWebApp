@@ -230,6 +230,36 @@ export class AdsComponent implements OnInit {
     }
   }
 
+  storeProdOrder(prodList: IProducts[]) {
+    const promises = prodList.map((element, i) => {
+      let docRef = doc(
+        this.afs,
+        `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${element.id}`
+      );
+      if (this.warehouse.selectedWarehouse$.value?.name === 'General') {
+        docRef = doc(this.afs, `stripe_products/${element.id}`);
+      }
+
+      element[this.selectedAdType$.value][this.selectedAd.id]
+
+      try {
+        this.file = null;
+        return setDoc(
+          docRef,
+          prodList,
+          { merge: true }
+        );
+      } catch (e) {
+        alert(e);
+        return null;
+      }
+    });
+
+    if (promises) {
+      Promise.all(promises);
+    }
+  }
+
   listProds(ads: IAds) {
     this.listDrawer.toggle();
     this.selectedAd = ads;
@@ -308,12 +338,14 @@ export class AdsComponent implements OnInit {
     });
   }
 
-  deleteProd(product: IProducts) {
-    const ad = this.selectedAd;
-    let docRef = doc(
-      this.afs,
-      `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${product.id}`
-    );
-    updateDoc(docRef, { [`${[this.selectedAdType$.value] }.${ad.id}`]: deleteField() });
+  deleteProd(products: IProducts[]) {
+    products.map((product) => {
+      const ad = this.selectedAd;
+      let docRef = doc(
+        this.afs,
+        `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${product.id}`
+      );
+      updateDoc(docRef, { [`${[this.selectedAdType$.value] }.${ad.id}`]: deleteField() });
+    })
   }
 }

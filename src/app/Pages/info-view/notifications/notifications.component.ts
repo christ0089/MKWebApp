@@ -13,7 +13,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { setDoc, Timestamp } from '@firebase/firestore';
-import { auditTrail, collectionData, snapToData } from 'rxfire/firestore';
+import { collectionData } from 'rxfire/firestore';
 import {
   BehaviorSubject,
   combineLatest,
@@ -23,11 +23,10 @@ import {
   of,
   shareReplay,
   switchMap,
-  tap,
 } from 'rxjs';
 import { DropdownQuestion } from 'src/app/Models/Forms/dropdown';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
-import { AuthService, UserData } from 'src/app/Services/Auth/auth.service';
+import { AuthService } from 'src/app/Services/Auth/auth.service';
 import {
   INotification,
   IQuestions,
@@ -114,7 +113,7 @@ export class NotificationsComponent implements OnInit {
           collectionRef,
           where('warehouse_id', '==', warehouse.id),
           where('type', '!=', 'user'),
-          where('status', '==', selectedType)
+          where('issue_status', '==', selectedType)
         );
         return collectionData<INotification>(queryRef, { idField: 'id' });
       })

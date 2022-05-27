@@ -14,6 +14,13 @@
       <input matInput placeholder="Buscar" [formControl]="searchForm" />
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
+    <button
+      mat-button
+      style="color: #0475f7; margin-left: 10px; width: 100%"
+      (click)="save()"
+    >
+      Agregar Todos
+    </button>
     <mat-list style="overflow-y: scroll; height: 350px">
       <mat-list-item
         role="listitem"
@@ -160,5 +167,13 @@
         </button>
       </mat-list-item>
     </mat-list>
+
+    <button
+      mat-button
+      style="color: #f71404; margin-left: 10px; width: 100%"
+      (click)="save()"
+    >
+      Borrar Todos
+    </button>
   </div>
 </div>

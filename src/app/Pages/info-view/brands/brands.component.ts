@@ -262,4 +262,14 @@ export class BrandsComponent implements OnInit {
       setDoc(docRef, product, { merge: true });
     });
   }
+
+  deleteProd(products: IProducts[]) {
+    products.map(product => {
+      let docRef = doc(
+        this.afs,
+        `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${product.id}`
+      );
+      deleteDoc(docRef)
+    })
+  }
 }

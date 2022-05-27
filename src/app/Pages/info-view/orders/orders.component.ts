@@ -31,7 +31,7 @@ import {
 import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { ICoupon } from 'src/app/Services/QuestionsService/product_questionaire';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
-import { genericConverter } from '../products/products.component';
+import { genericConverter, IProducts } from '../products/products.component';
 
 import * as json2csv from 'json2csv';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -40,6 +40,13 @@ import { httpsCallable } from '@firebase/functions';
 export interface IRatings {
   question: string;
   rating: number;
+}
+
+export interface Items {
+  id: string;
+  name: string;
+  quantity: number;
+  price: string;
 }
 
 export interface IOrder {
@@ -269,7 +276,7 @@ export class OrdersComponent implements OnInit {
       this.quantity_total = 0;
       orders.forEach((o) => {
         const items: any[] = o.payment_meta_data.items;
-        items.forEach((element: any) => {
+        items.forEach((element: Items) => {
           this.quantity_total += element.quantity;
           if (this.items_sold.has(element.price)) {
             const curr_items = this.items_sold.get(element.price);

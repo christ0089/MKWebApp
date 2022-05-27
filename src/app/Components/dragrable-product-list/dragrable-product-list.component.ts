@@ -40,7 +40,7 @@ export class DragrableProductListComponent implements OnInit {
   del_prods = [];
   @Output() editProdEvent = new EventEmitter<boolean>();
   @Output() saveProdEvent = new EventEmitter<IProducts[]>();
-  @Output() deleteProdEvent = new EventEmitter<IProducts>();
+  @Output() deleteProdEvent = new EventEmitter<IProducts[]>();
 
   searchForm = new FormControl();
   selectedWarehouse!: IWarehouse | null;
@@ -133,8 +133,19 @@ export class DragrableProductListComponent implements OnInit {
       this.all_products$.next(prods);
     }
 
-    this.deleteProdEvent.emit(product);
+    this.deleteProdEvent.emit([product]);
   }
+
+
+  addAllProduct() {
+    this.all_products$.next(this.gen_products$.value)
+  }
+
+  removeAllProduct(product: IProducts) {
+    this.deleteProdEvent.emit(this.all_products$.value);
+  }
+
+  
 
   async searchProd(search: string) {
     const prodName: string = search.toLowerCase();

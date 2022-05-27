@@ -167,7 +167,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title>Alterar Catalogo de Producto</mat-panel-title>
       </mat-expansion-panel-header>
-      <app-dragrable-product-list (editProdEvent)="editProd.toggle()"  (saveProdEvent)="saveProd($event)"></app-dragrable-product-list>
+      <app-dragrable-product-list (editProdEvent)="editProd.toggle()"  (saveProdEvent)="saveProd($event)" (deleteProdEvent)="deleteProd($event)"></app-dragrable-product-list>
     </mat-expansion-panel>
   </mat-accordion>
 </mat-drawer>
