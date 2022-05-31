@@ -1,3 +1,5 @@
+import { Timestamp } from "@firebase/firestore";
+
 export interface IBrands {
   brand: string;
   buildActive: boolean;
@@ -21,4 +23,14 @@ export interface IRecommendedList {
   id: string,
   name: string,
   description: string,
+}
+
+export interface IRepresentative {
+  id: string,
+  name: string,
+  email: string,
+  createdAt: Timestamp,
+  active: boolean,
+  codeId: string,
+  role: "representative"
 }

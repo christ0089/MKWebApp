@@ -6,12 +6,17 @@
 </mat-form-field>
 <app-warehouse></app-warehouse>
 
-<mat-tab-group (selectedTabChange)="changedTab($event)" style="width: 100%">
-  <mat-tab label="General"></mat-tab>
-  <mat-tab label="Driver"></mat-tab>
-  <mat-tab label="Zone-Admin"></mat-tab>
-  <mat-tab label="Admin"> </mat-tab>
+
+<mat-tab-group
+ 
+  style="width: max-content"
+>
+  <mat-tab label="Activos">
+      
+  </mat-tab>
+  <mat-tab label="Desactivados"></mat-tab>
 </mat-tab-group>
+
 
 <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px">
     <mat-list-item role="listitem" *ngFor="let user of (users$ | async)">
@@ -22,14 +27,12 @@
                 <div *ngIf="user.role" style="background: rgba(100, 148, 237, 0.274); padding: 5px; border-radius: 5px; margin-right: 10px;">
                     <span style="color: cornflowerblue;">{{user.role}}</span>
                 </div>
-                <button mat-flat-button >
-                    Editar Role
+                <button mat-flat-button  (click)="deactivateRep(user)" style="margin-right: 10px;">
+                    Desactivar
                 </button>
-                <button mat-flat-button  (click)="createRepresentative(user)">
-                    Volver Representativo
+                <button mat-flat-button  style="margin-right: 10px;">
+                    Ver Estadisticas
                 </button>
-            </div>
-            <div style="width: 100%; padding: 10 0px;">
             </div>
         </div>
     </mat-list-item>

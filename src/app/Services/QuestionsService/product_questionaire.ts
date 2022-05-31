@@ -5,6 +5,7 @@ import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { TextboxQuestion } from 'src/app/Models/Forms/textbox';
 import { UploadFileQuestion } from 'src/app/Models/Forms/upload_file';
 import { IProducts } from 'src/app/Pages/info-view/products/products.component';
+import { UserRoles } from '../Auth/auth.service';
 
 export interface IAds {
   id: string;
@@ -183,6 +184,13 @@ export const product_questionaire = () => {
 };
 
 export const ads_questionaire = () => {
+  let data: IQuestions = {
+    title: 'Agregar Producto',
+    subtitle: '',
+    questions: [],
+    action: '',
+  };
+
   return {
     title: 'Agregar Anuncio',
     subtitle: null,
@@ -301,13 +309,73 @@ export const ads_questionaire = () => {
   };
 };
 
-
-
-export const brand_questionaire = () => {
-  return {
+export const brand_questionaire = (user_role: UserRoles) => {
+  let data: IQuestions = {
     title: 'Agregar Producto',
-    subtitle: null,
-    questions: [
+    subtitle: '',
+    questions: [],
+    action: '',
+  };
+  if (user_role === 'zone_admin') {
+    data.questions = [
+      new TextboxQuestion({
+        key: 'name',
+        label: 'Name',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+
+      new DropdownQuestion({
+        key: 'visible',
+        label: 'Visible',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: true,
+            value: 'True',
+          },
+          {
+            key: false,
+            value: 'False',
+          },
+        ],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'type',
+        label: 'Type',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'brand',
+        label: 'Brand',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'category',
+        label: 'Category',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+    ];
+  } else {
+    data.questions = [
       new UploadFileQuestion({
         key: 'img',
         label: 'Imagen Fila',
@@ -400,8 +468,10 @@ export const brand_questionaire = () => {
         options: [],
         verfication: false,
       }),
-    ],
-  };
+    ];
+  }
+
+  return data;
 };
 
 export const coupon_questionaire = () => {
@@ -604,3 +674,25 @@ export const notification_question = () => {
     ],
   };
 };
+
+// export const user_repesentative = (user_role: UserRoles) => {
+//   let data: IQuestions = {
+//     title: 'Agregar Representativo',
+//     subtitle: '',
+//     questions: [],
+//     action: '',
+//   };
+//   return {
+//     title: 'Crear Representativo',
+//     subtitle: '',
+//     questions: [
+
+//       new TextboxQuestion({
+//         key: 'message',
+//         label: 'Mensaje',
+//         value: '',
+//         required: true,
+//       }),
+//     ],
+//   };
+// }

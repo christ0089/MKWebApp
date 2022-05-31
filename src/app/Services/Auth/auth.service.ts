@@ -14,7 +14,10 @@ export interface UserData {
   img: string,
   status: UserService,
   warehouse_id: string | string[]
+  email: string,
+  phone: string,
   uid: string
+  id?: string
 }
 
 @Injectable({

@@ -141,7 +141,7 @@ export class DragrableProductListComponent implements OnInit {
     this.all_products$.next(this.gen_products$.value)
   }
 
-  removeAllProduct(product: IProducts) {
+  removeAllProduct() {
     this.deleteProdEvent.emit(this.all_products$.value);
   }
 

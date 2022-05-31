@@ -47,7 +47,7 @@ export class NotificationsComponent implements OnInit {
   selectedType$ = new BehaviorSubject<NotificationIssueStatus>('testing');
   status: NotificationIssueStatus[] = [
     'testing',
-    'delivered',
+    'tested',
     'approved',
     'failed',
   ];

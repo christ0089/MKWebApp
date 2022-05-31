@@ -10,6 +10,7 @@ import { InfoViewComponent } from './info-view.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProductsComponent } from './products/products.component';
+import { RepresentativesComponent } from './representatives/representatives.component';
 import { WarehouseComponent } from './warehouse/warehouse.component';
 
 const routes: Routes = [
@@ -20,7 +21,7 @@ const routes: Routes = [
     children: [
       { path: 'orders', component: OrdersComponent },
       { path: 'warehouse', component: WarehouseComponent },
-      //  { path: 'products', component: ProductsComponent },
+      { path: 'products', component: ProductsComponent },
       {
         path: 'analytics',
         loadChildren: () =>
@@ -30,6 +31,7 @@ const routes: Routes = [
       { path: 'ads', component: AdsComponent },
       { path: 'users', component: UsersComponent },
       { path: 'notifications', component: NotificationsComponent },
+      { path: 'representatives', component: RepresentativesComponent },
       { path: 'coupons', component: CouponsComponent },
     ],
   },

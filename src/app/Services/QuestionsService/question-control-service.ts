@@ -11,6 +11,7 @@ import {
   IQuestions,
 } from './product_questionaire';
 import { warehouse_questionaire } from './warehouse_questionaire';
+import { UserRoles } from '../Auth/auth.service';
 
 @Injectable()
 export class QuestionControlService {
@@ -102,8 +103,8 @@ export class QuestionControlService {
     return question;
   }
 
-  brand_questionaire() {
-    const question = brand_questionaire();
+  brand_questionaire(user_role: UserRoles) {
+    const question = brand_questionaire(user_role);
     return question;
   }
 

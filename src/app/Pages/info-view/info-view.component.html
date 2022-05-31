@@ -1,57 +1,55 @@
-<mat-toolbar style="background-color:  #f70486; color: white; font-size: 3.5vh;">
-    <span>PRTY.</span>
-    <span class="example-spacer"></span>
+<mat-toolbar style="background-color: #f70486; color: white; font-size: 3.5vh">
+  <span>PRTY.</span>
+  <span class="example-spacer"></span>
 </mat-toolbar>
 <mat-drawer-container class="example-container">
-    <mat-drawer mode="side" opened>
-        <mat-list role="list">
-            <mat-list-item role="listitem" routerLink="analytics">
-                <button mat-button>
-                    Analitica
-                </button>
-            </mat-list-item>
-            <mat-list-item role="listitem" routerLink="warehouse">
-                <button mat-button >
-                    Centro de Distribucion
-                </button>
-            </mat-list-item>
-            <mat-list-item role="listitem" routerLink="orders">
-                <button mat-button>
-                    Ordenes
-                </button>
-            </mat-list-item>
-            <mat-list-item role="listitem" routerLink="brands">
-                <button mat-button >
-                    Brands
-                </button>
-            </mat-list-item>
-            <mat-list-item role="listitem" routerLink="ads">
-                <button mat-button >
-                    Ads
-                </button>
-            </mat-list-item>
-            <mat-list-item role="listitem" routerLink="coupons">
-                <button mat-button >
-                    Cupones
-                </button>
-            </mat-list-item>
-            <mat-list-item role="listitem" routerLink="notifications">
-                <button mat-button>
-                    Notificaciones 
-                </button>
-            </mat-list-item>
-            <mat-list-item role="listitem" routerLink="users" *ngIf="role && role == 'admin'">
-                <button mat-button >
-                    Usuarios 
-                </button>
-            </mat-list-item>
-        </mat-list>
-        <button mat-button color="warn" style="position:absolute; bottom: 100px; width: calc(100% - 40px)" (click)="signOut()">
-            Cerrar Sesion
-        </button>
-    </mat-drawer>
-    <mat-drawer-content class="example-container">
-        <router-outlet></router-outlet>
-    </mat-drawer-content>
+  <mat-drawer mode="side" opened>
+    <mat-list role="list">
+      <mat-list-item role="listitem" routerLink="analytics">
+        <button mat-button>Analitica</button>
+      </mat-list-item>
+      <mat-list-item role="listitem" routerLink="warehouse">
+        <button mat-button>Centro de Distribucion</button>
+      </mat-list-item>
+      <mat-list-item role="listitem" routerLink="orders">
+        <button mat-button>Ordenes</button>
+      </mat-list-item>
+      <mat-list-item role="listitem" routerLink="brands">
+        <button mat-button>Brands</button>
+      </mat-list-item>
+      <mat-list-item role="listitem" routerLink="ads">
+        <button mat-button>Ads</button>
+      </mat-list-item>
+      <mat-list-item role="listitem" routerLink="products">
+        <button mat-button>Inventario</button>
+      </mat-list-item>
+      <mat-list-item role="listitem" routerLink="representatives">
+        <button mat-button>Representativos</button>
+      </mat-list-item>
+      <mat-list-item role="listitem" routerLink="coupons">
+        <button mat-button>Cupones</button>
+      </mat-list-item>
+      <mat-list-item role="listitem" routerLink="notifications">
+        <button mat-button>Notificaciones</button>
+      </mat-list-item>
+      <mat-list-item
+        role="listitem"
+        routerLink="users"
+        *ngIf="role && role == 'admin'"
+      >
+        <button mat-button>Usuarios</button>
+      </mat-list-item>
+    </mat-list>
+    <button
+      mat-button
+      color="warn"
+      style="position: absolute; bottom: 100px; width: calc(100% - 40px)"
+      (click)="signOut()"
+    >
+      Cerrar Sesion
+    </button>
+  </mat-drawer>
+  <mat-drawer-content class="example-container">
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
 </mat-drawer-container>
-

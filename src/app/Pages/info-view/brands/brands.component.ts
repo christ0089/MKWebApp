@@ -16,6 +16,7 @@ import {
 } from 'rxjs';
 import { IBrands, ICategory } from 'src/app/Models/DataModels';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
+import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { BrandService } from 'src/app/Services/brand.service';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { StorageService } from 'src/app/Services/storage.service';
@@ -49,6 +50,7 @@ export class BrandsComponent implements OnInit {
   constructor(
     private readonly afs: Firestore,
     private readonly warehouse: WarehouseService,
+    private readonly authService: AuthService,
     private readonly storage: StorageService,
     private readonly brands: BrandService,
     private readonly qcs: QuestionControlService
@@ -110,7 +112,8 @@ export class BrandsComponent implements OnInit {
 
   editQuestions(brand: IBrands) {
     this.editDrawer.toggle();
-    this.questions = this.qcs.brand_questionaire();
+    this.questions = this.qcs.brand_questionaire(this.authService.userData$.value.role);
+    console.log(this.questions);
     this.currBrand = brand;
     this.questions.questions[0].options[0].value = true;
     const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(
@@ -123,7 +126,8 @@ export class BrandsComponent implements OnInit {
 
   newQuestions() {
     this.newDrawer.toggle();
-    this.questions = this.qcs.brand_questionaire();
+    this.questions = this.qcs.brand_questionaire(this.authService.userData$.value.role);
+    console.log(this.questions);
     this.form = this.qcs.toFormGroup(this.questions.questions);
     this.form.enable();
   }
@@ -222,13 +226,11 @@ export class BrandsComponent implements OnInit {
     this.brands.brand_filters$.next([
       [
         where('stripe_metadata_brand', '==', brand.brand),
-        where('stripe_metadata_type', '==', brand.type),
-       // orderBy("ranking")
+        where('stripe_metadata_type', '==', brand.type)
       ],
       [
         where('stripe_metadata_brand', '==', brand.brand),
-        where('stripe_metadata_type', '==', brand.type),
-       // orderBy("ranking")
+        where('stripe_metadata_type', '==', brand.type)
       ],
     ]);
     this.prodDrawer.toggle();
