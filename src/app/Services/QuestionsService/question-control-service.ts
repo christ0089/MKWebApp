@@ -103,7 +103,7 @@ export class QuestionControlService {
     return question;
   }
 
-  brand_questionaire(user_role: UserRoles) {
+  brand_questions(user_role: UserRoles) {
     const question = brand_questionaire(user_role);
     return question;
   }

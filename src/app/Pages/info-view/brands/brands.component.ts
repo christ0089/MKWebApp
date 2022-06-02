@@ -112,8 +112,7 @@ export class BrandsComponent implements OnInit {
 
   editQuestions(brand: IBrands) {
     this.editDrawer.toggle();
-    this.questions = this.qcs.brand_questionaire(this.authService.userData$.value.role);
-    console.log(this.questions);
+    this.questions = this.qcs.brand_questions(this.authService.userData$.value.role);
     this.currBrand = brand;
     this.questions.questions[0].options[0].value = true;
     const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(
@@ -126,7 +125,7 @@ export class BrandsComponent implements OnInit {
 
   newQuestions() {
     this.newDrawer.toggle();
-    this.questions = this.qcs.brand_questionaire(this.authService.userData$.value.role);
+    this.questions = this.qcs.brand_questions(this.authService.userData$.value.role);
     console.log(this.questions);
     this.form = this.qcs.toFormGroup(this.questions.questions);
     this.form.enable();
