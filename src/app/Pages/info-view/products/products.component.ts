@@ -24,6 +24,7 @@ import {
   of,
   switchMap,
 } from 'rxjs';
+import { ProductType } from 'src/app/Models/DataModels';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { StorageService } from 'src/app/Services/storage.service';
@@ -43,24 +44,26 @@ export interface IProducts {
   stripe_metadata_brand: string;
   stripe_metadata_discount?: number | string | null;
   stripe_metadata_status?: IProductStatus;
+  stripe_metadata_owner: string;
+  stripe_metadata_productType?: ProductType;
   tags: {
-    [key :string ]: {
-      ranking : number
-      id: string
-    }
-  }, 
+    [key: string]: {
+      ranking: number;
+      id: string;
+    };
+  };
   secondary_tags: {
-    [key :string ]: {
-      ranking : number
-      id: string
-    }
-  },
+    [key: string]: {
+      ranking: number;
+      id: string;
+    };
+  };
   list_tags: {
-    [key :string ]: {
-      ranking : number
-      id: string
-    }
-  }
+    [key: string]: {
+      ranking: number;
+      id: string;
+    };
+  };
   price_id: string;
   price: number;
 }
@@ -286,7 +289,6 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-
   async updateProduct() {
     const product = this.form.value as IProducts;
     const stripe_product = {
@@ -317,7 +319,8 @@ export class ProductsComponent implements OnInit {
         price_id: this.currProd.price_id,
       });
       await lastValueFrom(prod$);
-    } else { //Updates in Firestore
+    } else {
+      //Updates in Firestore
       let docRef = doc(
         this.afs,
         `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${this.currProd.id}`
@@ -331,13 +334,15 @@ export class ProductsComponent implements OnInit {
         this.currProd.availability = product.availability || 100;
         this.currProd.stripe_metadata_brand = product.stripe_metadata_brand;
         this.currProd.stripe_metadata_type = product.stripe_metadata_type;
+        this.currProd.stripe_metadata_productType =
+          product.stripe_metadata_productType;
         this.currProd.stripe_metadata_discount =
           product.stripe_metadata_discount == ''
             ? null
             : product.stripe_metadata_discount;
         this.currProd.images = stripe_product.images;
-        
-        await setDoc(docRef, { ...this.currProd }, { merge : true});
+
+        await setDoc(docRef, { ...this.currProd }, { merge: true });
       } catch (e) {
         console.error(e);
       }

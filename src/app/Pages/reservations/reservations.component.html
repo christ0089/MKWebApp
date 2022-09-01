@@ -1,0 +1,186 @@
+<h1>Productos</h1>
+<app-warehouse></app-warehouse>
+
+<mat-list
+  role="list"
+  style="overflow: scroll; margin-bottom: 40px; height: 500px"
+>
+  <mat-list-item
+    role="listitem"
+    *ngFor="let product of products$ | async; let i = index"
+    style="padding: 10px"
+  >
+    <div style="width: 100%; display: flex">
+      <div
+        style="
+          height: 20px;
+          margin-top: auto;
+          margin-bottom: auto;
+          margin-right: 10px;
+        "
+      >
+        <p style="height: 20px; color: lightslategrey">{{ i + 1 }}</p>
+      </div>
+      <div
+        style="
+          width: 50px;
+          height: 50px;
+          margin-right: 20px;
+          background-color: white;
+          border-radius: 5px;
+          overflow: hidden;
+        "
+      >
+        <img
+          style="object-fit: contain; width: 100%; height: 100%"
+          [src]="product.images[0]"
+        />
+      </div>
+      <div style="width: fit-content; margin: 10 0px; display: block">
+        <p style="font-weight: 600; margin-bottom: 5px">{{ product.name }}</p>
+        <span
+          style="
+            font-weight: 300;
+            font-size: medium;
+            margin-left: auto;
+            margin-right: auto;
+          "
+          [style.text-decoration-line]="
+            product?.stripe_metadata_discount ? 'line-through' : ' '
+          "
+          >{{ product.price / 100 | currency }}</span
+        >
+        <span
+          style="font-weight: 300; font-size: medium; margin-right: auto"
+          *ngIf="product.stripe_metadata_discount"
+        >
+          {{ product.stripe_metadata_discount | currency }}</span
+        >
+      </div>
+      <span class="example-spacer"></span>
+
+      <button
+        mat-button
+        (click)="editBookingProduct(product)"
+        style="color: #f70486"
+      >
+        Ver
+      </button>
+    </div>
+  </mat-list-item>
+</mat-list>
+
+<mat-drawer
+  #resevation_prod_drawer
+  class="example-sidenav"
+  mode="over"
+  position="end"
+  style="margin-bottom: 40px; overflow-y: scroll"
+>
+  <h1>
+    Reservation
+    <button
+      mat-icon-button
+      style="float: right"
+      (click)="resevation_prod_drawer.toggle()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </h1>
+  <!-- <mat-progress-bar
+    *ngIf="loading === true"
+    mode="indeterminate"
+  ></mat-progress-bar> -->
+
+  <div style="display: inline-flex">
+    <div style="max-width: 300px; width: fit-content; display: block">
+      <div *ngFor="let questionForm of questions; let i = index">
+        <form [formGroup]="forms[i]" *ngIf="questionForm != null">
+          <div
+            class="form-row"
+            style="
+              max-width: 400px;
+              display: block;
+
+              margin-left: auto;
+              margin-right: auto;
+            "
+          >
+            <app-question
+              *ngFor="let q of questionForm.questions"
+              [question]="q"
+              [form]="forms[i]"
+              [idx]="0"
+            >
+            </app-question>
+          </div>
+        </form>
+      </div>
+      <button mat-button (click)="updateProduct()">Guardar</button>
+    </div>
+
+    <div style="width: 400px">
+      <mat-form-field appearance="fill">
+        <mat-label>Fecha de Reservacion</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          [min]="min"
+          (dateChange)="selectedDate('change', $event)" 
+          [matDatepickerFilter]="weekendsDatesFilter"
+        />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker ></mat-datepicker>
+      </mat-form-field>
+
+      <div
+        *ngIf="bookingRange$ | async; let bookingRange"
+        style="display: block"
+      >
+        <button
+          mat-flat-button
+          *ngFor="let booking of bookingRange; let i = index"
+          style="width: calc(100% - 20px); margin: 10px;"
+          [style.background-color]="
+            booking.selected ? 'blue' : booking.disabled ? 'green' : 'red'
+          "
+          (click)="selectedShedule(i, booking)"
+        >
+          {{ booking.start_hour }} : {{ booking.start_min }} -
+          {{ booking.end_hour }} :
+          {{ booking.end_min }}
+        </button>
+      </div>
+
+      <button
+        mat-button
+        [disabled]="calcReservation === 0"
+        color="primary"
+        (click)="createReservation()"
+      >
+        Reservar
+      </button>
+    </div>
+    <div style="width: 400px; padding: 15px;" *ngIf="selectedReservation">
+      <h1>Reservacion</h1>
+      <p>
+        Fecha: {{ selectedReservation.day }}/{{ selectedReservation.month }}/{{
+          selectedReservation.year
+        }}
+      </p>
+      <div *ngIf="selectedReservation.status === 'blocked'">
+        <p>Reservado por ti</p>
+      </div>
+      <div *ngIf="selectedReservation.status === 'accepted'">
+        <p>Reservado y pagado</p>
+      </div>
+      <div *ngIf="selectedReservation.status === 'pending'">
+        <p>Reservado pero falta pago</p>
+      </div>
+      <button mat-button color="primary" (click)="cancelReservacion()">
+        Cancelar Reservacion
+      </button>
+    </div>
+  </div>
+</mat-drawer>

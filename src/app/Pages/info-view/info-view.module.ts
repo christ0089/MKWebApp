@@ -41,6 +41,7 @@ import { AdsComponent } from './ads/ads.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OrdersComponent } from './orders/orders.component';
 import { RepresentativesComponent } from './representatives/representatives.component';
+import { ReservationsComponent } from '../reservations/reservations.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { RepresentativesComponent } from './representatives/representatives.comp
     ProductsComponent,
     BrandsComponent,
     UsersComponent,
+    ReservationsComponent,
     CouponsComponent,
     WarehouseComponent,
     AdsComponent,

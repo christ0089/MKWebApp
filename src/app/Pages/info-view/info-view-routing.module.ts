@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/Guard/auth.guard';
+import { ReservationsComponent } from '../reservations/reservations.component';
 
 import { UsersComponent } from '../users/users.component';
 import { AdsComponent } from './ads/ads.component';
@@ -33,6 +34,7 @@ const routes: Routes = [
       { path: 'notifications', component: NotificationsComponent },
       { path: 'representatives', component: RepresentativesComponent },
       { path: 'coupons', component: CouponsComponent },
+      { path: 'reservations', component: ReservationsComponent },
     ],
   },
 ];

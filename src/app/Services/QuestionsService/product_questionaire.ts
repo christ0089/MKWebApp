@@ -1,7 +1,9 @@
 import { Firestore, GeoPoint, Timestamp } from '@firebase/firestore';
+import { CheckboxQuestion } from 'src/app/Models/Forms/checkbox';
 import { DatePickerQuestion } from 'src/app/Models/Forms/datePicker';
 import { DropdownQuestion } from 'src/app/Models/Forms/dropdown';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
+import { RadioQuestion } from 'src/app/Models/Forms/radio';
 import { TextboxQuestion } from 'src/app/Models/Forms/textbox';
 import { UploadFileQuestion } from 'src/app/Models/Forms/upload_file';
 import { IProducts } from 'src/app/Pages/info-view/products/products.component';
@@ -71,6 +73,126 @@ export interface Warehouse {
   warehouse_centers: GeoPoint[];
 }
 
+export interface IReservation {
+  id: string,
+  reservation: IBookingRange[],
+  customer_id: string,
+  product_owner_id: string;
+  status: "pending" | "accepted" | "blocked";
+  product: IBookingProduct;
+  address: any;
+  coords: GeoPoint;
+  month: number;
+  day: number;
+  year: number;
+}
+
+export interface IBookingRange {
+  start_hour: number;
+  start_min: number;
+  end_hour: number;
+  end_min: number;
+  selected: boolean;
+  disabled: boolean;
+  reservation_idx? : number;
+}
+
+export interface IBookingProduct extends IProducts {
+  reservation?: IBookingRange[];
+  day: number;
+  month: number;
+  year: number;
+  schedule: ISchedule;
+}
+export interface ISchedule {
+  dateRange: number[];
+  hourRange: {
+    end: number;
+    start: number;
+  };
+  interval: '15min' | '30min' | '1hr';
+}
+
+export const booking_questionaire = () => {
+  return {
+    title: 'Agregar Producto',
+    subtitle: null,
+    questions: [
+      new TextboxQuestion({
+        key: 'start',
+        label: 'Hora de Inicio',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'end',
+        label: 'Hora de Fin',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new RadioQuestion({
+        key: 'interval',
+        label: 'Intevalo de Eventos',
+        value: "",
+        required: true,
+        order: 0,
+        options: [
+          {
+            key:  '15 minutos',
+            value: '15min',
+          },
+          {
+            key: '30 minutos',
+            value:'30min' ,
+          },
+          {
+            key: "Cada hora",
+            value: '1hr',
+          },
+        ],
+        verfication: false,
+      }),
+    ],
+  };
+};
+
+export const available_days = () => {
+  const days = [
+    'Domingo',
+    'Lunes',
+    'Martes',
+    'Miercoles',
+    'Jueves',
+    'Viernes',
+    'Sabado'
+  ];
+
+  const questions_form = days.map((day, i) => {
+    return new CheckboxQuestion({
+      key: `${i}`,
+      label: day,
+      value: false,
+      disabled: false,
+      order: 0,
+      options: [],
+      verfication: false,
+    });
+  });
+  return {
+    title: 'Dias Disponibles',
+    subtitle: null,
+    questions: [
+      ...questions_form
+    ],
+  };
+};
+
 export const product_questionaire = () => {
   return {
     title: 'Agregar Producto',
@@ -127,6 +249,24 @@ export const product_questionaire = () => {
           {
             key: false,
             value: 'Agotado',
+          },
+        ],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'stripe_metadata_productType',
+        label: 'Tipo de Compra',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: 'unique',
+            value: 'Compra Unica',
+          },
+          {
+            key: 'calendar',
+            value: 'Calendarizar',
           },
         ],
         verfication: false,
@@ -346,6 +486,24 @@ export const brand_questionaire = (user_role: UserRoles) => {
         ],
         verfication: false,
       }),
+      new DropdownQuestion({
+        key: 'productType',
+        label: 'Tipo de Compra',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: 'unique',
+            value: 'Compra Unica',
+          },
+          {
+            key: 'calendar',
+            value: 'Calendarizar',
+          },
+        ],
+        verfication: false,
+      }),
       new TextboxQuestion({
         key: 'type',
         label: 'Type',
@@ -437,6 +595,24 @@ export const brand_questionaire = (user_role: UserRoles) => {
           {
             key: false,
             value: 'False',
+          },
+        ],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'productType',
+        label: 'Tipo de Compra',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: 'unique',
+            value: 'Compra Unica',
+          },
+          {
+            key: 'calendar',
+            value: 'Calendarizar',
           },
         ],
         verfication: false,

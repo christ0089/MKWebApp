@@ -1,4 +1,6 @@
-import { Timestamp } from "@firebase/firestore";
+import { Timestamp } from '@firebase/firestore';
+
+export type ProductType = 'unique' | 'calendar';
 
 export interface IBrands {
   brand: string;
@@ -8,6 +10,7 @@ export interface IBrands {
   ranking: number;
   img: string;
   img_circle: string;
+  productType: ProductType;
   name: string;
   type: string;
   warehouse: string;
@@ -18,19 +21,18 @@ export interface ICategory {
   [key: string]: IBrands[];
 }
 
-
 export interface IRecommendedList {
-  id: string,
-  name: string,
-  description: string,
+  id: string;
+  name: string;
+  description: string;
 }
 
 export interface IRepresentative {
-  id: string,
-  name: string,
-  email: string,
-  createdAt: Timestamp,
-  active: boolean,
-  codeId: string,
-  role: "representative"
+  id: string;
+  name: string;
+  email: string;
+  createdAt: Timestamp;
+  active: boolean;
+  codeId: string;
+  role: 'representative';
 }
