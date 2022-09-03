@@ -193,11 +193,117 @@ export const available_days = () => {
   };
 };
 
-export const product_questionaire = () => {
-  return {
-    title: 'Agregar Producto',
-    subtitle: null,
-    questions: [
+export const product_questionaire = (role: UserRoles) => {
+  let questions:QuestionBase<any>[] = []
+  if (role == "service_admin") {
+    questions = [
+      new UploadFileQuestion({
+        key: 'images',
+        label: 'Image',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [{ key: 'uploaded', value: false }],
+        required: true,
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'name',
+        label: 'Name',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'price',
+        label: 'Price',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'description',
+        label: 'Description',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'active',
+        label: 'Disponible',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: true,
+            value: 'Disponible',
+          },
+          {
+            key: false,
+            value: 'Agotado',
+          },
+        ],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'stripe_metadata_productType',
+        label: 'Tipo de Compra',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: 'unique',
+            value: 'Compra Unica',
+          },
+          {
+            key: 'calendar',
+            value: 'Calendarizar',
+          },
+        ],
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'availability',
+        label: 'Existencias',
+        value: 100,
+        required: true,
+        order: 0,
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'stripe_metadata_color',
+        label: 'Color',
+        value: '',
+        required: true,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      
+      new TextboxQuestion({
+        key: 'stripe_metadata_discount',
+        label: 'Descuento',
+        value: null,
+        order: 0,
+        options: [],
+        icon: {
+          name: 'attach_money',
+          type: 'icon',
+          position: 'prefix',
+        },
+        verfication: false,
+      }),
+    ]
+  } else { 
+    questions = [
       new UploadFileQuestion({
         key: 'images',
         label: 'Image',
@@ -289,24 +395,6 @@ export const product_questionaire = () => {
         verfication: false,
       }),
       new TextboxQuestion({
-        key: 'stripe_metadata_type',
-        label: 'Tipo',
-        value: '',
-        required: true,
-        order: 0,
-        options: [],
-        verfication: false,
-      }),
-      new TextboxQuestion({
-        key: 'stripe_metadata_brand',
-        label: 'Brand',
-        value: '',
-        required: true,
-        order: 0,
-        options: [],
-        verfication: false,
-      }),
-      new TextboxQuestion({
         key: 'stripe_metadata_discount',
         label: 'Descuento',
         value: null,
@@ -319,7 +407,30 @@ export const product_questionaire = () => {
         },
         verfication: false,
       }),
-    ],
+    new TextboxQuestion({
+      key: 'stripe_metadata_type',
+      label: 'Tipo',
+      value: '',
+      required: true,
+      order: 0,
+      options: [],
+      verfication: false,
+    }),
+    new TextboxQuestion({
+      key: 'stripe_metadata_brand',
+      label: 'Brand',
+      value: '',
+      required: true,
+      order: 0,
+      options: [],
+      verfication: false,
+    })]
+  }
+  
+  return {
+    title: 'Agregar Producto',
+    subtitle: null,
+    questions: questions,
   };
 };
 

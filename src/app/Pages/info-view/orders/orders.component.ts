@@ -28,7 +28,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { AuthService } from 'src/app/Services/Auth/auth.service';
+import { AuthService, UserData } from 'src/app/Services/Auth/auth.service';
 import { ICoupon } from 'src/app/Services/QuestionsService/product_questionaire';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 import { genericConverter, IProducts } from '../products/products.component';
@@ -181,8 +181,20 @@ export class OrdersComponent implements OnInit {
         }
 
         if (warehouse?.name === 'Torreón') {
-          if (auth.userData$.value.role !== 'admin') {
+          if (auth.isZoneAdmin) {
             return of([]);
+          }
+
+          if (auth.isServiceAdmin) {
+            q = query<IOrder>(
+              order_collection,
+              where('status', '==', order_status),
+              where('payment_meta_data.warehouse_id', '==', warehouse?.id),
+              where('driver.id', '==', (this.auth.userData$.value as UserData).uid),
+              where('createdAt', '>=', start),
+              where('createdAt', '<=', end),
+              orderBy('createdAt', 'desc')
+            );
           }
         }
 
@@ -291,15 +303,11 @@ export class OrdersComponent implements OnInit {
     });
 
     this.drivers$ = combineLatest([
-      this.auth.userData$,
       this.warehouse.selectedWarehouse$,
     ]).pipe(
-      switchMap(([user, warehouse]) => {
-        if (!user) {
-          return [];
-        }
-        if (user.role != 'driver' && !warehouse) {
-          return [];
+      switchMap(([warehouse]) => {
+        if (this.auth.isServiceAdmin) {
+          return([])
         }
         const col = collection(this.afs, 'users').withConverter(
           genericConverter()

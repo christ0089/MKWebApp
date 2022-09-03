@@ -93,8 +93,8 @@ export class QuestionControlService {
     return this.formData.asObservable();
   }
 
-  product_questionaire() {
-    const question = product_questionaire();
+  product_questionaire(role: UserRoles) {
+    const question = product_questionaire(role);
     return question;
   }
 

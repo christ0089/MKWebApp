@@ -12,6 +12,7 @@ import {
   orderBy,
   QueryDocumentSnapshot,
   setDoc,
+  where,
 } from '@firebase/firestore';
 import { collectionData } from 'rxfire/firestore';
 import { DocumentData } from 'rxfire/firestore/interfaces';
@@ -26,6 +27,8 @@ import {
 } from 'rxjs';
 import { ProductType } from 'src/app/Models/DataModels';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
+import { AuthService, UserData } from 'src/app/Services/Auth/auth.service';
+import { IBookingProduct } from 'src/app/Services/QuestionsService/product_questionaire';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { StorageService } from 'src/app/Services/storage.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
@@ -143,6 +146,7 @@ export class ProductsComponent implements OnInit {
     private readonly functions: Functions,
     private readonly storage: StorageService,
     private readonly warehouse: WarehouseService,
+    private readonly auth: AuthService,
     private qcs: QuestionControlService
   ) {
     const prods$ = this.loadProducts();
@@ -157,14 +161,14 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.questions = this.qcs.product_questionaire();
+    this.questions = this.qcs.product_questionaire((this.auth.userData$.value as UserData).role);
     this.form = this.qcs.toFormGroup(this.questions.questions);
   }
 
   editQuestions(product: IProducts) {
     this.editDrawer.toggle();
     this.form.enable();
-    this.questions = this.qcs.product_questionaire();
+    this.questions = this.qcs.product_questionaire((this.auth.userData$.value as UserData).role);
     this.currProd = product;
     this.questions.questions[0].options[0].value = true;
     const question: QuestionBase<any>[] = this.qcs.mapToQuestion(
@@ -177,7 +181,7 @@ export class ProductsComponent implements OnInit {
   newQuestions() {
     this.newDrawer.toggle();
     this.form.enable();
-    this.questions = this.qcs.product_questionaire();
+    this.questions = this.qcs.product_questionaire((this.auth.userData$.value as UserData).role);
     this.form = this.qcs.toFormGroup(this.questions.questions);
   }
 
@@ -202,10 +206,19 @@ export class ProductsComponent implements OnInit {
             `warehouse/${warehouse.id}/stripe_products`
           ).withConverter(prodConverter);
         }
-        const q = query<IProducts>(
+
+        let q = query<IProducts>(
           product_collection,
           orderBy('stripe_metadata_brand', 'desc')
         );
+
+        if (this.auth.isServiceAdmin) {
+          q = query<IProducts>(
+            product_collection,
+            where('stripe_metadata_owner', '==', this.auth.userData$.value?.uid)
+          );
+        }
+
         return collectionData<IProducts>(q, {
           idField: 'id',
         }).pipe(

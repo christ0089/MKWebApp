@@ -5,35 +5,12 @@
 <mat-drawer-container class="example-container">
   <mat-drawer mode="side" opened>
     <mat-list role="list">
-      <mat-list-item role="listitem" routerLink="analytics">
-        <button mat-button>Analitica</button>
-      </mat-list-item>
-      <mat-list-item role="listitem" routerLink="warehouse">
-        <button mat-button>Centro de Distribucion</button>
-      </mat-list-item>
-      <mat-list-item role="listitem" routerLink="orders">
-        <button mat-button>Ordenes</button>
-      </mat-list-item>
-      <mat-list-item role="listitem" routerLink="brands">
-        <button mat-button>Brands</button>
-      </mat-list-item>
-      <mat-list-item role="listitem" routerLink="reservations">
-        <button mat-button>Reservaciones</button>
-      </mat-list-item>
-      <mat-list-item role="listitem" routerLink="ads">
-        <button mat-button>Ads</button>
-      </mat-list-item>
-      <mat-list-item role="listitem" routerLink="products">
-        <button mat-button>Inventario</button>
-      </mat-list-item>
-      <mat-list-item role="listitem" routerLink="representatives">
-        <button mat-button>Representativos</button>
-      </mat-list-item>
-      <mat-list-item role="listitem" routerLink="coupons">
-        <button mat-button>Cupones</button>
-      </mat-list-item>
-      <mat-list-item role="listitem" routerLink="notifications">
-        <button mat-button>Notificaciones</button>
+      <mat-list-item
+        role="listitem"
+        *ngFor="let item of menuContainer"
+        [routerLink]="item.route"
+      >
+        <button mat-button>{{ item.name }}</button>
       </mat-list-item>
       <mat-list-item
         role="listitem"

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/Services/Auth/auth.service';
+import { AuthService, UserRoles } from 'src/app/Services/Auth/auth.service';
 import { ScriptService } from 'src/app/Services/script.service';
-import { Role } from '../users/users.component';
+
 
 @Component({
   selector: 'app-info-view',
@@ -11,7 +11,8 @@ import { Role } from '../users/users.component';
 })
 export class InfoViewComponent implements OnInit {
 
-  role!: Role; 
+  role!: UserRoles;
+  menuContainer!: any[];
   constructor(
     private readonly auth: AuthService,
     private readonly scriptService: ScriptService,
@@ -19,6 +20,7 @@ export class InfoViewComponent implements OnInit {
   ) { 
     this.scriptService.loadScript("mapbox");
     this.role = this.auth.userData$.value.role
+    this.menuContainer = this.menu(this.role as UserRoles);
   }
 
   ngOnInit(): void {
@@ -28,6 +30,60 @@ export class InfoViewComponent implements OnInit {
     this.auth.signOut().then(() => {
       return this.router.navigateByUrl("/login");
     })
+  }
+
+  menu(role: UserRoles) {
+    switch (role) {
+      case 'admin':
+      case 'zone_admin':
+        return [
+          {
+            route: 'analytics',
+            name: 'Analitica',
+          },
+          {
+            route: 'warehouse',
+            name: 'Centro de Distribucion',
+          },
+          {
+            route: 'brands',
+            name: 'Brands',
+          },
+          {
+            route: 'orders',
+            name: 'Ordenes',
+          },
+          {
+            route: 'products',
+            name: 'Inventario',
+          },
+          {
+            route: 'notifications',
+            name: 'Notificaciones',
+          },
+          {
+            route: 'coupons',
+            name: 'Cupones',
+          },
+        ];
+      case 'service_admin':
+        return [
+          {
+            route: 'products',
+            name: 'Inventario',
+          },
+          {
+            route: 'reservations',
+            name: 'Reservaciones',
+          },
+          {
+            route: 'orders',
+            name: 'Ordenes',
+          },
+        ];
+      default:
+        return [];
+    }
   }
 
 }

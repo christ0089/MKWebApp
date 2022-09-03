@@ -6,7 +6,7 @@ import { BehaviorSubject, EMPTY, map, Observable, switchMap } from "rxjs";
 import { UserService } from "../user.service";
 
 
-export type UserRoles = "admin" | "zone_admin" | "driver";
+export type UserRoles = "admin" | "zone_admin" | "service_admin" | "driver";
 export type UserStatus = "available" | "in-transit";
 export interface UserData {
   name: string,
@@ -63,12 +63,36 @@ export class AuthService {
     }
   }
 
+  get isServiceAdmin() {
+    const user = this.userData$.value
+    if (user === null) {
+      return false;
+    }
+    if (user.role === "service_admin") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  get isZoneAdmin() {
+    const user = this.userData$.value
+    if (user === null) {
+      return false;
+    }
+    if (user.role === "zone_admin") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   get isAdmin() {
     const user = this.userData$.value
     if (user === null) {
       return false;
     }
-    if (user.role === "admin" || user.role === "zone_admin") {
+    if (this.isZoneAdmin || this.isServiceAdmin || this.isSuperAdmin) {
       return true;
     } else {
       return false;

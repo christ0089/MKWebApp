@@ -90,16 +90,27 @@ export class ReservationsComponent implements OnInit {
           'stripe_products'
         ).withConverter<IBookingProduct>(genericConverter<IBookingProduct>());
         this.selectedWarehouse = warehouse;
+
         if (warehouse?.name !== 'General') {
           product_collection = collection(
             this.afs,
             `warehouse/${warehouse.id}/stripe_products`
           ).withConverter<IBookingProduct>(genericConverter<IBookingProduct>());
         }
-        const q = query<IBookingProduct>(
+
+        let q = query<IBookingProduct>(
           product_collection,
           where('stripe_metadata_productType', '==', 'calendar')
         );
+        
+        if (this.auth.isServiceAdmin) {
+          console.log(this.auth.userData$.value?.uid);
+          console.log(`warehouse/${warehouse.id}/stripe_products`);
+          q = query<IBookingProduct>(
+            product_collection,
+            where('stripe_metadata_owner', '==', this.auth.userData$.value?.uid)
+          );
+        }
         return collectionData<IBookingProduct>(q, {
           idField: 'id',
         }).pipe(
@@ -388,6 +399,10 @@ export class ReservationsComponent implements OnInit {
       (v) => v.selected === true
     );
     const user = this.auth.userData$.value;
+
+    if (!user) {
+      return;
+    }
 
     const ref = collection(
       this.afs,

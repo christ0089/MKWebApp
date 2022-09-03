@@ -14,7 +14,7 @@ import {
   IProducts,
   IWarehouse,
 } from 'src/app/Pages/info-view/products/products.component';
-import { AuthService } from 'src/app/Services/Auth/auth.service';
+import { AuthService, UserData } from 'src/app/Services/Auth/auth.service';
 import { BrandService } from 'src/app/Services/brand.service';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { StorageService } from 'src/app/Services/storage.service';
@@ -73,7 +73,7 @@ export class ProductComponent implements OnInit {
     if (this.form) {
       this.form.enable();
     } 
-    this.questions = this.qcs.product_questionaire();
+    this.questions = this.qcs.product_questionaire((this.auth.userData$.value as UserData).role);
     this.currProd = product;
     this.questions.questions[0].options[0].value = true;
     const question: QuestionBase<any>[] = this.qcs.mapToQuestion(
@@ -87,7 +87,7 @@ export class ProductComponent implements OnInit {
     if (this.form) {
       this.form.enable();
     }
-    this.questions = this.qcs.product_questionaire();
+    this.questions = this.qcs.product_questionaire((this.auth.userData$.value as UserData).role);
     this.questions.questions[7].value = brand?.type || '';
     this.questions.questions[8].value = brand?.brand || '';
 
