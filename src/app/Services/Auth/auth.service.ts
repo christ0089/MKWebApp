@@ -128,42 +128,6 @@ export class AuthService {
     return signInWithEmailAndPassword(this.auth, email, password);
   }
 
-  // async sendSignInEmailCode(email, url) {
-  //   const actionCodeSettings = {
-  //     // Your redirect URL
-  //     url: 'https://localhost:4200/login',
-  //     handleCodeInApp: true,
-  //   };
-  //   try {
-  //     await this.afAuth.auth.sendSignInLinkToEmail(
-  //       email,
-  //       actionCodeSettings
-  //     );
-  //     window.localStorage.setItem('emailForSignIn', email);
-  //    // this.emailSent = true;
-  //   } catch (err) {
-  //    // this.errorMessage = err.message;
-  //   }
-  // }
-
-  // async confirmSignIn(url) {
-  //   try {
-  //     if (this.afAuth.auth.isSignInWithEmailLink(url)) {
-  //       let email = window.localStorage.getItem('emailForSignIn');
-
-  //       // If missing email, prompt user for it
-  //       if (!email) {
-  //         email = window.prompt('Please provide your email for confirmation');
-  //       }
-
-  //       // Signin user and remove the email localStorage
-  //       const result = await this.afAuth.auth.signInWithEmailLink(email, url);
-  //       window.localStorage.removeItem('emailForSignIn');
-  //     }
-  //   } catch (err) {
-  //    // this.errorMessage = err.message;
-  //   }
-  // }
 
   setUserData() {
     //  (this.user.value as User) = { displayName: data.name + data.lname1 };
