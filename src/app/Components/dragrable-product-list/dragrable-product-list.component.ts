@@ -45,6 +45,7 @@ export class DragrableProductListComponent implements OnInit {
   searchForm = new FormControl();
   selectedWarehouse!: IWarehouse | null;
   userRole: boolean = false;
+  disabled: boolean = false;
 
   constructor(
     private readonly afs: Firestore,
@@ -56,11 +57,17 @@ export class DragrableProductListComponent implements OnInit {
         this.selectedWarehouse = null;
       }
       this.selectedWarehouse = warehouse;
+
+      if (warehouse?.name == "General") {
+        this.disabled = true;
+      } else {
+        this.disabled = false
+      }
     });
 
     combineLatest([this.brand.brand$, this.brand.brand_filters$])
       .pipe(
-        switchMap(([_,filters]) => {
+        switchMap(([_, filters]) => {
           return this.loadProducts(
             `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products`,
             filters[0]
@@ -87,7 +94,7 @@ export class DragrableProductListComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   loadProducts(
     path: string,
@@ -145,11 +152,12 @@ export class DragrableProductListComponent implements OnInit {
     this.deleteProdEvent.emit(this.all_products$.value);
   }
 
-  
+
 
   async searchProd(search: string) {
     const prodName: string = search.toLowerCase();
-    if (prodName == '' || this.gen_products$.value == []) {
+    const genProds: IProducts[] = this.gen_products$.value
+    if (prodName == '' || genProds == []) {
       const prods = await firstValueFrom(
         this.loadProducts(`${this.gen_path}`, this.brand.brand_filters$.value[0])
       );

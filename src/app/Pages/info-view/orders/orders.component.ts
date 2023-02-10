@@ -14,6 +14,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import {
   FirestoreDataConverter,
   orderBy,
+  Query,
   QueryDocumentSnapshot,
   where,
 } from '@firebase/firestore';
@@ -113,10 +114,11 @@ export class OrdersComponent implements OnInit {
   cash_total = 0;
   card_subtotal = 0;
   comissions = 0;
+  payment_commisions = 0;
   card_total = 0;
   canceled_total = 0;
   quantity_total = 0;
-  propina : number = 0; 
+  propina: number = 0;
 
   items_sold: Map<string, any> = new Map<string, any>();
   private selectedType = new BehaviorSubject<OrderStatus>(
@@ -159,7 +161,7 @@ export class OrdersComponent implements OnInit {
         );
         const start = new Date(dateObserver.start);
         const end = new Date(dateObserver.end);
-        let q = query<IOrder>(
+        let q: Query<IOrder> = query<IOrder>(
           order_collection,
           where('status', '==', order_status),
           where('payment_meta_data.warehouse_id', '==', warehouse?.id),
@@ -180,7 +182,7 @@ export class OrdersComponent implements OnInit {
           );
         }
 
-        if (warehouse?.name === 'Torreón') {
+        if (warehouse?.name === 'Torreón') { // TODO: Remove For Independen Operator
           if (auth.isZoneAdmin) {
             return of([]);
           }
@@ -221,9 +223,10 @@ export class OrdersComponent implements OnInit {
             this.card_total = 0;
             this.card_subtotal = 0;
             this.propina = 0;
+            this.payment_commisions = 0;
 
             const o = orders.filter(
-              (or) => or.customer != 'hQUt1wUTc0httdD9p2V7oQB5m4v2'
+              (or) => or.customer != 'hQUt1wUTc0httdD9p2V7oQB5m4v2' // TODO: Remove and filter based on demo order
             );
 
             const order_mapped = o.map((order) => {
@@ -255,8 +258,6 @@ export class OrdersComponent implements OnInit {
                 ) {
                   this.cash_total += (order.payment.amount / 100) * rand;
 
-                  this.propina = this.propina + (parseInt(order.payment.metadata.tip) || 0);
-                  console.log(this.propina)
                 }
                 if (
                   (order.payment.payment_method_types as string[]).indexOf(
@@ -270,9 +271,9 @@ export class OrdersComponent implements OnInit {
                   this.card_subtotal += subtotal;
                   this.card_total +=
                     subtotal - comissions - 3 - (comissions + 3) * (16 / 100);
-
-                  this.propina = this.propina + (parseInt(order.payment.metadata.tip) || 0);
                 }
+                this.payment_commisions = this.payment_commisions + 15;
+                this.propina = this.propina + (parseInt(order.payment.metadata.tip) || 0);
               }
               order.orderId = order.id.substring(0, 5).toUpperCase();
               return order;
@@ -307,7 +308,7 @@ export class OrdersComponent implements OnInit {
     ]).pipe(
       switchMap(([warehouse]) => {
         if (this.auth.isServiceAdmin) {
-          return([])
+          return ([])
         }
         const col = collection(this.afs, 'users').withConverter(
           genericConverter()
@@ -351,8 +352,8 @@ export class OrdersComponent implements OnInit {
           flatOrder.push({
             price: order.payment.amount / 100,
             orderId: order.orderId,
-            driver_name: order.driver !== undefined  ||  order.driver !== null  ? order.driver.name : '',
-            customer_name: order.shipping.name !== undefined ||  order.shipping.name !== null  ? order.shipping.name : '',
+            driver_name: order.driver !== undefined || order.driver !== null ? order.driver.name : '',
+            customer_name: order.shipping.name !== undefined || order.shipping.name !== null ? order.shipping.name : '',
             coupons_name: order.coupons?.code || '',
             coupon_discount: order.coupons?.discount || 0,
             payment_method: order.payment.payment_method_types[0],
@@ -381,7 +382,7 @@ export class OrdersComponent implements OnInit {
     return null;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   changedTab(event: MatTabChangeEvent) {
     this.selectedType.next(this.status[event.index] as OrderStatus);

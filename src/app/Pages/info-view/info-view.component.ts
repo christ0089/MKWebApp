@@ -62,12 +62,20 @@ export class InfoViewComponent implements OnInit {
             name: 'Notificaciones',
           },
           {
+            route: 'reservations',
+            name: 'Reservaciones',
+          },
+          {
             route: 'coupons',
             name: 'Cupones',
           },
         ];
       case 'service_admin':
         return [
+          {
+            route: 'analytics',
+            name: 'Analitica',
+          },
           {
             route: 'products',
             name: 'Inventario',

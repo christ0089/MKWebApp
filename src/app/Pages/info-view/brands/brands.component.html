@@ -50,13 +50,13 @@
   </mat-tab>
 </mat-tab-group>
 
-<mat-drawer #new_prod_drawer class="example-sidenav" mode="over" position="end">
+<mat-drawer #new_brand_drawer class="example-sidenav" mode="over" position="end">
   <h4>
     Agregar Brand
     <button
       mat-icon-button
       style="float: right"
-      (click)="new_prod_drawer.toggle()"
+      (click)="new_brand_drawer.toggle()"
     >
       <mat-icon>close</mat-icon>
     </button>
@@ -89,7 +89,7 @@
     <button
       mat-button
       
-      (click)="brandAction('brand.create', new_prod_drawer)"
+      (click)="brandAction('brand.create', new_brand_drawer)"
     >
       Guardar
     </button>

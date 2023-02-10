@@ -47,6 +47,7 @@ export interface IProducts {
   stripe_metadata_brand: string;
   stripe_metadata_discount?: number | string | null;
   stripe_metadata_status?: IProductStatus;
+  stripe_metadata_model: string;
   stripe_metadata_owner: string;
   stripe_metadata_productType?: ProductType;
   tags: {
@@ -75,12 +76,6 @@ export enum IProductStatus {
   OUT_OF_STOCK,
 }
 
-interface IDelivery {
-  min_payment: number;
-  max_fee: number;
-  min_fee: number;
-}
-
 export interface IWarehouse {
   id: string;
   name: string;
@@ -91,6 +86,14 @@ export interface IWarehouse {
   close_time: number[];
   active: boolean;
 }
+
+interface IDelivery {
+  min_payment: number;
+  max_fee: number;
+  min_fee: number;
+}
+
+
 
 export const prodConverter: FirestoreDataConverter<IProducts> = {
   toFirestore(products: IProducts): DocumentData {
@@ -114,7 +117,7 @@ export const warehouseConverter: FirestoreDataConverter<IWarehouse> = {
 
 export const genericConverter = <T>() => ({
   toFirestore<T>(obj: T): DocumentData {
-    return obj;
+    return obj as DocumentData;
   },
   fromFirestore<T>(snapshot: QueryDocumentSnapshot<DocumentData>): T {
     const data = snapshot.data()!;
@@ -232,7 +235,7 @@ export class ProductsComponent implements OnInit {
 
   async searchProd(search: string) {
     const prodName: string = search.toLowerCase();
-    if (prodName == '' || this.products$.value == []) {
+    if (prodName == '' ) {
       const prods = await firstValueFrom(this.loadProducts());
       console.log(prods);
       this.products$.next(prods);
@@ -296,6 +299,10 @@ export class ProductsComponent implements OnInit {
       description: product.description,
     });
     lastValueFrom(prod$).then((res) => {
+      this.loading = false;
+      this.file = null;
+      this.newDrawer.toggle();
+    }).catch(e => {
       this.loading = false;
       this.file = null;
       this.newDrawer.toggle();

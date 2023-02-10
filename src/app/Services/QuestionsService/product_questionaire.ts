@@ -279,6 +279,19 @@ export const product_questionaire = (role: UserRoles) => {
         verfication: false,
       }),
       new TextboxQuestion({
+        key: 'stripe_model_3d',
+        label: 'Modelo 3D',
+        value: null,
+        order: 0,
+        options: [],
+        icon: {
+          name: '3d_rotation',
+          type: 'icon',
+          position: 'prefix',
+        },
+        verfication: false,
+      }),
+      new TextboxQuestion({
         key: 'stripe_metadata_color',
         label: 'Color',
         value: '',
@@ -286,8 +299,7 @@ export const product_questionaire = (role: UserRoles) => {
         order: 0,
         options: [],
         verfication: false,
-      }),
-      
+      }),  
       new TextboxQuestion({
         key: 'stripe_metadata_discount',
         label: 'Descuento',
@@ -300,7 +312,7 @@ export const product_questionaire = (role: UserRoles) => {
           position: 'prefix',
         },
         verfication: false,
-      }),
+      })
     ]
   } else { 
     questions = [
@@ -383,6 +395,19 @@ export const product_questionaire = (role: UserRoles) => {
         value: 100,
         required: true,
         order: 0,
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'stripe_metadata_model',
+        label: 'Modelo 3D',
+        value: null,
+        order: 0,
+        options: [],
+        icon: {
+          name: '3d_rotation',
+          type: 'icon',
+          position: 'prefix',
+        },
         verfication: false,
       }),
       new TextboxQuestion({

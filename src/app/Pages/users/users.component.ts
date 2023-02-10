@@ -14,11 +14,14 @@ import {
 } from 'rxjs';
 import { UserData } from 'src/app/Services/Auth/auth.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
-import { genericConverter } from '../info-view/products/products.component';
+import {
+  genericConverter,
+  IWarehouse,
+} from '../info-view/products/products.component';
 import { doc, setDoc } from '@firebase/firestore';
 import { Functions } from '@angular/fire/functions';
 
-export type Role = 'general' | 'driver' | 'zone_admin' | 'admin';
+export type Role = 'general' | 'driver' | 'unassigned' | 'zone_admin' | 'admin';
 
 @Component({
   selector: 'app-users',
@@ -26,7 +29,7 @@ export type Role = 'general' | 'driver' | 'zone_admin' | 'admin';
   styleUrls: ['./users.component.sass'],
 })
 export class UsersComponent implements OnInit {
-  status: Role[] = ['general', 'driver', 'zone_admin', 'admin'];
+  status: Role[] = ['general', 'unassigned', 'driver', 'zone_admin', 'admin'];
   private selectedType = new BehaviorSubject<Role>(this.status[0]);
   users$ = new BehaviorSubject<UserData[]>([]);
   searchForm = new FormControl();
@@ -45,9 +48,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
 
   loadUsers() {
     return combineLatest([
@@ -64,21 +65,7 @@ export class UsersComponent implements OnInit {
         ).withConverter<UserData>(genericConverter<UserData>());
 
         console.log(warehouse);
-        let q = query<UserData>(
-          user_collection,
-          where('role', '==', selectedType),
-          where('warehouse_id', '==', warehouse.id)
-        );
-        if (warehouse?.name === 'General') {
-          q = query<UserData>(
-            user_collection,
-            where('role', '==', selectedType)
-          );
-        }
-
-        if (selectedType === 'general') {
-          q = query<UserData>(user_collection);
-        }
+        const q = this.queryFunction(user_collection, selectedType, warehouse)
 
         return collectionData<UserData>(q, {
           idField: 'id',
@@ -89,6 +76,37 @@ export class UsersComponent implements OnInit {
         );
       })
     );
+  }
+
+  queryFunction(
+    user_collection: any,
+    selectedType: Role,
+    warehouse: IWarehouse
+  ) {
+    if (selectedType === 'unassigned') {
+      return query<UserData>(
+        user_collection,
+        where('warehouse_id', '==', warehouse.id)
+      );
+    }
+    let q = query<UserData>(
+      user_collection,
+      where('role', '==', selectedType),
+      where('warehouse_id', '==', warehouse.id)
+    );
+    if (warehouse?.name === 'General') {
+      q = query<UserData>(user_collection, where('role', '==', selectedType));
+    }
+
+    if (selectedType === 'general') {
+      q = query<UserData>(user_collection);
+    }
+
+    return q;
+  }
+
+  editUserRole(user:any) {
+
   }
 
   changedTab(event: MatTabChangeEvent) {
@@ -117,15 +135,21 @@ export class UsersComponent implements OnInit {
       `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/representative/${user.id}`
     );
 
-    setDoc(docRef, {
-      email: user.email,
-      name: user.name,
-      role: "representative",
-      active: true,
-      coupon_id: (user.email as string).substr(0,5) + (user.id as string) .substr(0,2),
-      createdAt: serverTimestamp()
-    }, {
-      merge : true
-    })
+    setDoc(
+      docRef,
+      {
+        email: user.email,
+        name: user.name,
+        role: 'representative',
+        active: true,
+        coupon_id:
+          (user.email as string).substr(0, 5) +
+          (user.id as string).substr(0, 2),
+        createdAt: serverTimestamp(),
+      },
+      {
+        merge: true,
+      }
+    );
   }
 }

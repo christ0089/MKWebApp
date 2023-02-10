@@ -90,6 +90,7 @@
   <div
     style="width: 50%; height: 500px; padding: 5px; background-color: white"
     cdkDropList
+    *ngIf="disabled == false"
     (cdkDropListDropped)="drop($event)"
   >
     <h3 *ngIf="this.selectedWarehouse">

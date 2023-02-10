@@ -44,7 +44,7 @@ export class BrandsComponent implements OnInit {
   loading = false;
 
   @ViewChild('edit_prod_drawer') editDrawer!: MatDrawer;
-  @ViewChild('new_prod_drawer') newDrawer!: MatDrawer;
+  @ViewChild('new_brand_drawer') newDrawer!: MatDrawer;
   @ViewChild('prod_drawer') prodDrawer!: MatDrawer;
 
   constructor(
@@ -108,7 +108,7 @@ export class BrandsComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   editQuestions(brand: IBrands) {
     this.editDrawer.toggle();
@@ -126,7 +126,6 @@ export class BrandsComponent implements OnInit {
   newQuestions() {
     this.newDrawer.toggle();
     this.questions = this.qcs.brand_questions(this.authService.userData$.value.role);
-    console.log(this.questions);
     this.form = this.qcs.toFormGroup(this.questions.questions);
     this.form.enable();
   }
@@ -178,9 +177,6 @@ export class BrandsComponent implements OnInit {
         this.afs,
         `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/brands/${element.id}`
       );
-      if (this.warehouse.selectedWarehouse$.value?.name === 'General') {
-        docRef = doc(this.afs, `brands/${element.id}`);
-      }
 
       try {
         this.file = null;
@@ -198,7 +194,7 @@ export class BrandsComponent implements OnInit {
     });
 
     if (promises) {
-      Promise.all(promises);
+      Promise.all(promises).catch(e => console.error(e));
     }
   }
 
@@ -225,11 +221,13 @@ export class BrandsComponent implements OnInit {
     this.brands.brand_filters$.next([
       [
         where('stripe_metadata_brand', '==', brand.brand),
-        where('stripe_metadata_type', '==', brand.type)
+        where('stripe_metadata_type', '==', brand.type),
+        orderBy('ranking', 'asc')
       ],
       [
         where('stripe_metadata_brand', '==', brand.brand),
         where('stripe_metadata_type', '==', brand.type)
+       
       ],
     ]);
     this.prodDrawer.toggle();
@@ -237,7 +235,7 @@ export class BrandsComponent implements OnInit {
 
   async searchProd(search: string) {
     const searchTerm: string = search.toLowerCase();
-    if (searchTerm == '' || this.brands$.value === {}) {
+    if (searchTerm == '') {
       const brands = (await firstValueFrom(this.loadBrands())) || {};
       this.brands$.next(brands);
     } else {
@@ -254,14 +252,18 @@ export class BrandsComponent implements OnInit {
   }
 
   saveProd(prods: IProducts[]) {
-    prods.forEach((product, i) => {
+    console.log(prods)
+    const promises = prods.map((product, i) => {
       let docRef = doc(
         this.afs,
         `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${product.id}`
       );
       product.ranking = i
-      setDoc(docRef, product, { merge: true });
+      return setDoc(docRef, product, { merge: true });
     });
+    if (promises) {
+      Promise.all(promises).catch(e => console.error(e));
+    }
   }
 
   deleteProd(products: IProducts[]) {

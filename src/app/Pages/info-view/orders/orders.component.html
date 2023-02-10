@@ -2,29 +2,18 @@
 <div style="display: block; width: 100%; height: 60px">
   <mat-form-field class="example-form-field" appearance="fill">
     <mat-label>First campaign</mat-label>
-    <mat-date-range-input
-      [formGroup]="campaignOne"
-      [rangePicker]="campaignOnePicker"
-    >
+    <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
       <input matStartDate placeholder="Start date" formControlName="start" />
       <input matEndDate placeholder="End date" formControlName="end" />
     </mat-date-range-input>
-    <mat-datepicker-toggle
-      matSuffix
-      [for]="campaignOnePicker"
-    ></mat-datepicker-toggle>
+    <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
     <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
   </mat-form-field>
   <app-warehouse></app-warehouse>
 
   <mat-form-field appearance="fill" *ngIf="drivers$ | async; let sel_driver">
     <mat-label>Repartidores</mat-label>
-    <mat-select
-      (valueChange)="selectedDriver($event)"
-      required
-      [compareWith]="compareObjects"
-      [value]="sel_driver"
-    >
+    <mat-select (valueChange)="selectedDriver($event)" required [compareWith]="compareObjects" [value]="sel_driver">
       <mat-option [value]="null"> General </mat-option>
       <mat-option *ngFor="let driver of drivers$ | async" [value]="driver">
         {{ driver.name }}
@@ -32,122 +21,111 @@
     </mat-select>
   </mat-form-field>
 </div>
-<a
-  download="report_file.csv"
-  style="text-decoration: none; color: deeppink; font-family: 'Roboto'"
-  *ngIf="orders$ | async; let orders_data"
-  [href]="ordersToCSV(orders_data)"
-  >CSV export</a
->
+<a download="report_file.csv" style="text-decoration: none; color: deeppink; font-family: 'Roboto'"
+  *ngIf="orders$ | async; let orders_data" [href]="ordersToCSV(orders_data)">CSV export</a>
 
 <div style="overflow-y: scroll; height: 100%; width: 100%;">
   <mat-tab-group (selectedTabChange)="changedTab($event)" style="width: 100%">
     <mat-tab label="Processando"> </mat-tab>
     <mat-tab label="En Transito"></mat-tab>
     <mat-tab label="Completadas">
-      <div style="padding: 10px">
+      <div style="padding: 10px; width: 40vh; ">
         <p>
-          Total Cash:
-          <span style="color: lightslategray; font-weight: 500">{{
+          Total Efectivo:
+          <span style="color: lightslategray; font-weight: 500; margin-left: auto;">{{
             cash_total | currency
-          }}</span>
+            }}</span>
         </p>
         <p>
           Total Tarjeta:
-          <span style="color: lightslategray; font-weight: 500"
-            >{{ card_total | currency }} - Subtotal: ({{
-              card_subtotal | currency
-            }})</span
-          >
+          <span style="color: lightslategray; font-weight: 500">{{ card_total | currency }} - Subtotal: ({{
+            card_subtotal | currency
+            }})</span>
+        </p>
+        <p style="font-weight: bolder">
+          Subtotal:
+          <span style="color: rgb(237, 100, 230); font-weight: 500">{{
+            card_total + cash_total - payment_commisions | currency
+            }}</span>
         </p>
         <p>
           Propina:
-          <span style="color: rgb(255, 0, 200)">{{ propina | currency }}</span>
+          <span style="color: rgb(100, 136, 237);">{{ propina | currency }}</span>
         </p>
+        <p>
+          Comision por Venta:
+          <span style="color: rgb(100, 136, 237); font-weight: 500"> - {{
+            payment_commisions | currency
+            }}</span>
+        </p>
+
         <p style="font-weight: bolder">
           Total:
           <span style="color: rgb(237, 100, 230); font-weight: bolder">{{
-            card_total + cash_total | currency
-          }}</span>
+            card_total + cash_total - payment_commisions | currency
+            }}</span>
         </p>
       </div>
       <h2>Ventas</h2>
       <div *ngIf="items_sold.size > 0">
-        <mat-list
-          role="list"
-          style="overflow: scroll; height: fit-content; max-height: 500px"
-        >
-          <mat-list-item
-            role="listitem"
-            *ngFor="let order of items_sold | keyvalue; let i = index"
-            style="padding: 10px"
-          >
+        <mat-list role="list" style="overflow: scroll; height: fit-content; max-height: 500px">
+          <mat-list-item role="listitem" *ngFor="let order of items_sold | keyvalue; let i = index"
+            style="padding: 10px">
             <div style="width: 100%">
               <div style="width: 100%; display: flex">
-                <div
-                  style="
+                <div style="
                     height: 20px;
                     margin-top: auto;
                     margin-bottom: auto;
                     margin-right: 10px;
-                  "
-                >
+                  ">
                   <p style="height: 20px; color: lightslategrey">{{ i + 1 }}</p>
                 </div>
-                <div
-                  style="
+                <div style="
                     width: 50px;
                     height: 50px;
                     margin-right: 20px;
                     background-color: white;
                     border-radius: 5px;
                     overflow: hidden;
-                  "
-                >
-                  <img
-                    style="object-fit: contain; width: 100%; height: 100%"
-                    [src]="order.value.img"
-                  />
+                  ">
+                  <img style="object-fit: contain; width: 100%; height: 100%" [src]="order.value.img" />
                 </div>
 
                 <span>{{ order.value?.name }}</span>
                 <span class="example-spacer"></span>
                 <span style="color: lightslategray">{{
                   order.value.quantity
-                }}</span>
+                  }}</span>
               </div>
             </div>
           </mat-list-item>
         </mat-list>
         <p style="padding: 5px">
           Total Vendido:
-          <span
-            class="example-spacer"
-            style="font-weight: bold; color: rgb(0, 132, 255)"
-          ></span
-          >{{ quantity_total }}
+          <span class="example-spacer" style="font-weight: bold; color: rgb(0, 132, 255)"></span>{{ quantity_total }}
         </p>
       </div>
     </mat-tab>
     <mat-tab label="Canceladas">
       <div style="padding: 10px">
         <p>
-          Total Cash:
+          Total Efectivo:
           <span style="color: lightslategray; font-weight: 500">{{
             cash_total | currency
-          }}</span>
+            }}</span>
         </p>
         <p>
           Total Tarjeta:
           <span style="color: lightslategray; font-weight: 500">{{
             card_total | currency
-          }}</span>
+            }}</span>
         </p>
         <p style="font-weight: bolder">
           Total:
           <span style="color: rgb(237, 100, 230); font-weight: bolder">{{
             card_total + cash_total | currency
-          }}</span>
+            }}</span>
         </p>
       </div>
     </mat-tab>
@@ -155,25 +133,17 @@
   <div>
     <h2>Ordenes</h2>
 
-    <mat-list
-      role="list"
-      style="overflow: scroll; margin-bottom: 40px; height: 500px"
-    >
-      <mat-list-item
-        role="listitem"
-        *ngFor="let order of orders$ | async; let i = index"
-        style="margin-bottom: 10px; height: fit-content"
-      >
+    <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px">
+      <mat-list-item role="listitem" *ngFor="let order of orders$ | async; let i = index"
+        style="margin-bottom: 10px; height: fit-content">
         <div style="width: 100%">
           <div style="width: 100%; display: flex">
-            <div
-              style="
+            <div style="
                 height: 20px;
                 margin-top: auto;
                 margin-bottom: auto;
                 margin-right: 20px;
-              "
-            >
+              ">
               <p style="height: 20px; color: lightslategrey">{{ i + 1 }}</p>
             </div>
 
@@ -183,88 +153,62 @@
             </div>
 
             <span class="example-spacer"></span>
-            <span
-              style="padding: 5px; color: rgb(0, 132, 255)"
-              *ngIf="order.coupons"
-            >
-              {{ order.coupons.code }}</span
-            >
+            <span style="padding: 5px; color: rgb(0, 132, 255)" *ngIf="order.coupons">
+              {{ order.coupons.code }}</span>
 
-            <span
-              style="padding: 5px; color: rgb(0, 132, 255)"
-              *ngIf="order.payment_meta_data.coupons"
-            >
-              {{ order.payment_meta_data.coupons.code }}</span
-            >
-            <span
-              style="padding: 5px; width: 200px; text-overflow: ellipsis"
-              *ngIf="order.driver"
-            >
-              Repartidor: {{ order.driver.name }}</span
-            >
-            <div
-              style="
+            <span style="padding: 5px; color: rgb(0, 132, 255)" *ngIf="order.payment_meta_data.coupons">
+              {{ order.payment_meta_data.coupons.code }}</span>
+            <span style="padding: 5px; width: 200px; text-overflow: ellipsis" *ngIf="order.driver">
+              Repartidor: {{ order.driver.name }}</span>
+            <div style="
                 background: rgba(255, 255, 255, 0.274);
                 padding: 5px;
                 margin-left: 10px;
                 margin-right: 10px;
                 border-radius: 5px;
-              "
-            >
+              ">
               <span style="color: rgb(255, 0, 200)">{{
                 order.payment.payment_method_types[0]
-              }}</span>
+                }}</span>
             </div>
-            <div
-              *ngIf="order.payment.payment_method_types[0] === 'card'"
-              style="
+            <div *ngIf="order.payment.payment_method_types[0] === 'card'" style="
                 background: rgba(255, 255, 255, 0.274);
                 padding: 5px;
                 margin-left: 10px;
                 margin-right: 10px;
                 border-radius: 5px;
-              "
-            >
+              ">
               <span style="color: rgb(255, 0, 200)">{{
                 order.payment.amount / 100 -
-                  3 -
-                  (order.payment.amount / 100) * (36 / 100) -
-                  ((order.payment.amount * (36 / 100)) / 100) * (16 / 100)
-                  | currency
-              }}</span>
+                3 -
+                (order.payment.amount / 100) * (36 / 100) -
+                ((order.payment.amount * (36 / 100)) / 100) * (16 / 100)
+                | currency
+                }}</span>
             </div>
-            <div
-              style="
+            <div style="
                 background: rgba(132, 237, 100, 0.274);
                 padding: 5px;
                 border-radius: 5px;
                 height: 20px;
-              "
-            >
+              ">
               <span style="color: rgb(100, 237, 152)">{{
                 order.payment.amount / 100 | currency
-              }}</span>
+                }}</span>
             </div>
 
-            <span
-              style="
+            <span style="
                 padding-left: 20px;
                 color: lightslategray;
                 padding-top: 5px;
                 padding-bottom: 5px;
                 margin-right: 10px;
-              "
-              >{{ order.createdAt.toDate() | date }}</span
-            >
+              ">{{ order.createdAt.toDate() | date }}</span>
             <button mat-button (click)="openOrder(order)">Ver</button>
-            <button
-              mat-button
-              (click)="reinburse(order)"
-              *ngIf="
+            <button mat-button (click)="reinburse(order)" *ngIf="
                 order.status == 'canceled' &&
                 order.payment.payment_method_types[0] === 'card'
-              "
-            >
+              ">
               Rembolsar
             </button>
           </div>
@@ -274,21 +218,12 @@
   </div>
 </div>
 
-<mat-drawer
-  #edit_order_drawer
-  class="example-sidenav"
-  mode="over"
-  position="end"
-  style="margin-bottom: 40px; overflow-y: scroll; padding: 20px"
->
+<mat-drawer #edit_order_drawer class="example-sidenav" mode="over" position="end"
+  style="margin-bottom: 40px; overflow-y: scroll; padding: 20px">
   <div *ngIf="currOrder">
     <h2>
       Orden: {{ currOrder.orderId }}
-      <button
-        mat-icon-button
-        style="float: right"
-        (click)="edit_order_drawer.toggle()"
-      >
+      <button mat-icon-button style="float: right" (click)="edit_order_drawer.toggle()">
         <mat-icon>close</mat-icon>
       </button>
     </h2>
@@ -296,41 +231,28 @@
       <strong>Repartidor:</strong> {{ currOrder.driver.name }}
     </p>
     <h3 style="margin-top: 10px">Productos Entregados</h3>
-    <mat-list
-      role="list"
-      style="overflow: scroll; height: fit-content; max-height: 500px"
-    >
-      <mat-list-item
-        role="listitem"
-        *ngFor="let order of currOrder.payment_meta_data.items; let i = index"
-        style="padding: 10px"
-      >
+    <mat-list role="list" style="overflow: scroll; height: fit-content; max-height: 500px">
+      <mat-list-item role="listitem" *ngFor="let order of currOrder.payment_meta_data.items; let i = index"
+        style="padding: 10px">
         <div style="width: 100%">
           <div style="width: 100%; display: flex">
-            <div
-              style="
+            <div style="
                 height: 20px;
                 margin-top: auto;
                 margin-bottom: auto;
                 margin-right: 10px;
-              "
-            >
+              ">
               <p style="height: 20px; color: lightslategrey">{{ i + 1 }}</p>
             </div>
-            <div
-              style="
+            <div style="
                 width: 50px;
                 height: 50px;
                 margin-right: 20px;
                 background-color: white;
                 border-radius: 5px;
                 overflow: hidden;
-              "
-            >
-              <img
-                style="object-fit: contain; width: 100%; height: 100%"
-                [src]="order.img"
-              />
+              ">
+              <img style="object-fit: contain; width: 100%; height: 100%" [src]="order.img" />
             </div>
 
             <span>{{ order.name }}</span>

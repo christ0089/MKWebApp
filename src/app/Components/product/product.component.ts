@@ -50,6 +50,7 @@ export class ProductComponent implements OnInit {
       this.warehouse.selectedWarehouse$,
       this.auth.userData$
     ]).subscribe(([prod, brand, selectedWarehouse]) => {
+      console.log(prod)
       if (!prod) {
         if (this.auth.isSuperAdmin === true && selectedWarehouse?.name === 'General') {
           this.newQuestions(brand);
@@ -59,6 +60,8 @@ export class ProductComponent implements OnInit {
         }
         return;
       }
+ 
+      this.event = "product.update"
       this.editQuestions(prod);
     });
   }
@@ -149,10 +152,11 @@ export class ProductComponent implements OnInit {
   }
 
   productFunction() {
+    console.log(this.event)
     if (this.event === "product.update") {
-      this.updateProduct()
+     // this.updateProduct()
     } else {
-      this.newProduct()
+     // this.newProduct()
     }
   }
 
@@ -204,6 +208,7 @@ export class ProductComponent implements OnInit {
         this.currProd.availability = product.availability || 100;
         this.currProd.stripe_metadata_brand = product.stripe_metadata_brand;
         this.currProd.stripe_metadata_type = product.stripe_metadata_type;
+        this.currProd.stripe_metadata_model = product.stripe_metadata_model;
         this.currProd.stripe_metadata_discount =
           product.stripe_metadata_discount == ''
             ? null
