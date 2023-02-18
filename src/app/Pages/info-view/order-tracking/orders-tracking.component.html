@@ -1,7 +1,7 @@
-<h1>Reporte de Ordenes</h1>
+<h1>Rastreo de Pedidos</h1>
 <div style="display: block; width: 100%; height: 60px">
   <mat-form-field class="example-form-field" appearance="fill">
-    <mat-label>First campaign</mat-label>
+    <mat-label>Rango de Fechas</mat-label>
     <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
       <input matStartDate placeholder="Start date" formControlName="start" />
       <input matEndDate placeholder="End date" formControlName="end" />
@@ -21,112 +21,11 @@
     </mat-select>
   </mat-form-field>
 </div>
-<a download="report_file.csv" style="text-decoration: none; color: deeppink; font-family: 'Roboto'"
-  *ngIf="orders$ | async; let orders_data" [href]="ordersToCSV(orders_data)">CSV export</a>
 
 <div style="overflow-y: scroll; height: 100%; width: 100%;">
   <mat-tab-group (selectedTabChange)="changedTab($event)" style="width: 100%">
-    <mat-tab label="Completadas">
-      <div style="padding: 10px; width: 40vh; ">
-        <p>
-          Total Efectivo:
-          <span style="color: lightslategray; font-weight: 500; margin-left: auto;">{{
-            cash_total | currency
-            }}</span>
-        </p>
-        <p>
-          Total Tarjeta:
-          <span style="color: lightslategray; font-weight: 500">{{ card_total | currency }} - Subtotal: ({{
-            card_subtotal | currency
-            }})</span>
-        </p>
-        <p style="font-weight: bolder">
-          Subtotal:
-          <span style="color: rgb(237, 100, 230); font-weight: 500">{{
-            card_total + cash_total - payment_commisions | currency
-            }}</span>
-        </p>
-        <p>
-          Propina:
-          <span style="color: rgb(100, 136, 237);">- {{ propina | currency }}</span>
-        </p>
-        <p>
-          Comision por Venta:
-          <span style="color: rgb(100, 136, 237); font-weight: 500"> - {{
-            payment_commisions | currency
-            }}</span>
-        </p>
-
-        <p style="font-weight: bolder">
-          Total:
-          <span style="color: rgb(237, 100, 230); font-weight: bolder">{{
-            (card_total + cash_total - payment_commisions - propina) | currency
-            }}</span>
-        </p>
-      </div>
-      <h2>Ventas</h2>
-      <div *ngIf="items_sold.size > 0">
-        <mat-list role="list" style="overflow: scroll; height: fit-content; max-height: 500px">
-          <mat-list-item role="listitem" *ngFor="let order of items_sold | keyvalue; let i = index"
-            style="padding: 10px">
-            <div style="width: 100%">
-              <div style="width: 100%; display: flex">
-                <div style="
-                    height: 20px;
-                    margin-top: auto;
-                    margin-bottom: auto;
-                    margin-right: 10px;
-                  ">
-                  <p style="height: 20px; color: lightslategrey">{{ i + 1 }}</p>
-                </div>
-                <div style="
-                    width: 50px;
-                    height: 50px;
-                    margin-right: 20px;
-                    background-color: white;
-                    border-radius: 5px;
-                    overflow: hidden;
-                  ">
-                  <img style="object-fit: contain; width: 100%; height: 100%" [src]="order.value.img" />
-                </div>
-
-                <span>{{ order.value?.name }}</span>
-                <span class="example-spacer"></span>
-                <span style="color: lightslategray">{{
-                  order.value.quantity
-                  }}</span>
-              </div>
-            </div>
-          </mat-list-item>
-        </mat-list>
-        <p style="padding: 5px">
-          Total Vendido:
-          <span class="example-spacer" style="font-weight: bold; color: rgb(0, 132, 255)"></span>{{ quantity_total }}
-        </p>
-      </div>
-    </mat-tab>
-    <mat-tab label="Canceladas">
-      <div style="padding: 10px">
-        <p>
-          Total Efectivo:
-          <span style="color: lightslategray; font-weight: 500">{{
-            cash_total | currency
-            }}</span>
-        </p>
-        <p>
-          Total Tarjeta:
-          <span style="color: lightslategray; font-weight: 500">{{
-            card_total | currency
-            }}</span>
-        </p>
-        <p style="font-weight: bolder">
-          Total:
-          <span style="color: rgb(237, 100, 230); font-weight: bolder">{{
-            card_total + cash_total | currency
-            }}</span>
-        </p>
-      </div>
-    </mat-tab>
+    <mat-tab label="Processando"> </mat-tab>
+    <mat-tab label="En Transito"></mat-tab>
   </mat-tab-group>
   <div>
     <h2>Ordenes</h2>
@@ -203,12 +102,7 @@
                 margin-right: 10px;
               ">{{ order.createdAt.toDate() | date }}</span>
             <button mat-button (click)="openOrder(order)">Ver</button>
-            <button mat-button (click)="reinburse(order)" *ngIf="
-                order.status == 'canceled' &&
-                order.payment.payment_method_types[0] === 'card'
-              ">
-              Rembolsar
-            </button>
+          
           </div>
         </div>
       </mat-list-item>

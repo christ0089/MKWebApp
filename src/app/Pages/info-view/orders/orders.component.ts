@@ -87,7 +87,7 @@ export interface FlattenedOrder {
   price: number;
 }
 
-type OrderStatus = 'processing' | 'in-transit' | 'completed' | 'canceled';
+export type OrderStatus = 'processing' | 'in-transit' | 'completed' | 'canceled';
 
 export const orderConverter: FirestoreDataConverter<IOrder> = {
   toFirestore(order: IOrder): DocumentData {
@@ -107,7 +107,7 @@ export const orderConverter: FirestoreDataConverter<IOrder> = {
 export class OrdersComponent implements OnInit {
   orders$: Observable<IOrder[]>;
   drivers$: Observable<any> = EMPTY;
-  status = ['processing', 'in-transit', 'completed', 'canceled'];
+  status = ['completed', 'canceled'];
   campaignOne: FormGroup;
   currOrder!: IOrder;
 

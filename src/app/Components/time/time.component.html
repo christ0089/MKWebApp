@@ -1,0 +1,34 @@
+<h2>Horarios de la tienda</h2>
+<mat-tab-group style="width: 100%" >
+  <mat-tab *ngFor="let day of days; let i = index" label="{{day}}">
+    <div *ngFor="let form of forms[i]; let j = index">
+      <form [formGroup]="form" *ngIf="questions != null">
+        <div
+          class="form-row"
+          style="
+            max-width: 400px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+
+            padding: 10px;
+          "
+        >
+          <h3>{{ questions[i][j].title }}</h3>
+          <app-question
+            *ngFor="let q of questions[i][j].questions"
+            [question]="q"
+            [form]="form"
+            [idx]="0"
+            [ngClass]="questions[i][j].key ? 'time' : 'normal'"
+          >
+          </app-question>
+        </div>
+      </form>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+<button mat-button color="primary" style="width: 100%" (click)="save()">
+  Guardar
+</button>
+

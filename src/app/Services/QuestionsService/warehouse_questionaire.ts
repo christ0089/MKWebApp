@@ -58,6 +58,23 @@ export const times_centers = (title: string): IQuestion => {
   }
 }
 
+export const time_is_open = (): IQuestion => {
+  return {
+    title: "",
+    questions: [
+      new CheckboxQuestion({
+        key: 'is_open',
+        label: 'Abren este día?',
+        value: '',
+        disabled: false,
+        required: true,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+    ]
+  }
+}
 
 export const delivery_fee = ():IQuestion => {
   return {
@@ -99,13 +116,23 @@ export const delivery_fee = ():IQuestion => {
   }
 }
 
+export const warehouse_questionaire_time = () => {
+  const questions = new Array(7).fill([
+    times_centers('Apertura de Tienda'),
+    times_centers('Cierre de Tienda'),
+    time_is_open()
+  ]);
+  console.log(questions);
+  return questions;
+};
+
 
 export const warehouse_questionaire = (): IQuestion[] => {
   const questions = [
     warehouse_centers(),
     times_centers("Cierre de Venta de Alcohol"),
-    times_centers("Apertura de Tienda"),
-    times_centers("Cierre de Tienda"),
+    times_centers('Apertura de Tienda'),
+    times_centers('Cierre de Tienda'),
     delivery_fee()
   ]
   return questions;

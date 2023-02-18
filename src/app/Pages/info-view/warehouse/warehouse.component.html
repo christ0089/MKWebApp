@@ -19,34 +19,25 @@
       </button>
       <div *ngFor="let form of forms; let i = index" style="display: block">
         <form [formGroup]="form" *ngIf="questions != null">
-          <div
-            class="form-row"
-            style="
+          <div class="form-row" style="
               max-width: 400px;
               display: block;
               margin-left: auto;
               margin-right: auto;
               
               padding: 10px;
-            "
-          >
+            ">
             <h3>{{ questions[i].title }}</h3>
-            <app-question
-              *ngFor="let q of questions[i].questions"
-              [question]="q"
-              [form]="form"
-              [idx]="0"
-      
-              [ngClass]="questions[i].key ? 'time' : 'normal' "
-            >
+            <app-question *ngFor="let q of questions[i].questions" [question]="q" [form]="form" [idx]="0"
+              [ngClass]="questions[i].key ? 'time' : 'normal' ">
             </app-question>
           </div>
         </form>
       </div>
-     
+
     </div>
   </div>
 </div>
 
-
-
+<app-time (onFormSave)="saveFormData($event)" *ngIf="(warehouse$ | async); let warehouse"
+  [schedule]="warehouse.schedule"></app-time>

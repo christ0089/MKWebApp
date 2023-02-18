@@ -9,6 +9,7 @@ import { BrandsComponent } from './brands/brands.component';
 import { CouponsComponent } from './coupons/coupons.component';
 import { InfoViewComponent } from './info-view.component';
 import { NotificationsComponent } from './notifications/notifications.component';
+import { OrdersTrackingComponent } from './order-tracking/orders-tracking.component';
 import { OrdersComponent } from './orders/orders.component';
 import { ProductsComponent } from './products/products.component';
 import { RepresentativesComponent } from './representatives/representatives.component';
@@ -21,6 +22,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'orders', component: OrdersComponent },
+      { path: 'orderTracking', component: OrdersTrackingComponent },
       { path: 'warehouse', component: WarehouseComponent },
       { path: 'products', component: ProductsComponent },
       {

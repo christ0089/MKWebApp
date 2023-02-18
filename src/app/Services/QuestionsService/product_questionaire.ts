@@ -8,6 +8,7 @@ import { TextboxQuestion } from 'src/app/Models/Forms/textbox';
 import { UploadFileQuestion } from 'src/app/Models/Forms/upload_file';
 import { IProducts } from 'src/app/Pages/info-view/products/products.component';
 import { UserRoles } from '../Auth/auth.service';
+import { times_centers, time_is_open } from './warehouse_questionaire';
 
 export interface IAds {
   id: string;
@@ -192,6 +193,7 @@ export const available_days = () => {
     ],
   };
 };
+
 
 export const product_questionaire = (role: UserRoles) => {
   let questions:QuestionBase<any>[] = []
@@ -393,7 +395,7 @@ export const product_questionaire = (role: UserRoles) => {
         key: 'availability',
         label: 'Existencias',
         value: 100,
-        required: true,
+        required: false,
         order: 0,
         verfication: false,
       }),

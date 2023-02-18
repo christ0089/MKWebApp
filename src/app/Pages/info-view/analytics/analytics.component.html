@@ -1,32 +1,103 @@
 <h1>Dashboard</h1>
 <mat-form-field class="example-form-field" appearance="fill">
   <mat-label>First campaign</mat-label>
-  <mat-date-range-input
-    [formGroup]="campaignOne"
-    [rangePicker]="campaignOnePicker"
-  >
+  <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
     <input matStartDate placeholder="Start date" formControlName="start" />
     <input matEndDate placeholder="End date" formControlName="end" />
   </mat-date-range-input>
-  <mat-datepicker-toggle
-    matSuffix
-    [for]="campaignOnePicker"
-  ></mat-datepicker-toggle>
+  <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
   <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
 </mat-form-field>
 <app-warehouse></app-warehouse>
 
+
+<h2 style="margin: 10px 20px;">Pedidos</h2>
 <div style="overflow-y: scroll; display: flex; flex-direction: row">
-  <div style="width: 50%; height: fit-content">
-    <h3>Volumen de Ordenes</h3>
-    <canvas id="volumes" width="100"></canvas>
+
+  <div
+    style="width: 100%; height: 300px;  margin: 10px; padding: 20px; display: block; overflow: hidden; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; border-radius: 20px;">
+    <p style="color: #f70486;font-size: 50px;line-height: 60px;">2130 <span
+        style="font-size: 15px;color : black;line-height: 10px;">Total: $130,000.00</span>
+
+    </p>
+    <p style="font-size: 15px;color : black;line-height: 10px;">Ticket Promedio:
+      <span style="color: #f70486;">$130.00</span>
+    </p>
+    <div class="chart-container">
+      <canvas id="myChart" width="100"></canvas>
+    </div>
+
   </div>
-  <div style="width: 50%; height: fit-content">
-    <h3>Usuarios Registrados</h3>
-    <canvas id="myChart" width="100" ></canvas>
+</div>
+
+<h2 style="margin: 10px 20px;">Tendencias de producto</h2>
+<div style="overflow-y: scroll; display: flex; flex-direction: row">
+
+  <div
+    style="width: 35%; margin: 10px;  height: fit-content; overflow: hidden; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; border-radius: 20px;">
+    <img style="object-fit: cover;"
+      src="https://firebasestorage.googleapis.com/v0/b/maskkingapp.appspot.com/o/stripe_products%2FWatermelon%20Ice%2FWatermelon%20Ice_1674672465930?alt=media&token=ce316ed4-912e-4bde-90f3-5875b0387017"
+      height="200" width="100%">
+    <div style="display: flex; padding: 10px;">
+      <p style="color: #f70486;font-size: 50px;line-height: 60px; width: fit-content;">2130
+      </p>
+      <p style="font-size: 15px;line-height: 60px;  width: auto;">ordenes con este producto
+      </p>
+    </div>
+
   </div>
-  <div style="width: 50%; height: fit-content">
-    <h3>Desglose Productos</h3>
-    <canvas id="products" width="100"></canvas>
+  <div
+    style="width: 35%; margin: 10px;  height: fit-content; overflow: hidden;  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; ; border-radius: 20px;">
+    <img style="object-fit: cover;"
+      src="https://firebasestorage.googleapis.com/v0/b/maskkingapp.appspot.com/o/stripe_products%2FWatermelon%20Ice%2FWatermelon%20Ice_1674672465930?alt=media&token=ce316ed4-912e-4bde-90f3-5875b0387017"
+      height="200" width="100%">
+    <div style="display: flex; padding: 10px;">
+      <p style="color: #f70486;font-size: 50px;line-height: 60px; width: fit-content;">2130
+      </p>
+      <p style="font-size: 15px;line-height: 60px; width: auto;">busquedas con este producto
+      </p>
+    </div>
+  </div>
+  <div style="width: 35%; height: fit-content">
+  </div>
+
+</div>
+<h2 style="margin: 10px 20px;">Tendencias de anuncios</h2>
+<div style="overflow-y: scroll; display: flex; flex-direction: row">
+
+  <div
+    style="width: 25%; margin: 10px; height: fit-content; overflow: hidden; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; ; border-radius: 20px; ">
+    <img style="object-fit: contain;"
+      src="https://firebasestorage.googleapis.com/v0/b/maskkingapp.appspot.com/o/ads%2F%C2%BFAnsios%40%3F%2F%C2%BFAnsios%40%3F_1674710944198?alt=media&token=39306ca1-2f37-4e22-93be-27d5192ff93b"
+      height="200" width="100%">
+
+    <div style="display: flex; padding: 10px;">
+      <p style="color: #f70486;font-size: 50px;line-height: 60px; width: fit-content;">2130
+      </p>
+      <p style="font-size: 15px;line-height: 60px; width: auto;">vistas a este anuncio
+      </p>
+    </div>
+
+  </div>
+  <div style="width: 25%; height: fit-content">
+  </div>
+  <div style="width: 25%; height: fit-content">
+  </div>
+  <div style="width: 25%; height: fit-content">
+  </div>
+
+</div>
+<h2 style="margin: 10px 20px;">Feedback de Usarios</h2>
+<div style="overflow-y: scroll; display: flex; flex-direction: row">
+  <div
+    style="width: 25%; padding: 10px; margin: 10px; height: fit-content; overflow: hidden; box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; ; border-radius: 20px; ">
+    <p style="color: #f70486;font-size: 50px;line-height: 60px; width: fit-content;">
+      <mat-icon>star</mat-icon>
+      <mat-icon>star</mat-icon>
+      <mat-icon>star</mat-icon>
+      <mat-icon>star</mat-icon>
+    </p>
+    <p style="font-size: 15px;line-height: 60px; width: auto;">Una gran entrega
+    </p>
   </div>
 </div>

@@ -10,7 +10,7 @@ import {
   notification_question,
   IQuestions,
 } from './product_questionaire';
-import { warehouse_questionaire } from './warehouse_questionaire';
+import { warehouse_questionaire, warehouse_questionaire_time } from './warehouse_questionaire';
 import { UserRoles } from '../Auth/auth.service';
 
 @Injectable()
@@ -120,5 +120,10 @@ export class QuestionControlService {
 
   notification_questionaire(): IQuestions {
     return notification_question();
+  }
+
+  schedule_questionaire() {
+    const question = warehouse_questionaire_time();
+    return question;
   }
 }

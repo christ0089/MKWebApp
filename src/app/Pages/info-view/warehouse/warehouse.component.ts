@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { collection, doc, Firestore, setDoc } from '@firebase/firestore';
-import { EMPTY, map, Observable } from 'rxjs';
+import { EMPTY, map, Observable, scheduled } from 'rxjs';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { IQuestion } from 'src/app/Models/question';
 import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
-import { ScriptService } from 'src/app/Services/script.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 import { environment } from 'src/environments/environment';
 declare let mapboxgl: any;
@@ -24,13 +23,12 @@ export class WarehouseComponent implements OnInit {
   private marker: any;
   private coords = [];
 
-  
   loading = false;
 
   constructor(
     private qcs: QuestionControlService,
+    private auth: AuthService,
     private readonly warehouse: WarehouseService,
-    private readonly auth: AuthService
   ) {
     this.warehouse$ = this.warehouse.selectedWarehouse$.pipe(
       map((curr_warehouse) => {
@@ -77,12 +75,12 @@ export class WarehouseComponent implements OnInit {
         });
 
         if (
-          auth.userData$.value.role !== 'admin' &&
+          this.auth.userData$.value.role !== 'admin' &&
           curr_warehouse?.name === 'General'
         ) {
           this.forms.map((form) => form.disable());
         }
-        return null;
+        return curr_warehouse;
       })
     );
 
@@ -137,6 +135,14 @@ export class WarehouseComponent implements OnInit {
     this.loading = true;
 
     await this.warehouse.saveWarehouse(name, alchohol_time,close_time, start_time, delivery);
+    this.loading = false;
+  }
+
+  async saveFormData(schedule: any) {
+    this.loading = true;
+
+    console.log(schedule);
+    await this.warehouse.updateSchedule(schedule);
     this.loading = false;
   }
 }

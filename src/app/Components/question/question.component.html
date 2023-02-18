@@ -14,7 +14,7 @@
         <mat-icon *ngIf="question.icon.type == 'icon'">{{question.icon.name}}</mat-icon>
       </div>
       <input matInput placeholder="{{ question.label }}" value="{{ question.value }}" [formControlName]="question.key"
-        [id]="question.key" [type]="question.type" [disabled]="question.disabled" />
+        [id]="question.key" [type]="question.type" />
       <div *ngIf="question.icon && question.icon.position === 'suffix'" matSuffix>
         <mat-icon *ngIf="question.icon.type == 'icon'">{{question.icon.name}}</mat-icon>
       </div>
@@ -22,7 +22,7 @@
     </mat-form-field>
     <mat-form-field *ngSwitchCase="'dropdown'" style="width: 100%">
       <mat-select [id]="question.key" placeholder="{{ question.label }}" [formControlName]="question.key"
-        [disabled]="question.disabled" [compareWith]="compareObjects" [(ngModel)]="question.value">
+        [compareWith]="compareObjects" [(ngModel)]="question.value">
         <mat-option *ngFor="let opt of question.options" [value]="opt.key">{{
           opt.value
           }}</mat-option>
@@ -59,14 +59,15 @@
     </div>
 
     <div *ngSwitchCase="'upload_file'" style="width: 100%; display: block; margin: 10px">
-      <img *ngIf="question.value != ''; else template" [src]="question.value" style="width: 100%; max-height: 300px; height: fit-content; object-fit: cover;">
+      <img *ngIf="question.value != ''; else template" [src]="question.value"
+        style="width: 100%; max-height: 300px; height: fit-content; object-fit: cover;">
       <ng-template #template>
         <div style="width: 100%; height: 150px; border: 2px dashed lightgray">
           <h4 style="text-align: center; height: 30px; margin-top: auto; margin-bottom: auto;">Subir Imagen</h4>
         </div>
       </ng-template>
       <input matInput hidden [value]="question.value" [formControlName]="question.key" [id]="question.key" />
-      <button mat-raised-button  (click)="uploader.click()" color="primary">
+      <button mat-raised-button (click)="uploader.click()" color="primary">
         Subir
       </button>
       <button mat-button (click)="download()" *ngIf="question.options[0].value === true" color="accent">
@@ -79,7 +80,7 @@
     {{ question.label }} is required
   </div> -->
 
- 
+
 </div>
 
 <!-- <div
@@ -93,4 +94,4 @@ style="width: calc(100% - 20px); display: inline-block; margin: 10px"
   (geoLocation)="locationSelected($event)"
 ></geo-question>
 </div> -->
-<input hidden type="file" (change)="fileChange($event)"  #uploader />
+<input hidden type="file" (change)="fileChange($event)" #uploader />

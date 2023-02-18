@@ -22,65 +22,24 @@ export class AnalyticsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const labels = ['January', 'February', 'March', 'April', 'May', 'June'];
-
     const data = {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      labels: ['Tarjeta', 'Efectivo'],
       datasets: [
         {
-          label: '# of Users',
+          label: 'Compras',
           data: [12, 19, 3, 5, 2, 3],
           backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
+            '#f70486',
+            '#f7e304',
           ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)',
-          ],
+          borderRadius: 20,
           borderWidth: 1,
-        },
-      ],
-    };
-
-
-    const dataDe = {
-      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-      datasets: [
-        {
-          label: '# of Users',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)',
-          ],
-          borderWidth: 1,
+          
         },
       ],
     };
 
     this.buildLineChart('bar', 'myChart', data);
-    this.buildLineChart('line', 'myChart2', data);
   }
 
   buildLineChart(chartType: 'bar' | 'line', el: string, avgData: any) {
@@ -90,9 +49,15 @@ export class AnalyticsComponent implements OnInit {
       type: chartType,
       data: avgData,
       options: {
+        indexAxis:'y',
+        maintainAspectRatio: false,
         scales: {
           y: {
-            beginAtZero: true,
+
+            stacked: true
+          },
+          x: {
+            beginAtZero: true
           },
         },
       },

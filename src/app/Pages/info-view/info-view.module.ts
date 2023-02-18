@@ -42,6 +42,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { OrdersComponent } from './orders/orders.component';
 import { RepresentativesComponent } from './representatives/representatives.component';
 import { ReservationsComponent } from '../reservations/reservations.component';
+import { TimeComponent } from 'src/app/Components/time/time.component';
+import { OrdersTrackingComponent } from './order-tracking/orders-tracking.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { ReservationsComponent } from '../reservations/reservations.component';
     WarehouseComponent,
     AdsComponent,
     NotificationsComponent,
+    OrdersTrackingComponent,
+    TimeComponent,
     RepresentativesComponent
 ],
   imports: [

@@ -4,7 +4,6 @@ import {
   where,
   collectionGroup,
   query,
-  getDocs,
   collectionSnapshots,
   collection,
   doc,
@@ -203,7 +202,6 @@ export class NotificationsComponent implements OnInit {
     if (event == 'notification.create') {
       notificationData.issue_status = 'testing';
       notificationData.issuer = this.auth.userData$.value.uid;
-
       this.loading = false;
       this.form.enable();
     }

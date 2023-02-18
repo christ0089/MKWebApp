@@ -7,6 +7,7 @@ import { ComponentModule } from 'src/app/Components/components.module';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [AnalyticsComponent],
@@ -15,6 +16,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     AnalyticsRoutingModule,
     MatFormFieldModule,
     MatDatepickerModule,
+    MatIconModule,
     ReactiveFormsModule,
     FormsModule,
     ComponentModule,

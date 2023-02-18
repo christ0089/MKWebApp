@@ -26,7 +26,7 @@ import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.se
   styleUrls: ['./product.component.sass'],
 })
 export class ProductComponent implements OnInit {
-  
+
   selectedWarehouse: IWarehouse | null = null;
   questions: any = null;
   form!: FormGroup;
@@ -60,13 +60,13 @@ export class ProductComponent implements OnInit {
         }
         return;
       }
- 
+
       this.event = "product.update"
       this.editQuestions(prod);
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   setImage(fileEvent: File) {
     this.file = fileEvent;
@@ -75,7 +75,7 @@ export class ProductComponent implements OnInit {
   editQuestions(product: IProducts) {
     if (this.form) {
       this.form.enable();
-    } 
+    }
     this.questions = this.qcs.product_questionaire((this.auth.userData$.value as UserData).role);
     this.currProd = product;
     this.questions.questions[0].options[0].value = true;
@@ -154,9 +154,9 @@ export class ProductComponent implements OnInit {
   productFunction() {
     console.log(this.event)
     if (this.event === "product.update") {
-     // this.updateProduct()
+      this.updateProduct()
     } else {
-     // this.newProduct()
+      this.newProduct()
     }
   }
 

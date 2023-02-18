@@ -9,6 +9,7 @@ import {
   warehouseConverter,
 } from 'src/app/Pages/info-view/products/products.component';
 import { AuthService, UserData } from '../Auth/auth.service';
+import { ISchedule } from '../QuestionsService/product_questionaire';
 
 @Injectable({
   providedIn: 'root',
@@ -92,6 +93,21 @@ export class WarehouseService {
         close_time,
         start_time,
         delivery,
+      },
+      { merge: true }
+    );
+  }
+
+
+  async updateSchedule(schedule: ISchedule[]) {
+    const warehouse_ref = doc(
+      this.afs,
+      `warehouse/${this.selectedWarehouse$.value?.id}`
+    );
+    await setDoc(
+      warehouse_ref,
+      {
+        schedule: schedule
       },
       { merge: true }
     );
