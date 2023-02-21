@@ -20,8 +20,6 @@ export class WarehouseComponent implements OnInit {
   warehouse$: Observable<any> = EMPTY;
 
   map: any;
-  private marker: any;
-  private coords = [];
 
   loading = false;
 

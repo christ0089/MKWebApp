@@ -50,7 +50,6 @@ export class ProductComponent implements OnInit {
       this.warehouse.selectedWarehouse$,
       this.auth.userData$
     ]).subscribe(([prod, brand, selectedWarehouse]) => {
-      console.log(prod)
       if (!prod) {
         if (this.auth.isSuperAdmin === true && selectedWarehouse?.name === 'General') {
           this.newQuestions(brand);

@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Functions } from '@angular/fire/functions';
 import { FormControl, FormGroup } from '@angular/forms';
 import Chart from 'chart.js/auto';
+import { httpsCallable } from 'firebase/functions';
+import { combineLatest, map, tap } from 'rxjs';
+import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 
 @Component({
   selector: 'app-analytics',
@@ -10,7 +14,10 @@ import Chart from 'chart.js/auto';
 export class AnalyticsComponent implements OnInit {
   campaignOne: FormGroup;
 
-  constructor() {
+  constructor(
+    private readonly functions: Functions,
+    private readonly warehouse: WarehouseService
+  ) {
     const today = new Date();
     const month = today.getMonth();
     const year = today.getFullYear();
@@ -19,6 +26,29 @@ export class AnalyticsComponent implements OnInit {
       start: new FormControl(new Date(year, month, day - 7)),
       end: new FormControl(new Date(year, month, day + 1)),
     });
+
+
+    combineLatest([
+      this.campaignOne.valueChanges,
+      this.warehouse.selectedWarehouse$
+    ])
+    .pipe(map(([values, warehouse]) => {
+      if (!warehouse) { return [] }
+      const dateRanges: string[] = [values.start, values.end]
+      return this.eventData("ticket_data", dateRanges, warehouse.id)
+    })).subscribe(console.log)
+  }
+
+  eventData(event: string, date: string[], warehouse_id: string) {
+    const prodFunction = httpsCallable(this.functions, 'analyticsActionsFunc', {
+      timeout: 15000
+    });
+    const prod$ = prodFunction({
+      event,
+      eventRange: date,
+      warehouse_id
+    });
+    return prod$
   }
 
   ngOnInit(): void {
@@ -34,7 +64,7 @@ export class AnalyticsComponent implements OnInit {
           ],
           borderRadius: 20,
           borderWidth: 1,
-          
+
         },
       ],
     };
@@ -49,7 +79,7 @@ export class AnalyticsComponent implements OnInit {
       type: chartType,
       data: avgData,
       options: {
-        indexAxis:'y',
+        indexAxis: 'y',
         maintainAspectRatio: false,
         scales: {
           y: {

@@ -20,6 +20,7 @@ import { DragrableProductListComponent } from './dragrable-product-list/dragrabl
 import { ProductComponent } from './product/product.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DragableHorizontalListComponent } from './dragable-horizontal-list/dragable-horizontal-list.component';
+import { MapComponent } from './map/map.component';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import { DragableHorizontalListComponent } from './dragable-horizontal-list/drag
     DragrableProductListComponent,
     ProductComponent,
     DragableHorizontalListComponent,
+    MapComponent
   ],
   providers: [],
   exports: [
@@ -57,6 +59,7 @@ import { DragableHorizontalListComponent } from './dragable-horizontal-list/drag
     DragrableProductListComponent,
     DragableHorizontalListComponent,
     ProductComponent,
+    MapComponent
   ],
 })
 export class ComponentModule {}

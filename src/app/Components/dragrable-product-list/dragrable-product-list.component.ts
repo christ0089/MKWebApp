@@ -157,7 +157,7 @@ export class DragrableProductListComponent implements OnInit {
   async searchProd(search: string) {
     const prodName: string = search.toLowerCase();
     const genProds: IProducts[] = this.gen_products$.value
-    if (prodName == '' || genProds == []) {
+    if (prodName == '' || genProds.length == 0) {
       const prods = await firstValueFrom(
         this.loadProducts(`${this.gen_path}`, this.brand.brand_filters$.value[0])
       );

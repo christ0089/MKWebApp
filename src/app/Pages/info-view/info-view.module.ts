@@ -83,9 +83,7 @@ import { OrdersTrackingComponent } from './order-tracking/orders-tracking.compon
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressBarModule,
-    // CDK
     DragDropModule,
-    //
     InfoViewRoutingModule,
     ComponentModule,
   ],

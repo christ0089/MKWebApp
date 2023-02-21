@@ -162,7 +162,7 @@ export class AdsComponent implements OnInit {
 
   async searchProd(search: string) {
     const searchField: string = search.toLowerCase();
-    if (searchField == '' || this.data$.value == []) {
+    if (searchField == '' || this.data$.value.length == 0) {
       const ads = await firstValueFrom(this.loadData());
       this.data$.next(ads);
     } else {

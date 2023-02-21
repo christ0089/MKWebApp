@@ -30,9 +30,6 @@ import {
 import { AuthService, UserData } from 'src/app/Services/Auth/auth.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 import { genericConverter } from '../products/products.component';
-
-import * as json2csv from 'json2csv';
-import { DomSanitizer } from '@angular/platform-browser';
 import { IOrder, orderConverter, OrderStatus } from '../orders/orders.component';
 
 
@@ -84,6 +81,7 @@ export class OrdersTrackingComponent implements OnInit {
         );
         const start = new Date(dateObserver.start);
         const end = new Date(dateObserver.end);
+
         let q: Query<IOrder> = query<IOrder>(
           order_collection,
           where('status', '==', order_status),
@@ -136,7 +134,7 @@ export class OrdersTrackingComponent implements OnInit {
           map((orders) => {
 
             const o = orders.filter(
-              (or) => or.customer != 'hQUt1wUTc0httdD9p2V7oQB5m4v2' // TODO: Remove and filter based on demo order
+              (or) => or.customer != '-hQUt1wUTc0httdD9p2V7oQB5m4v2' // TODO: Remove and filter based on demo order
             );
 
             const order_mapped = o.map((order) => {

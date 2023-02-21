@@ -54,6 +54,10 @@ export class InfoViewComponent implements OnInit {
             name: 'Rastreo de Ordenes',
           },
           {
+            route: 'ads',
+            name: 'Anuncios',
+          },
+          {
             route: 'orders',
             name: 'Ordenes',
           },

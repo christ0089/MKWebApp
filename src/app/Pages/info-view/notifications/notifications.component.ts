@@ -135,7 +135,7 @@ export class NotificationsComponent implements OnInit {
         new DropdownQuestion({
           key: 'type',
           label: 'Tipo de Notificacion',
-          value: 'user',
+          value: 'region',
           required: false,
           order: 0,
           options: [
@@ -173,7 +173,7 @@ export class NotificationsComponent implements OnInit {
     let id = doc(collectionRef).id;
     let notificationData: INotification = this.currNotification;
 
-    console.log(notification);
+    
     if (event === 'notification.approve') {
       if (notification) {
         id = notification.id as string;
@@ -189,6 +189,7 @@ export class NotificationsComponent implements OnInit {
       this.form.disable();
       this.loading = true;
     }
+
     if (event == 'notification.update') {
       if (this.currNotification) {
         id = this.currNotification.id as string;
@@ -202,6 +203,7 @@ export class NotificationsComponent implements OnInit {
     if (event == 'notification.create') {
       notificationData.issue_status = 'testing';
       notificationData.issuer = this.auth.userData$.value.uid;
+      notificationData.type = notificationData.type || "region"
       this.loading = false;
       this.form.enable();
     }
@@ -222,6 +224,7 @@ export class NotificationsComponent implements OnInit {
       alert(e);
       console.error(e);
     }
+    this.loading = false;
   }
 
   changedTab(event: MatTabChangeEvent) {
