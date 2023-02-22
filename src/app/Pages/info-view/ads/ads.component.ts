@@ -230,41 +230,11 @@ export class AdsComponent implements OnInit {
     }
   }
 
-  storeProdOrder(prodList: IProducts[]) {
-    const promises = prodList.map((element, i) => {
-      let docRef = doc(
-        this.afs,
-        `warehouse/${this.warehouse.selectedWarehouse$.value?.id}/stripe_products/${element.id}`
-      );
-      if (this.warehouse.selectedWarehouse$.value?.name === 'General') {
-        docRef = doc(this.afs, `stripe_products/${element.id}`);
-      }
-
-      element[this.selectedAdType$.value][this.selectedAd.id]
-
-      try {
-        this.file = null;
-        return setDoc(
-          docRef,
-          prodList,
-          { merge: true }
-        );
-      } catch (e) {
-        alert(e);
-        return null;
-      }
-    });
-
-    if (promises) {
-      Promise.all(promises);
-    }
-  }
-
   listProds(ads: IAds) {
     this.listDrawer.toggle();
     this.selectedAd = ads;
     this.brand.brand_filters$.next([
-      [where(`${this.selectedAdType$.value}.${ads.id}.id`, '==', ads.id)],
+      [where(`${this.selectedAdType$.value}.${ads.id}.id`, '==', ads.id),  orderBy(`${this.selectedAdType$.value}.${ads.id}.ranking`, 'asc')],
       [],
     ]);
   }

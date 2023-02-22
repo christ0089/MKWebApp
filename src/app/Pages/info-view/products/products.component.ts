@@ -354,6 +354,7 @@ export class ProductsComponent implements OnInit {
         this.currProd.availability = product.availability || 100;
         this.currProd.stripe_metadata_brand = product.stripe_metadata_brand;
         this.currProd.stripe_metadata_type = product.stripe_metadata_type;
+        this.currProd.stripe_metadata_color = product.stripe_metadata_color;
         this.currProd.stripe_metadata_productType =
           product.stripe_metadata_productType;
         this.currProd.stripe_metadata_discount =

@@ -93,7 +93,6 @@ export class ProductComponent implements OnInit {
     this.questions.questions[7].value = brand?.type || '';
     this.questions.questions[8].value = brand?.brand || '';
 
-    console.log(this.questions);
     this.form = this.qcs.toFormGroup(this.questions.questions);
   }
 
@@ -208,6 +207,7 @@ export class ProductComponent implements OnInit {
         this.currProd.stripe_metadata_brand = product.stripe_metadata_brand;
         this.currProd.stripe_metadata_type = product.stripe_metadata_type;
         this.currProd.stripe_metadata_model = product.stripe_metadata_model;
+        this.currProd.stripe_metadata_color = product.stripe_metadata_color;
         this.currProd.stripe_metadata_discount =
           product.stripe_metadata_discount == ''
             ? null

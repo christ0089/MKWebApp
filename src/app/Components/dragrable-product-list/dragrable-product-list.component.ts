@@ -18,7 +18,6 @@ import {
   of,
   switchMap,
 } from 'rxjs';
-import { IBrands } from 'src/app/Models/DataModels';
 import {
   genericConverter,
   IProducts,

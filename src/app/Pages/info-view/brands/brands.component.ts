@@ -252,7 +252,6 @@ export class BrandsComponent implements OnInit {
   }
 
   saveProd(prods: IProducts[]) {
-    console.log(prods)
     const promises = prods.map((product, i) => {
       let docRef = doc(
         this.afs,
