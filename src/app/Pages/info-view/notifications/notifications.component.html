@@ -62,6 +62,14 @@
       <button
         mat-button
         *ngIf="obj.issue_status == 'tested'"
+        (click)="notificationAction('notification.delete', obj)"
+        style="color: #e40404"
+      >
+        Borrar
+      </button>
+      <button
+        mat-button
+        *ngIf="obj.issue_status == 'tested'"
         (click)="notificationAction('notification.approve', obj)"
         style="color: #04f755"
       >

@@ -45,6 +45,7 @@ export type NotificationIssueStatus =
   | 'tested'
   | 'approved'
   | 'delivered'
+  | 'deleted'
   | 'failed';
 
 export interface INotification {
@@ -316,7 +317,9 @@ export const product_questionaire = (role: UserRoles) => {
         verfication: false,
       })
     ]
-  } else { 
+  } 
+  // TODO : Update Form Based on roles of User
+  if (role == "admin" || role == "zone_admin") { 
     questions = [
       new UploadFileQuestion({
         key: 'images',
@@ -376,7 +379,7 @@ export const product_questionaire = (role: UserRoles) => {
       new DropdownQuestion({
         key: 'stripe_metadata_productType',
         label: 'Tipo de Compra',
-        value: true,
+        value: 'unique',
         required: true,
         order: 0,
         options: [

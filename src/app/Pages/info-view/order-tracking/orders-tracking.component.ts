@@ -1,37 +1,44 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { GeoPoint, query, Timestamp } from '@angular/fire/firestore';
+import { query } from '@angular/fire/firestore';
 import {
   Firestore,
   collectionData,
   collection,
-  CollectionReference,
 } from '@angular/fire/firestore';
-import { Functions } from '@angular/fire/functions';
+
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import {
-  FirestoreDataConverter,
   orderBy,
   Query,
-  QueryDocumentSnapshot,
   where,
 } from '@firebase/firestore';
 import {
   BehaviorSubject,
   combineLatest,
+  concatMap,
   EMPTY,
   map,
   Observable,
   of,
+  shareReplay,
   switchMap,
+  tap,
 } from 'rxjs';
 import { AuthService, UserData } from 'src/app/Services/Auth/auth.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
 import { genericConverter } from '../products/products.component';
 import { IOrder, orderConverter, OrderStatus } from '../orders/orders.component';
+import { MapService } from 'src/app/Services/MapService/map-service.service';
+import { Database, ref, objectVal } from '@angular/fire/database';
 
+export interface IDriver {
+  img: string,
+  name: string,
+  id: string
+}
 
 @Component({
   selector: 'app-orders-tracking',
@@ -39,23 +46,28 @@ import { IOrder, orderConverter, OrderStatus } from '../orders/orders.component'
   styleUrls: ['./orders-tracking.component.sass'],
 })
 export class OrdersTrackingComponent implements OnInit {
-  orders$: Observable<IOrder[]>;
-  drivers$: Observable<any> = EMPTY;
-  status = ['processing', 'in-transit'];
+  orders$: Observable<IOrder[]> = EMPTY;
+  activeOrderTracking$: Observable<IOrder[]> = EMPTY;
+  drivers$: Observable<IDriver[]> = EMPTY;
+  status = ['processing', 'assigned', 'in-transit'];
   campaignOne: FormGroup;
   currOrder!: IOrder;
   private selectedType = new BehaviorSubject<OrderStatus>(
     this.status[0] as OrderStatus
   );
-  private selectedDriver$ = new BehaviorSubject<any>(null);  
+  private selectedDriver$ = new BehaviorSubject<any>(null);
   @ViewChild('edit_order_drawer') editDrawer!: MatDrawer;
+
   driver: any = null;
+  markers = []
 
 
   constructor(
     private readonly afs: Firestore,
+    private readonly db: Database,
     private readonly auth: AuthService,
-    private readonly warehouse: WarehouseService
+    private readonly warehouse: WarehouseService,
+    private readonly mapService: MapService
   ) {
     const today = new Date();
     const month = today.getMonth();
@@ -132,12 +144,7 @@ export class OrdersTrackingComponent implements OnInit {
           idField: 'id',
         }).pipe(
           map((orders) => {
-
-            const o = orders.filter(
-              (or) => or.customer != '-hQUt1wUTc0httdD9p2V7oQB5m4v2' // TODO: Remove and filter based on demo order
-            );
-
-            const order_mapped = o.map((order) => {
+            const order_mapped = orders.map((order) => {
               order.orderId = order.id.substring(0, 5).toUpperCase();
               return order;
             });
@@ -147,39 +154,120 @@ export class OrdersTrackingComponent implements OnInit {
       })
     );
 
-    this.orders$.subscribe();
+    this.orders$.pipe(
+      tap((orders) => {
+        const markerData = orders
+          .filter(o => o.payment_meta_data.coords != null)
+          .map(o => {
+            const coords = [
+              o.payment_meta_data.coords?.longitude,
+              o.payment_meta_data.coords?.latitude,
+            ];
 
-    this.drivers$ = combineLatest([
+            return {
+              type: "order_start",
+              id: o.id,
+              coords
+            }
+          })
+
+        this.mapService.markers.next(markerData)
+      })
+    ).subscribe();
+
+
+
+    combineLatest([
       this.warehouse.selectedWarehouse$,
+      this.campaignOne.valueChanges,
+      this.selectedType
     ]).pipe(
-      switchMap(([warehouse]) => {
+      // takeWhile(([_, s]) => s == "in-transit"),
+      shareReplay(1),
+      switchMap(([_1, _2, s]) => {
+        console.log(s)
+        if (s !== "in-transit") {
+          return of([])
+        }
+        const snapRef = ref(this.db, `orders`)
+
+        return objectVal(snapRef)
+      }
+      )).subscribe((orderTracking: any) => {
+        if (this.selectedType.value !== "in-transit") {
+          return
+        }
+        const markerData = this.mapService.markers.value.map((marker) => {
+          if (!orderTracking[marker.id]) { return marker }
+          const coords = [
+            orderTracking[marker.id].curr_coords.lon,
+            orderTracking[marker.id].curr_coords.lat
+          ];
+
+          marker.curr_coords = coords
+          marker.type = "in-transit"
+
+          return marker
+        })
+
+        this.mapService.markers.next(markerData)
+      })
+
+
+
+    this.drivers$ = this.warehouse.selectedWarehouse$.pipe(
+      shareReplay(1),
+      switchMap((warehouse) => {
         if (this.auth.isServiceAdmin) {
           return ([])
         }
-        const col = collection(this.afs, 'users').withConverter(
-          genericConverter()
+        const col = collection(this.afs, 'users').withConverter<IDriver>(
+          genericConverter<IDriver>()
         );
 
         let q = query(col, where('warehouse_id', '==', warehouse?.id));
 
-        return collectionData<any>(q, {
+        return collectionData<IDriver>(q, {
           idField: 'id',
-        }).pipe(
-          map((drivers: any) => {
-            return drivers.map((driver: any) => {
-              return {
-                img: driver.img,
-                name: driver?.name || '',
-                id: driver.id,
-              };
-            });
-          })
-        );
+        })
       })
     );
 
+    combineLatest([
+      this.warehouse.selectedWarehouse$,
+      this.campaignOne.valueChanges,
+      this.selectedType
+    ]).pipe(
+      shareReplay(1),
+      switchMap(() => {
+        const snapRef = ref(this.db, `driver_location`)
+        if (this.selectedType.value === "in-transit") {
+          return of(null)
+        }
+
+        return objectVal<any>(snapRef)
+      }),
+      tap((markerData) => {
+        if (!markerData) return
+        const keys = Object.keys(markerData);
+        const markers = keys.map(k => {
+          const coords = [
+            markerData[k].curr_coords.lon,
+            markerData[k].curr_coords.lat
+          ];
+          return {
+            coords,
+            id: k,
+            type: "driver_tracking"
+          }
+        })
+        this.mapService.driver_markers.next(markers)
+      })
+    ).subscribe()
+
     this.selectedDriver$.subscribe();
   }
+
 
   selectedDriver(driver: any) {
     this.selectedDriver$.next(driver);
@@ -198,5 +286,5 @@ export class OrdersTrackingComponent implements OnInit {
   openOrder(order: IOrder) {
     this.currOrder = order;
     this.editDrawer.toggle();
-  } 
+  }
 }

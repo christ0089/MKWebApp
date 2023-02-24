@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { Functions } from '@angular/fire/functions';
 import { FormGroup } from '@angular/forms';
-import { doc, QueryConstraint, setDoc } from '@firebase/firestore';
+import { doc, setDoc } from '@firebase/firestore';
 import { httpsCallable } from '@firebase/functions';
 import {
   combineLatest,
@@ -77,7 +77,6 @@ export class ProductComponent implements OnInit {
     }
     this.questions = this.qcs.product_questionaire((this.auth.userData$.value as UserData).role);
     this.currProd = product;
-    this.questions.questions[0].options[0].value = true;
     const question: QuestionBase<any>[] = this.qcs.mapToQuestion(
       this.questions.questions,
       product
@@ -90,8 +89,9 @@ export class ProductComponent implements OnInit {
       this.form.enable();
     }
     this.questions = this.qcs.product_questionaire((this.auth.userData$.value as UserData).role);
-    this.questions.questions[7].value = brand?.type || '';
-    this.questions.questions[8].value = brand?.brand || '';
+    // function to map to keys
+    this.questions.questions[10].value = brand?.type || '';
+    this.questions.questions[11].value = brand?.brand || '';
 
     this.form = this.qcs.toFormGroup(this.questions.questions);
   }

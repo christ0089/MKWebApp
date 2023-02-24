@@ -26,6 +26,7 @@ import {
   map,
   Observable,
   of,
+  shareReplay,
   switchMap,
   tap,
 } from 'rxjs';
@@ -107,8 +108,9 @@ export const orderConverter: FirestoreDataConverter<IOrder> = {
 export class OrdersComponent implements OnInit {
   orders$: Observable<IOrder[]>;
   drivers$: Observable<any> = EMPTY;
+  private date$:Observable<any> = EMPTY;
   status = ['completed', 'canceled'];
-  campaignOne: FormGroup;
+  campaignOne!: FormGroup;
   currOrder!: IOrder;
 
   cash_total = 0;
@@ -124,9 +126,7 @@ export class OrdersComponent implements OnInit {
   private selectedType = new BehaviorSubject<OrderStatus>(
     this.status[0] as OrderStatus
   );
-
   private selectedDriver$ = new BehaviorSubject<any>(null);
-  driver: any = null;
 
   @ViewChild('edit_order_drawer') editDrawer!: MatDrawer;
 
@@ -137,30 +137,27 @@ export class OrdersComponent implements OnInit {
     private readonly functions: Functions,
     private readonly warehouse: WarehouseService
   ) {
-    const today = new Date();
-    const month = today.getMonth();
-    const year = today.getFullYear();
-    const day = today.getDate();
 
-    this.campaignOne = new FormGroup({
-      start: new FormControl(new Date(year, month, day - 7)),
-      end: new FormControl(new Date(year, month, day + 1)),
-    });
+    this.initWeek()
 
-    const dateObserver = this.campaignOne.valueChanges;
+    this.date$ = this.campaignOne.valueChanges;
+
+    this.campaignOne.valueChanges.subscribe(console.log)
 
     this.orders$ = combineLatest([
-      this.selectedType.asObservable(),
-      this.warehouse.selectedWarehouse$.asObservable(),
-      dateObserver,
+      this.selectedType,
+      this.warehouse.selectedWarehouse$,
+      this.date$,
       this.selectedDriver$,
     ]).pipe(
+      tap(console.log),
       switchMap(([order_status, warehouse, dateObserver, driver]) => {
         const order_collection = collection(this.afs, 'orders').withConverter(
           orderConverter
         );
         const start = new Date(dateObserver.start);
         const end = new Date(dateObserver.end);
+        
         let q: Query<IOrder> = query<IOrder>(
           order_collection,
           where('status', '==', order_status),
@@ -181,44 +178,36 @@ export class OrdersComponent implements OnInit {
             orderBy('createdAt', 'desc')
           );
         }
-
-        if (warehouse?.name === 'Torreón') { // TODO: Remove For Independen Operator
-          if (auth.isZoneAdmin) {
-            return of([]);
-          }
-
-          if (auth.isServiceAdmin) {
-            q = query<IOrder>(
-              order_collection,
-              where('status', '==', order_status),
-              where('payment_meta_data.warehouse_id', '==', warehouse?.id),
-              where('driver.id', '==', (this.auth.userData$.value as UserData).uid),
-              where('createdAt', '>=', start),
-              where('createdAt', '<=', end),
-              orderBy('createdAt', 'desc')
-            );
-          }
+        if (auth.isServiceAdmin) {
+          q = query<IOrder>(
+            order_collection,
+            where('status', '==', order_status),
+            where('payment_meta_data.warehouse_id', '==', warehouse?.id),
+            where('driver.id', '==', (this.auth.userData$.value as UserData).uid),
+            where('createdAt', '>=', start),
+            where('createdAt', '<=', end),
+            orderBy('createdAt', 'desc')
+          );
         }
 
         if (warehouse?.name === 'General') {
-          if (auth.userData$.value.role === 'admin') {
-            q = query<IOrder>(
-              order_collection,
-              where('status', '==', order_status),
-              where('createdAt', '>=', start),
-              where('createdAt', '<=', end),
-              orderBy('createdAt', 'desc')
-            );
-          } else {
+          if (auth.userData$.value.role !== 'admin') {
             return of([]);
           }
+
+          q = query<IOrder>(
+            order_collection,
+            where('status', '==', order_status),
+            where('createdAt', '>=', start),
+            where('createdAt', '<=', end),
+            orderBy('createdAt', 'desc')
+          );
         }
 
         return collectionData<IOrder>(q, {
           idField: 'id',
         }).pipe(
           map((orders) => {
-            console.log(orders);
             this.cash_total = 0;
             this.card_total = 0;
             this.card_subtotal = 0;
@@ -253,17 +242,14 @@ export class OrdersComponent implements OnInit {
                 if (
                   (order.payment.payment_method_types as string[]).indexOf(
                     'cash'
-                  ) > -1 &&
-                  order.status === 'completed'
+                  ) > -1
                 ) {
                   this.cash_total += (order.payment.amount / 100) * rand;
-
                 }
                 if (
                   (order.payment.payment_method_types as string[]).indexOf(
                     'card'
-                  ) > -1 &&
-                  order.status === 'completed'
+                  ) > -1
                 ) {
                   const comissions =
                     (((order.payment.amount as number) * 36) / 100000) * rand;
@@ -282,7 +268,7 @@ export class OrdersComponent implements OnInit {
           })
         );
       })
-    );
+    )
 
     this.orders$.subscribe((orders) => {
       this.items_sold = new Map();
@@ -303,10 +289,9 @@ export class OrdersComponent implements OnInit {
       });
     });
 
-    this.drivers$ = combineLatest([
-      this.warehouse.selectedWarehouse$,
-    ]).pipe(
-      switchMap(([warehouse]) => {
+    this.drivers$ =  this.warehouse.selectedWarehouse$.pipe(
+      shareReplay(1),
+      switchMap((warehouse) => {
         if (this.auth.isServiceAdmin) {
           return ([])
         }
@@ -341,6 +326,20 @@ export class OrdersComponent implements OnInit {
 
   compareObjects(o1: any, o2: any): boolean {
     return o1 && o2 && o1.id === o2.id;
+  }
+
+  ngOnInit(): void {
+  }
+
+  private initWeek() {
+    const today = new Date();
+    const month = today.getMonth();
+    const year = today.getFullYear();
+    const day = today.getDate();
+    this.campaignOne = new FormGroup({
+      start: new FormControl(new Date(year, month, day - 7)),
+      end: new FormControl(new Date(year, month, day + 1)),
+    });
   }
 
   ordersToCSV(orders: IOrder[]) {
@@ -381,8 +380,6 @@ export class OrdersComponent implements OnInit {
     }
     return null;
   }
-
-  ngOnInit(): void { }
 
   changedTab(event: MatTabChangeEvent) {
     this.selectedType.next(this.status[event.index] as OrderStatus);

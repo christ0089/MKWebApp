@@ -28,7 +28,6 @@ import {
 import { ProductType } from 'src/app/Models/DataModels';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { AuthService, UserData } from 'src/app/Services/Auth/auth.service';
-import { IBookingProduct } from 'src/app/Services/QuestionsService/product_questionaire';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
 import { StorageService } from 'src/app/Services/storage.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
@@ -173,7 +172,6 @@ export class ProductsComponent implements OnInit {
     this.form.enable();
     this.questions = this.qcs.product_questionaire((this.auth.userData$.value as UserData).role);
     this.currProd = product;
-    this.questions.questions[0].options[0].value = true;
     const question: QuestionBase<any>[] = this.qcs.mapToQuestion(
       this.questions.questions,
       product
@@ -203,6 +201,7 @@ export class ProductsComponent implements OnInit {
           'stripe_products'
         ).withConverter(prodConverter);
         this.selectedWarehouse = warehouse;
+        
         if (warehouse?.name !== 'General') {
           product_collection = collection(
             this.afs,
@@ -298,15 +297,11 @@ export class ProductsComponent implements OnInit {
       images: [downloadUrl],
       description: product.description,
     });
-    lastValueFrom(prod$).then((res) => {
-      this.loading = false;
-      this.file = null;
-      this.newDrawer.toggle();
-    }).catch(e => {
-      this.loading = false;
-      this.file = null;
-      this.newDrawer.toggle();
-    });
+    await lastValueFrom(prod$)
+    
+    this.loading = false;
+    this.file = null;
+    this.newDrawer.toggle();
   }
 
   async updateProduct() {

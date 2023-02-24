@@ -36,7 +36,7 @@ const routes: Routes = [
       { path: 'notifications', component: NotificationsComponent },
       { path: 'representatives', component: RepresentativesComponent },
       { path: 'coupons', component: CouponsComponent },
-      { path: 'reservations', component: ReservationsComponent },
+      // { path: 'reservations', component: ReservationsComponent },
     ],
   },
 ];

@@ -62,7 +62,7 @@ export class WarehouseComponent implements OnInit {
           max_fee: curr_warehouse.delivery?.max_fee || 0,
         };
 
-        const warehouse_form_data = [warehouse_data, alchohol_time,start_time, close_time, delivery];
+        const warehouse_form_data = [ alchohol_time, delivery];
 
         this.forms = warehouse_form_data.map((w, i) => {
           const questions: QuestionBase<any>[] = this.qcs.mapToQuestion(

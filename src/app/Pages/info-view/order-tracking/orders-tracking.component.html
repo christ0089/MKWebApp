@@ -29,6 +29,7 @@
   <div style="overflow-y: scroll; height: 100%; width: auto">
     <mat-tab-group (selectedTabChange)="changedTab($event)" style="width: 100%">
       <mat-tab label="Processando"> </mat-tab>
+      <mat-tab label="Asignadas"> </mat-tab>
       <mat-tab label="En Transito"></mat-tab>
     </mat-tab-group>
     <div style="padding: 10px;">
@@ -37,7 +38,7 @@
       <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px;">
         <mat-list-item role="listitem" *ngFor="let order of orders$ | async; let i = index"
           style="margin-bottom: 10px; height: fit-content">
-          <div style="width: 100%; display: flex">
+          <div style="width: 100%; display: block">
             <div style="
                 height: 20px;
                 margin-top: auto;
@@ -46,18 +47,11 @@
               ">
               <p style="height: 20px; color: lightslategrey">{{ i + 1 }}</p>
             </div>
-
             <div style="width: fit-content; padding: 0px">
               <p>Orden: {{ order.id }}</p>
               <p>Cliente: {{ order.shipping?.name || "" }}</p>
             </div>
-
             <span class="example-spacer"></span>
-            <span style="padding: 5px; color: rgb(0, 132, 255)" *ngIf="order.coupons">
-              {{ order.coupons.code }}</span>
-
-            <span style="padding: 5px; color: rgb(0, 132, 255)" *ngIf="order.payment_meta_data.coupons">
-              {{ order.payment_meta_data.coupons.code }}</span>
             <span style="padding: 5px; width: 200px; text-overflow: ellipsis" *ngIf="order.driver">
               Repartidor: {{ order.driver.name }}</span>
             <div style="
@@ -71,39 +65,6 @@
                 order.payment.payment_method_types[0]
                 }}</span>
             </div>
-            <div *ngIf="order.payment.payment_method_types[0] === 'card'" style="
-                background: rgba(255, 255, 255, 0.274);
-                padding: 5px;
-                margin-left: 10px;
-                margin-right: 10px;
-                border-radius: 5px;
-              ">
-              <span style="color: rgb(255, 0, 200)">{{
-                order.payment.amount / 100 -
-                3 -
-                (order.payment.amount / 100) * (36 / 100) -
-                ((order.payment.amount * (36 / 100)) / 100) * (16 / 100)
-                | currency
-                }}</span>
-            </div>
-            <div style="
-                background: rgba(132, 237, 100, 0.274);
-                padding: 5px;
-                border-radius: 5px;
-                height: 20px;
-              ">
-              <span style="color: rgb(100, 237, 152)">{{
-                order.payment.amount / 100 | currency
-                }}</span>
-            </div>
-
-            <span style="
-                padding-left: 20px;
-                color: lightslategray;
-                padding-top: 5px;
-                padding-bottom: 5px;
-                margin-right: 10px;
-              ">{{ order.createdAt.toDate() | date }}</span>
             <button mat-button (click)="openOrder(order)">Ver</button>
 
           </div>

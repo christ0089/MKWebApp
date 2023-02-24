@@ -32,7 +32,7 @@ export const times_centers = (title: string): IQuestion => {
   return {
     title: title,
     subtitle: null,
-    key: "time", 
+    key: "time",
     questions: [
       new TextboxQuestion({
         key: "hours",
@@ -76,7 +76,7 @@ export const time_is_open = (): IQuestion => {
   }
 }
 
-export const delivery_fee = ():IQuestion => {
+export const delivery_fee = (): IQuestion => {
   return {
     title: "Fees de Servicio",
     subtitle: null,
@@ -129,10 +129,10 @@ export const warehouse_questionaire_time = () => {
 
 export const warehouse_questionaire = (): IQuestion[] => {
   const questions = [
-    warehouse_centers(),
+    //warehouse_centers(),
     times_centers("Cierre de Venta de Alcohol"),
-    times_centers('Apertura de Tienda'),
-    times_centers('Cierre de Tienda'),
+    // times_centers('Apertura de Tienda'),
+    // times_centers('Cierre de Tienda'),
     delivery_fee()
   ]
   return questions;

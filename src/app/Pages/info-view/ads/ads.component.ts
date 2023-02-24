@@ -234,7 +234,7 @@ export class AdsComponent implements OnInit {
     this.listDrawer.toggle();
     this.selectedAd = ads;
     this.brand.brand_filters$.next([
-      [where(`${this.selectedAdType$.value}.${ads.id}.id`, '==', ads.id),  orderBy(`${this.selectedAdType$.value}.${ads.id}.ranking`, 'asc')],
+      [where(`${this.selectedAdType$.value}.${ads.id}.id`, '==', ads.id)],
       [],
     ]);
   }

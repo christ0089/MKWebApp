@@ -11,7 +11,7 @@ import {
 import { FormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatTabChangeEvent } from '@angular/material/tabs';
-import { setDoc, Timestamp } from '@firebase/firestore';
+import { addDoc, setDoc, Timestamp, updateDoc } from '@firebase/firestore';
 import { collectionData } from 'rxfire/firestore';
 import {
   BehaviorSubject,
@@ -99,8 +99,7 @@ export class NotificationsComponent implements OnInit {
     this.notifications$ = combineLatest([warehouse$, this.selectedType$]).pipe(
       switchMap(([warehouse, selectedType]) => {
         if (
-          warehouse === null //  ||
-          //(warehouse.active === false && warehouse.name !== 'General')
+          warehouse === null
         ) {
           return of([]);
         }
@@ -171,32 +170,66 @@ export class NotificationsComponent implements OnInit {
   async notificationAction(event: string, notification?: INotification) {
     const collectionRef = collection(this.firestore, 'notifications');
     let id = doc(collectionRef).id;
-    let notificationData: INotification = this.currNotification;
 
+
+    let notificationData: INotification = notification || this.form.value as INotification;
+
+
+
+    if (!notificationData) {
+      alert('Error: Notification is not defined');
+      this.form.enable();
+      this.loading = false;
+      return
+    }
     
-    if (event === 'notification.approve') {
-      if (notification) {
-        id = notification.id as string;
-        notificationData = notification;
-        notificationData.issue_status = 'approved';
-        notification.status ='pending';
-        notificationData.approver = this.auth.userData$.value.uid;
-      } else {
-        alert('Error: Notification is not defined');
-      }
-    } else {
-      notificationData = this.form.value as INotification;
+    if (this.form) {
       this.form.disable();
       this.loading = true;
+    }
+
+    let docRef = doc(this.firestore, `notifications/${id}`);
+    notificationData.createdAt = Timestamp.now();
+
+
+    if (this.warehouse.selectedWarehouse$.value?.id) {
+      notificationData.warehouse_id =
+        this.warehouse.selectedWarehouse$.value.id;
+    } else {
+      alert('No se selecciono una zona');
+      this.loading = false;
+      return
+    }
+
+
+    if (event === 'notification.approve') {
+      notificationData.issue_status = 'approved';
+      notificationData.status = 'pending';
+      notificationData.approver = this.auth.userData$.value.uid;
+      docRef = doc(this.firestore, `notifications/${notificationData.id}`);
+      await updateDoc(docRef, {...notificationData}).catch(console.error);
+      return 
+    }
+
+    if (event == 'notification.delete') {
+      notificationData.issue_status = 'deleted';
+      notificationData.status = 'delivered';
+      docRef = doc(this.firestore, `notifications/${notificationData.id}`);
+      await updateDoc(docRef, {...notificationData}).catch(console.error);
+      return 
     }
 
     if (event == 'notification.update') {
       if (this.currNotification) {
         id = this.currNotification.id as string;
+        notificationData.status = 'pending';
         notificationData.issue_status = 'testing';
         notificationData.issuer = this.auth.userData$.value.uid;
       } else {
         alert('Error: Notification is not defined');
+        this.form.enable();
+        this.loading = false;
+        return
       }
     }
 
@@ -204,27 +237,19 @@ export class NotificationsComponent implements OnInit {
       notificationData.issue_status = 'testing';
       notificationData.issuer = this.auth.userData$.value.uid;
       notificationData.type = notificationData.type || "region"
-      this.loading = false;
-      this.form.enable();
     }
-
-    let docRef = doc(this.firestore, `notifications/${id}`);
-
-    if (this.warehouse.selectedWarehouse$.value?.id) {
-      notificationData.warehouse_id =
-        this.warehouse.selectedWarehouse$.value.id;
-    } else {
-      alert('No se selecciono una zona');
-    }
-    notificationData.createdAt = Timestamp.now();
 
     try {
       await setDoc(docRef, notificationData, { merge: true });
+      if (this.form) {
+        this.form.enable();
+        this.loading = false;
+      }
     } catch (e) {
       alert(e);
       console.error(e);
     }
-    this.loading = false;
+    
   }
 
   changedTab(event: MatTabChangeEvent) {
@@ -233,5 +258,5 @@ export class NotificationsComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 }
