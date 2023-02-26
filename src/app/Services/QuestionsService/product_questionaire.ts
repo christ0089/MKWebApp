@@ -888,24 +888,7 @@ export const coupon_questionaire = () => {
         ],
         verfication: false,
       }),
-      new DropdownQuestion({
-        key: 'discount_type',
-        label: 'Tipo de Descuento',
-        value: 'fixed',
-        required: true,
-        order: 0,
-        options: [
-          {
-            key: 'fixed',
-            value: 'Fijo',
-          },
-          {
-            key: 'percent',
-            value: 'Porcentaje',
-          },
-        ],
-        verfication: false,
-      }),
+
       new DatePickerQuestion({
         key: 'expirationDate',
         label: 'Fecha de Expiracion',

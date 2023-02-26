@@ -1,46 +1,33 @@
-<button
-  mat-button
-  (click)="storeOrder()"
-  style="color: #0482f7; margin-left: 10px"
->
+<button mat-button (click)="storeOrder()" style="color: #0482f7; margin-left: 10px">
   Guardar
 </button>
-<div class="example-container" cdkDropListGroup>
-  <div
-    *ngFor="let element of elements; let i = index"
-    cdkDropList
-    [cdkDropListData]="i"
-  >
-    <div
-      cdkDrag
-      [cdkDragData]="i"
-      (cdkDragEntered)="dragEntered($event)"
-      class="example-box"
-    >
-      <img
-        *ngIf="element.content_url"
-        [src]="element.content_url"
+<div class="example-container" cdkDropListGroup >
+  <div *ngFor="let element of elements; let i = index" cdkDropList [cdkDropListData]="i">
+    <div cdkDrag [cdkDragData]="i" (cdkDragEntered)="dragEntered($event)" class="example-box" [style.width]="width">
+      <img *ngIf="element.content_url" [src]="element.content_url" 
         [ngStyle]="{
           filter: element.visible ? 'grayscale(0%)' : 'grayscale(100%)'
-        }"
+        }" 
         style="
-          width: 300px;
           height: 200px;
           border-radius: 20px;
           overflow: hidden;
           object-fit: cover;
-        "
+        " 
         (click)="open(element)"
+        [style.width]="width"  
       />
       <p style="text-align: center">{{ element.name }}</p>
-      <button
-        mat-button
-        (click)="edit(element)"
-        style="color: #f70486; margin-left: 10px"
-      >
+      <button mat-button (click)="editElement(element)" *ngIf="activeButtons.includes('edit')"
+        style="color: #f70486; margin-left: 10px">
         Editar
       </button>
-      <button mat-button (click)="deleteEle(element)" style="color: #f70404">
+
+      <button mat-button (click)="addElement(element)" *ngIf="activeButtons.includes('add')"
+        style="color: #f70486; margin-left: 10px">
+        Agregar
+      </button>
+      <button mat-button (click)="deleteElement(element)" *ngIf="activeButtons.includes('delete')" style="color: #f70404">
         Borrar
       </button>
     </div>

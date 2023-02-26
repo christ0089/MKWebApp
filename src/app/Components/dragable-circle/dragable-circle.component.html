@@ -1,6 +1,6 @@
 <div class="example-container" cdkDropListGroup>
   <div
-    *ngFor="let brand of brands; let i = index"
+    *ngFor="let element of elements; let i = index"
     cdkDropList
     [cdkDropListData]="i"
   >
@@ -11,10 +11,10 @@
       class="example-box"
     >
       <img 
-        *ngIf="brand.img_circle"
-        [src]="brand.img_circle"
+        *ngIf="element.img_circle"
+        [src]="element.img_circle"
         [ngStyle]="{
-          filter: brand.visible ? 'grayscale(0%)' : 'grayscale(100%)'
+          filter: element.visible ? 'grayscale(0%)' : 'grayscale(100%)'
         }"
         style="
           width: 120px;
@@ -23,9 +23,9 @@
           overflow: hidden;
           object-fit: cover;
         "
-        (click)="openBrand(brand)"
+        (click)="openBrand(element)"
       />
-      <p style="text-align: center">{{ brand.name }}</p>
+      <p style="text-align: center">{{ element.name }}</p>
     </div>
   </div>
 </div>

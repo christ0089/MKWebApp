@@ -40,7 +40,7 @@
         {{ brands.key }}
       </h3>
       <app-dragable-circle
-        [brands]="brands.value"
+        [elements]="brands.value"
         (toggleEdit)="editQuestions($event)"
         (toggleDel)="deleteBrand($event)"
         (openBrandProd)="openBrandProd($event)"

@@ -10,7 +10,7 @@ import { IBrands } from 'src/app/Models/DataModels';
 export class DragableCircleComponent implements OnInit {
 
 
-  @Input() brands!: IBrands[];
+  @Input() elements!: IBrands[];
   @Output() toggleEdit: EventEmitter<IBrands> = new EventEmitter<IBrands>();
   @Output() toggleDel: EventEmitter<IBrands> = new EventEmitter<IBrands>();
   @Output() openBrandProd: EventEmitter<IBrands> = new EventEmitter<IBrands>();
@@ -35,12 +35,12 @@ export class DragableCircleComponent implements OnInit {
     phContainer.removeChild(phElement);
     phContainer.parentElement?.insertBefore(phElement, phContainer);
 
-    moveItemInArray(this.brands, dragIndex, dropIndex);
+    moveItemInArray(this.elements, dragIndex, dropIndex);
   }
 
   storeOrder() {
     this.orderRanking.emit(
-      this.brands.map((b, i) => {
+      this.elements.map((b, i) => {
         b.ranking = i;
         return b;
       })

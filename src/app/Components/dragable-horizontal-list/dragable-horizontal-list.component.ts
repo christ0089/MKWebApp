@@ -8,8 +8,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class DragableHorizontalListComponent implements OnInit {
   @Input() elements!: any[];
+  @Input() activeButtons: String[] = ["edit", "delete"]
+  @Input() width: string =  "300px";
   @Output() toggleEdit: EventEmitter<any> = new EventEmitter<any>();
   @Output() toggleDel: EventEmitter<any> = new EventEmitter<any>();
+  @Output() toggleAdd: EventEmitter<any> = new EventEmitter<any>();
   @Output() openBrandProd: EventEmitter<any> = new EventEmitter<any>();
   @Output() orderRanking: EventEmitter<any[]> = new EventEmitter<any[]>();
 
@@ -40,19 +43,20 @@ export class DragableHorizontalListComponent implements OnInit {
     );
   }
 
-  edit(brand: any) {
-    this.toggleEdit.emit(brand);
+  editElement(element: any) {
+    this.toggleEdit.emit(element);
   }
 
-  deleteEle(brand: any) {
-    this.toggleDel.emit(brand);
+  deleteElement(element: any) {
+    this.toggleDel.emit(element);
   }
 
-  open(brand: any) {
-    this.openBrandProd.emit(brand);
+  addElement(element: any) {
+    this.toggleAdd.emit(element)
   }
 
+  open(element: any) {
+    this.openBrandProd.emit(element);
+  }
 
-
-  
 }

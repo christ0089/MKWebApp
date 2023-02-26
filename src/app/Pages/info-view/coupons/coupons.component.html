@@ -8,13 +8,22 @@
 <button mat-raised-button color="primary" style="float: right;" (click)="newQuestions()">
     Agregar Coupon
 </button>
+
+
+<mat-tab-group style="width: 100%" (selectedTabChange)="changedTab($event)">
+    <mat-tab label="Expirados"></mat-tab>
+    <mat-tab label="Activos"></mat-tab>
+</mat-tab-group>
+
+
 <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: 500px">
     <mat-list-item role="listitem" *ngFor="let obj of (obj$ | async); let i = index" style="padding: 10px">
         <div style="width: 90%; display: flex;">
             <div style="height: 20px; margin-top: auto; margin-bottom: auto; margin-right: 10px; z-index: 1000; ">
                 <p style=" height: 20px;">{{i + 1}}</p>
             </div>
-            <div style="width: fit-content; height: 20px; margin-top: auto; margin-bottom: auto; display: block;  z-index: 100;">
+            <div
+                style="width: fit-content; height: 20px; margin-top: auto; margin-bottom: auto; display: block;  z-index: 100;">
                 <p style="font-weight: 600; height: 20px;">{{obj.code}}</p>
             </div>
             <span class="example-spacer"></span>
@@ -32,29 +41,45 @@
             <mat-icon>close</mat-icon>
         </button>
     </h4>
-    <mat-progress-bar *ngIf="loading === true" mode="indeterminate"></mat-progress-bar>
-    <form [formGroup]="form" *ngIf="questions != null">
-        <div class="form-row" style="
-        max-width: 400px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-      ">
-            <app-question *ngFor="let q of questions.questions" [question]="q" [form]="form" [idx]="0"
-                (fileUpload)="setImage($event)">
-            </app-question>
-            <app-warehouse></app-warehouse>
+    <div style="display: flex; grid-auto-flow: row; width: 100%;">
+        <div style="min-width: 350px;">
+            <mat-progress-bar *ngIf="loading === true" mode="indeterminate"></mat-progress-bar>
+            <form [formGroup]="form" *ngIf="questions != null">
+                <div class="form-row" style="
+                max-width: 400px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+              ">
+                    <app-question *ngFor="let q of questions.questions" [question]="q" [form]="form" [idx]="0">
+                    </app-question>
+                    <app-warehouse></app-warehouse>
+                </div>
+                <button mat-button [disabled]="form.invalid" (click)="couponsAction('coupon.create', new_prod_drawer)">
+                    Guardar
+                </button>
+            </form>
         </div>
-        <button mat-button [disabled]="form.invalid" (click)="couponsAction('coupon.create', new_prod_drawer)">
-            Guardar
-        </button>
-    </form>
+        <div style="display: block; max-width: 50vw; padding: 15px;" *ngIf="(elements$ | async); let elements">
+            <div>
+                <h4>Elementos a los que aplica</h4>
+                <app-dragable-horizontal-list *ngIf="(addedElements$ | async); let addedElements"
+                    [elements]="addedElements" [activeButtons]="activeButtons2" width="150px"
+                    (toggleDel)="deleteObj($event)"></app-dragable-horizontal-list>
+            </div>
+            <div>
+                <h4>Elementos que agregar</h4>
+                <app-dragable-horizontal-list [elements]="elements" [activeButtons]="activeButtons" width="150px"
+                    (toggleAdd)="addObj($event)"></app-dragable-horizontal-list>
+            </div>
+        </div>
+    </div>
 </mat-drawer>
 
 <mat-drawer #edit_prod_drawer class="example-sidenav" mode="over" position="end" style="
 margin-bottom: 40px;
 overflow-y: scroll;">
-    <h4>Editar Producto
+    <h4>Editar Coupon
         <button mat-icon-button style="float: right;" (click)="edit_prod_drawer.toggle()">
             <mat-icon>close</mat-icon>
         </button>
