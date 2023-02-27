@@ -3,6 +3,7 @@ import { collection, Firestore, setDoc } from '@angular/fire/firestore';
 import { FormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { doc, query, where } from '@firebase/firestore';
 import { on } from 'events';
 import { type } from 'os';
@@ -64,18 +65,18 @@ export class CouponsComponent implements OnInit {
     private readonly qcs: QuestionControlService
   ) {
 
+  
 
     this.obj$ = this.warehouse.selectedWarehouse$.pipe(switchMap((warehouse) => {
       if (warehouse === null) {
         return of([]);
       }
-      let brand_collection = collection(this.afs, "coupons").withConverter<ICoupon>(genericConverter<ICoupon>())
+      let brandCollection = collection(this.afs, "coupons").withConverter<ICoupon>(genericConverter<ICoupon>())
       this.selectedWarehouse = warehouse;
       if (warehouse?.name !== "General") {
-        brand_collection = collection(this.afs, `warehouse/${warehouse.id}/coupons`).withConverter<ICoupon>(genericConverter<ICoupon>())
+        brandCollection = collection(this.afs, `warehouse/${warehouse.id}/coupons`).withConverter<ICoupon>(genericConverter<ICoupon>())
       }
-      console.log(warehouse.id)
-      const q = query(brand_collection, where("coupon_type", "==", "store"))
+      const q = query(brandCollection, where("coupon_type", "==", "store"))
       return collectionData<ICoupon>(q, {
         idField: "id"
       })
@@ -101,11 +102,11 @@ export class CouponsComponent implements OnInit {
       return of([])
     }
 
-    let type_collection = collection(this.afs, type).withConverter<any>(genericConverter<any>())
+    let typeCollection = collection(this.afs, type).withConverter<any>(genericConverter<any>())
     if (warehouse?.name !== "General") {
-      type_collection = collection(this.afs, `warehouse/${warehouse.id}/${type}`).withConverter<any>(genericConverter<any>())
+      typeCollection = collection(this.afs, `warehouse/${warehouse.id}/${type}`).withConverter<any>(genericConverter<any>())
     }
-    return collectionData(type_collection).pipe(map((obj) => {
+    return collectionData(typeCollection).pipe(map((obj) => {
       return this.objMapper(obj, type)
     }),
       tap((obj) => {
@@ -231,9 +232,8 @@ export class CouponsComponent implements OnInit {
   }
 
   async couponsAction(event: string, drawer: MatDrawer) {
-    const collectionRef = collection(this.afs, "coupons")
-    let id = doc(collectionRef).id;
     let currCoupon = this.form.value as ICoupon;
+    let id = currCoupon.code
     currCoupon.key = this.addedElements$.value.map(obj => obj.id)
 
     this.form.disable();

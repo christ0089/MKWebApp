@@ -863,6 +863,10 @@ export const coupon_questionaire = () => {
             key: 'store',
             value: 'Tienda',
           },
+          {
+            key: 'campaign',
+            value: 'Campaña',
+          },
         ],
         verfication: false,
       }),
