@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { collection, doc, Firestore, setDoc } from '@firebase/firestore';
 import { EMPTY, map, Observable, scheduled } from 'rxjs';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
@@ -16,7 +16,7 @@ declare let mapboxgl: any;
 })
 export class WarehouseComponent implements OnInit {
   questions: IQuestion[] = [];
-  forms!: FormGroup[];
+  forms!: UntypedFormGroup[];
   warehouse$: Observable<any> = EMPTY;
 
   map: any;

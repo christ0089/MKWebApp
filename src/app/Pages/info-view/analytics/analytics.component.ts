@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Functions } from '@angular/fire/functions';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import Chart from 'chart.js/auto';
 import { httpsCallable } from 'firebase/functions';
 import { combineLatest, map, tap } from 'rxjs';
@@ -12,7 +12,7 @@ import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.se
   styleUrls: ['./analytics.component.sass'],
 })
 export class AnalyticsComponent implements OnInit {
-  campaignOne: FormGroup;
+  campaignOne: UntypedFormGroup;
 
   constructor(
     private readonly functions: Functions,
@@ -22,9 +22,9 @@ export class AnalyticsComponent implements OnInit {
     const month = today.getMonth();
     const year = today.getFullYear();
     const day = today.getDate();
-    this.campaignOne = new FormGroup({
-      start: new FormControl(new Date(year, month, day - 7)),
-      end: new FormControl(new Date(year, month, day + 1)),
+    this.campaignOne = new UntypedFormGroup({
+      start: new UntypedFormControl(new Date(year, month, day - 7)),
+      end: new UntypedFormControl(new Date(year, month, day + 1)),
     });
 
 

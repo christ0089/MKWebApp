@@ -7,7 +7,7 @@ import {
   CollectionReference,
 } from '@angular/fire/firestore';
 import { Functions } from '@angular/fire/functions';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -110,7 +110,7 @@ export class OrdersComponent implements OnInit {
   drivers$: Observable<any> = EMPTY;
   private date$:Observable<any> = EMPTY;
   status = ['completed', 'canceled'];
-  campaignOne!: FormGroup;
+  campaignOne!: UntypedFormGroup;
   currOrder!: IOrder;
 
   cash_total = 0;
@@ -336,9 +336,9 @@ export class OrdersComponent implements OnInit {
     const month = today.getMonth();
     const year = today.getFullYear();
     const day = today.getDate();
-    this.campaignOne = new FormGroup({
-      start: new FormControl(new Date(year, month, day - 7)),
-      end: new FormControl(new Date(year, month, day + 1)),
+    this.campaignOne = new UntypedFormGroup({
+      start: new UntypedFormControl(new Date(year, month, day - 7)),
+      end: new UntypedFormControl(new Date(year, month, day + 1)),
     });
   }
 

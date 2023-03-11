@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { IQuestion } from 'src/app/Models/question';
 import { QuestionControlService } from 'src/app/Services/QuestionsService/question-control-service';
@@ -32,7 +32,7 @@ export class TimeComponent implements OnInit, OnChanges {
   @Output('onFormSave') onFormSave = new EventEmitter();
 
   questions: IQuestion[][] = [];
-  forms!: FormGroup[][];
+  forms!: UntypedFormGroup[][];
 
   constructor(private qcs: QuestionControlService) { }
 

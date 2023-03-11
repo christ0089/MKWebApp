@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { query, serverTimestamp } from '@angular/fire/firestore';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { collection, Firestore, orderBy, where } from '@angular/fire/firestore';
 import { collectionData } from 'rxfire/firestore';
@@ -32,7 +32,7 @@ export class UsersComponent implements OnInit {
   status: Role[] = ['general', 'unassigned', 'driver', 'zone_admin', 'admin'];
   private selectedType = new BehaviorSubject<Role>(this.status[0]);
   users$ = new BehaviorSubject<UserData[]>([]);
-  searchForm = new FormControl();
+  searchForm = new UntypedFormControl();
 
   constructor(
     private readonly warehouse: WarehouseService,
@@ -115,7 +115,7 @@ export class UsersComponent implements OnInit {
 
   async searchProd(search: string) {
     const prodName: string = search.toLowerCase();
-    if (prodName == '' || this.users$.value == []) {
+    if (prodName == '' || this.users$.value.length == 0) {
       const users = await firstValueFrom(this.loadUsers());
       console.log(users);
       this.users$.next(users);

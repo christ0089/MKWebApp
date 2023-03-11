@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { collection, Firestore, doc } from '@angular/fire/firestore';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { deleteDoc, orderBy, query, setDoc, where } from '@firebase/firestore';
 import { collectionData } from 'rxfire/firestore';
@@ -32,10 +32,10 @@ import {
 export class DepartmentComponent implements OnInit {
   departments$: BehaviorSubject<ICategoryData[]> = new BehaviorSubject([]);
   selectedWarehouse: IWarehouse | null = null;
-  searchForm = new FormControl();
+  searchForm = new UntypedFormControl();
 
   questions: any = null;
-  form!: FormGroup;
+  form!: UntypedFormGroup;
   file!: File | null;
   currBrand!: ICategoryData;
   loading = false;

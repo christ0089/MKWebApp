@@ -7,7 +7,7 @@ import {
   updateDoc,
   where,
 } from '@angular/fire/firestore';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 
@@ -56,7 +56,7 @@ export class AdsComponent implements OnInit {
   selectedWarehouse: IWarehouse | null = null;
   selectedAd!: IAds;
   questions: any = null;
-  form!: FormGroup;
+  form!: UntypedFormGroup;
   file!: File | null;
   loading = false;
   path: string = 'ads';
@@ -69,7 +69,7 @@ export class AdsComponent implements OnInit {
   @ViewChild('new_prod_drawer') newDrawer!: MatDrawer;
   @ViewChild('list_drawer') listDrawer!: MatDrawer;
 
-  searchForm = new FormControl();
+  searchForm = new UntypedFormControl();
 
   constructor(
     private readonly afs: Firestore,

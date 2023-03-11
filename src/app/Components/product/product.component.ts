@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { Functions } from '@angular/fire/functions';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { doc, setDoc } from '@firebase/firestore';
 import { httpsCallable } from '@firebase/functions';
 import {
@@ -29,7 +29,7 @@ export class ProductComponent implements OnInit {
 
   selectedWarehouse: IWarehouse | null = null;
   questions: any = null;
-  form!: FormGroup;
+  form!: UntypedFormGroup;
   file!: File | null;
   currProd!: IProducts;
   loading = false;

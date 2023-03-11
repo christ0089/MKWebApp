@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Firestore, setDoc } from '@angular/fire/firestore';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { User } from '@firebase/auth';
 import { collection, doc, query } from '@firebase/firestore';
 import { map } from '@firebase/util';
@@ -16,7 +16,7 @@ import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.se
   styleUrls: ['./representatives.component.sass'],
 })
 export class RepresentativesComponent implements OnInit {
-  searchForm = new FormControl();
+  searchForm = new UntypedFormControl();
   users$ = new BehaviorSubject<IRepresentative[]>([]);
 
   constructor(

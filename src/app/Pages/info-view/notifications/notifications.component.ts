@@ -8,7 +8,7 @@ import {
   collection,
   doc,
 } from '@angular/fire/firestore';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { addDoc, setDoc, Timestamp, updateDoc } from '@firebase/firestore';
@@ -53,7 +53,7 @@ export class NotificationsComponent implements OnInit {
   size = 0;
 
   questions!: IQuestions;
-  form!: FormGroup;
+  form!: UntypedFormGroup;
   currNotification!: INotification;
   loading = false;
 

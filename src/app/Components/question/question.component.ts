@@ -1,5 +1,5 @@
 import { Component, Input, Output } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, UntypedFormGroup } from "@angular/forms";
 import { QuestionBase } from "src/app/Models/Forms/question-base";
 import { EventEmitter } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -13,14 +13,14 @@ import { DatePipe } from '@angular/common';
 })
 export class DynamicFormQuestionComponent {
   @Input() question!: QuestionBase<string | number | boolean | Date>;
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
   @Input() idx: number = 0;
 
   @Output() fileUpload = new EventEmitter<File>();
   @Output() document_state = new EventEmitter<any>();
 
   get isValid() {
-    return (this.form as FormGroup).controls[this.question.key].valid;
+    return (this.form as UntypedFormGroup).controls[this.question.key].valid;
   }
 
   fileChange(event: any) {

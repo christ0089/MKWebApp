@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import {
   DateFilterFn,
   MatDatepickerInputEvent,
@@ -44,7 +44,7 @@ export class ReservationsComponent implements OnInit {
   products$ = new BehaviorSubject<IBookingProduct[]>([]);
   bookingRange$ = new BehaviorSubject<IBookingRange[]>([]);
   questions: IQuestion[] = [];
-  forms: FormGroup[] = [];
+  forms: UntypedFormGroup[] = [];
   min = new Date(Date.now());
   currReservation!: IBookingProduct;
   currReservations: IReservation[] = [];

@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { EventEmitter } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { UntypedFormGroup } from "@angular/forms";
 import { BehaviorSubject, Subject } from "rxjs";
 import {
   debounce,
@@ -37,7 +37,7 @@ import { Feature, MapboxService } from "src/app/Services/Mapbox/mapbox.service";
 export class GeoQuestionComponent implements OnInit {
   @Input() question: QuestionBase<string>;
   @Input() idx: number;
-  @Input() form: FormGroup;
+  @Input() form: UntypedFormGroup;
   @Output() geoLocation = new EventEmitter();
   modelChanged: Subject<string> = new Subject<string>();
 

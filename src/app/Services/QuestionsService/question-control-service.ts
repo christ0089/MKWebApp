@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { QuestionBase } from 'src/app/Models/Forms/question-base';
 import { Observable, BehaviorSubject } from 'rxjs';
 import {
@@ -27,11 +27,11 @@ export class QuestionControlService {
     for (let question of questions) {
       if (question.type == 'calendar') {
         let _question = (group[question.key] = question.required
-          ? new FormControl(
+          ? new UntypedFormControl(
               question.value || new Date(),
               [Validators.required].concat(...question.validators)
             )
-          : new FormControl({
+          : new UntypedFormControl({
               value: question.value || new Date(),
               disabled: question.disabled,
             }));
@@ -40,16 +40,16 @@ export class QuestionControlService {
       }
 
       group[question.key] = question.required
-        ? new FormControl(
+        ? new UntypedFormControl(
             question.value || '',
             [Validators.required].concat(...question.validators)
           )
-        : new FormControl({
+        : new UntypedFormControl({
             value: question.value || '',
             disabled: question.disabled,
           });
     }
-    return new FormGroup(group);
+    return new UntypedFormGroup(group);
   }
 
   toEditFormGroup(questions: QuestionBase<string>[], data: any) {
@@ -57,16 +57,16 @@ export class QuestionControlService {
 
     questions.forEach((question) => {
       group[question.key] = question.required
-        ? new FormControl(
+        ? new UntypedFormControl(
             data[question.key] || '',
             [Validators.required].concat(question.validators)
           )
-        : new FormControl(
+        : new UntypedFormControl(
             { value: data[question.key], disabled: question.disabled } || ''
           );
     });
 
-    return new FormGroup(group);
+    return new UntypedFormGroup(group);
   }
 
   mapToQuestion(

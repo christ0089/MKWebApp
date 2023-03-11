@@ -6,7 +6,7 @@ import {
   collection,
 } from '@angular/fire/firestore';
 
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 
 import { MatTabChangeEvent } from '@angular/material/tabs';
@@ -50,7 +50,7 @@ export class OrdersTrackingComponent implements OnInit {
   activeOrderTracking$: Observable<IOrder[]> = EMPTY;
   drivers$: Observable<IDriver[]> = EMPTY;
   status = ['processing', 'assigned', 'in-transit'];
-  campaignOne: FormGroup;
+  campaignOne: UntypedFormGroup;
   currOrder!: IOrder;
   private selectedType = new BehaviorSubject<OrderStatus>(
     this.status[0] as OrderStatus
@@ -74,9 +74,9 @@ export class OrdersTrackingComponent implements OnInit {
     const year = today.getFullYear();
     const day = today.getDate();
 
-    this.campaignOne = new FormGroup({
-      start: new FormControl(new Date(year, month, day - 7)),
-      end: new FormControl(new Date(year, month, day + 1)),
+    this.campaignOne = new UntypedFormGroup({
+      start: new UntypedFormControl(new Date(year, month, day - 7)),
+      end: new UntypedFormControl(new Date(year, month, day + 1)),
     });
 
     const dateObserver = this.campaignOne.valueChanges;

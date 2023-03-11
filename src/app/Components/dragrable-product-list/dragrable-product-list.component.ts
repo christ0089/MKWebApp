@@ -1,7 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Firestore, where } from '@angular/fire/firestore';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import {
   collection,
   doc,
@@ -40,7 +40,7 @@ export class DragrableProductListComponent implements OnInit {
   @Output() saveProdEvent = new EventEmitter<IProducts[]>();
   @Output() deleteProdEvent = new EventEmitter<IProducts[]>();
 
-  searchForm = new FormControl();
+  searchForm = new UntypedFormControl();
   selectedWarehouse!: IWarehouse | null;
   userRole: boolean = false;
   disabled: boolean = false;

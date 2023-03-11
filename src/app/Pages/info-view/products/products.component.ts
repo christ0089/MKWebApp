@@ -1,7 +1,7 @@
 import { Component, OnInit, Type, ViewChild } from '@angular/core';
 import { collection, Firestore, query } from '@angular/fire/firestore';
 import { Functions } from '@angular/fire/functions';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 
 import {
@@ -133,7 +133,7 @@ export class ProductsComponent implements OnInit {
   products$ = new BehaviorSubject<IProducts[]>([]);
   selectedWarehouse: IWarehouse | null = null;
   questions: any = null;
-  form!: FormGroup;
+  form!: UntypedFormGroup;
   file!: File | null;
   currProd!: IProducts;
   loading = false;
@@ -141,7 +141,7 @@ export class ProductsComponent implements OnInit {
   @ViewChild('edit_prod_drawer') editDrawer!: MatDrawer;
   @ViewChild('new_prod_drawer') newDrawer!: MatDrawer;
 
-  searchForm = new FormControl();
+  searchForm = new UntypedFormControl();
 
   constructor(
     private readonly afs: Firestore,

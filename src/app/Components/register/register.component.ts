@@ -1,6 +1,6 @@
 import { Component, OnInit, Output } from "@angular/core";
 import { Router } from "@angular/router";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { first } from "rxjs/operators";
 // import { AuthService } from "src/app/providers/Auth/AuthService";
 import { EventEmitter } from "@angular/core";
@@ -12,7 +12,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
   selector: "register",
 })
 export class RegisterComponent implements OnInit {
-  registerForm: FormGroup = this.formBuilder.group({
+  registerForm: UntypedFormGroup = this.formBuilder.group({
     firstName: ["", Validators.required],
     lastName: ["", Validators.required],
     email: ["", Validators.required, Validators.email],
@@ -24,7 +24,7 @@ export class RegisterComponent implements OnInit {
   @Output() register = new EventEmitter();
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     // private userService: AuthService,
     private snackBar: MatSnackBar,
     private router: Router
