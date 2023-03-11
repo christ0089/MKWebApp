@@ -1,6 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { IBrands } from 'src/app/Models/DataModels';
 import { IWarehouse } from 'src/app/Pages/info-view/products/products.component';
 import { AuthService } from 'src/app/Services/Auth/auth.service';
 import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.service';
@@ -11,12 +10,12 @@ import { WarehouseService } from 'src/app/Services/WarehouseService/warehouse.se
   styleUrls: ['./dragable-list.component.sass'],
 })
 export class DragableListComponent implements OnInit {
-  @Input() brands!: IBrands[];
-  @Output() toggleEdit: EventEmitter<IBrands> = new EventEmitter<IBrands>();
-  @Output() toggleDel: EventEmitter<IBrands> = new EventEmitter<IBrands>();
-  @Output() openBrandProd: EventEmitter<IBrands> = new EventEmitter<IBrands>();
-  @Output() orderRanking: EventEmitter<IBrands[]> = new EventEmitter<
-    IBrands[]
+  @Input() brands!: any[];
+  @Output() toggleEdit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() toggleDel: EventEmitter<any> = new EventEmitter<any>();
+  @Output() openBrandProd: EventEmitter<any> = new EventEmitter<any>();
+  @Output() orderRanking: EventEmitter<any[]> = new EventEmitter<
+    any[]
   >();
   selectedWarehouse!: IWarehouse;
   userRole: boolean = false;
@@ -35,16 +34,16 @@ export class DragableListComponent implements OnInit {
 
   ngOnDestroy() {}
 
-  drop(event: CdkDragDrop<IBrands[]>) {
+  drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.brands, event.previousIndex, event.currentIndex);
   }
 
-  editBrand(brand: IBrands) {
+  editBrand(brand: any) {
     this.toggleEdit.emit(brand);
   }
 
 
-  deleteBrand(brand: IBrands) {
+  deleteBrand(brand: any) {
     this.toggleDel.emit(brand);
   }
 
@@ -57,7 +56,7 @@ export class DragableListComponent implements OnInit {
     );
   }
 
-  openBrand(brand: IBrands) {
+  openBrand(brand: any) {
     this.openBrandProd.emit(brand);
   }
 }

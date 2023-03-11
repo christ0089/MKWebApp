@@ -76,7 +76,7 @@ export class CouponsComponent implements OnInit {
       if (warehouse?.name !== "General") {
         brandCollection = collection(this.afs, `warehouse/${warehouse.id}/coupons`).withConverter<ICoupon>(genericConverter<ICoupon>())
       }
-      const q = query(brandCollection, where("coupon_type", "==", "store"))
+      const q = query(brandCollection)
       return collectionData<ICoupon>(q, {
         idField: "id"
       })

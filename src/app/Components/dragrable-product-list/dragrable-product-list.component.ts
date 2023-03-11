@@ -7,7 +7,6 @@ import {
   doc,
   query,
   QueryConstraint,
-  setDoc,
 } from '@firebase/firestore';
 import { collectionData } from 'rxfire/firestore';
 import {

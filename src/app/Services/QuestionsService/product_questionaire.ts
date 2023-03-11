@@ -590,6 +590,118 @@ export const ads_questionaire = () => {
   };
 };
 
+export const department_questionaire = (user_role: UserRoles) => {
+  let data: IQuestions = {
+    title: 'Agregar Producto',
+    subtitle: '',
+    questions: [],
+    action: '',
+  };
+
+  if (user_role === 'zone_admin') {
+    data.questions = [
+      new TextboxQuestion({
+        key: 'name',
+        label: 'Name',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+
+      new DropdownQuestion({
+        key: 'visible',
+        label: 'Visible',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: true,
+            value: 'True',
+          },
+          {
+            key: false,
+            value: 'False',
+          },
+        ],
+        verfication: false,
+      })
+    ];
+  } else {
+    data.questions = [
+      new UploadFileQuestion({
+        key: 'img',
+        label: 'Imagen Fila',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [{ key: 'uploaded', value: false }],
+        required: true,
+        verfication: false,
+      }),
+      new UploadFileQuestion({
+        key: 'img_circle',
+        label: 'Imagen Circulo',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [{ key: 'uploaded', value: false }],
+        required: true,
+        verfication: false,
+      }),
+      new TextboxQuestion({
+        key: 'name',
+        label: 'Name',
+        value: '',
+        disabled: false,
+        order: 0,
+        options: [],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'buildActive',
+        label: 'Build Active',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: true,
+            value: 'True',
+          },
+          {
+            key: false,
+            value: 'False',
+          },
+        ],
+        verfication: false,
+      }),
+      new DropdownQuestion({
+        key: 'visible',
+        label: 'Visible',
+        value: true,
+        required: true,
+        order: 0,
+        options: [
+          {
+            key: true,
+            value: 'True',
+          },
+          {
+            key: false,
+            value: 'False',
+          },
+        ],
+        verfication: false,
+      })
+    ];
+  }
+
+  return data;
+}
+
 export const brand_questionaire = (user_role: UserRoles) => {
   let data: IQuestions = {
     title: 'Agregar Producto',

@@ -108,6 +108,12 @@ export class QuestionControlService {
     return question;
   }
 
+
+  department_questions(user_role: UserRoles) {
+    const question = this.department_questions(user_role);
+    return question;
+  }
+
   coupon_questionaire() {
     const question = coupon_questionaire();
     return question;

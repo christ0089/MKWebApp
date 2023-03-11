@@ -5,8 +5,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AuthComponent } from './auth.component';
-import { LoginComponent } from 'src/app/Components/login/login.component';
-import { RegisterComponent } from 'src/app/Components/register/register.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +13,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from 'src/app/Services/Auth/auth.service';
+import { RegisterComponent } from 'src/app/Components/register/register.component';
+import { LoginComponent } from 'src/app/Components/login/login.component';
 
 const routes: Routes = [
   {

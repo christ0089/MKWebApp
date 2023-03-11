@@ -14,7 +14,7 @@ export class WarehouseComponent implements OnInit {
 
   constructor(private readonly warehouseService: WarehouseService) { 
     this.warehouses$ = this.warehouseService.warehouses$;
-    this.selectedWarehouse$ = warehouseService.selectedWarehouse$.pipe(map((w) => w));
+    this.selectedWarehouse$ = warehouseService.selectedWarehouse$;
   }
 
   ngOnInit(): void {

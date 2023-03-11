@@ -7,6 +7,7 @@ import { UsersComponent } from '../users/users.component';
 import { AdsComponent } from './ads/ads.component';
 import { BrandsComponent } from './brands/brands.component';
 import { CouponsComponent } from './coupons/coupons.component';
+import { DepartmentComponent } from './department/department.component';
 import { InfoViewComponent } from './info-view.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { OrdersTrackingComponent } from './order-tracking/orders-tracking.component';
@@ -31,6 +32,7 @@ const routes: Routes = [
           import('./analytics/analytics.module').then((m) => m.AnalyticsModule),
       },
       { path: 'brands', component: BrandsComponent },
+      { path: 'department', component: DepartmentComponent },
       { path: 'ads', component: AdsComponent },
       { path: 'users', component: UsersComponent },
       { path: 'notifications', component: NotificationsComponent },

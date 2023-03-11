@@ -401,7 +401,7 @@ export class ReservationsComponent implements OnInit {
     const user = this.auth.userData$.value;
 
     if (!user) {
-      return;
+      return null;
     }
 
     const ref = collection(

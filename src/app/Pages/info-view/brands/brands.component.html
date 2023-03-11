@@ -1,37 +1,24 @@
-<h1>Brands</h1>
+<h1>Marca</h1>
 <mat-form-field class="example-full-width" appearance="fill">
   <mat-label>Buscar</mat-label>
   <input matInput placeholder="Buscar" [formControl]="searchForm" />
   <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
 <app-warehouse></app-warehouse>
-<button
-  mat-raised-button
-  color="primary"
-  style="float: right"
-  (click)="newQuestions()"
-  *ngIf="selectedWarehouse?.name === 'General'"
->
-  Agregar Categoria
+<button mat-raised-button color="primary" style="float: right" (click)="newQuestions()"
+  *ngIf="selectedWarehouse?.name === 'General'">
+  Agregar Marca
 </button>
 
 <mat-tab-group style="width: 100%;   height: calc(100% - 200px); overflow-y: scroll;">
   <mat-tab label="Banner">
-    <mat-list
-      role="list"
-      style="overflow: scroll; margin-bottom: 40px; height: fit-content"
-      *ngFor="let brands of brands$ | async | keyvalue"
-    >
+    <mat-list role="list" style="overflow: scroll; margin-bottom: 40px; height: fit-content"
+      *ngFor="let brands of brands$ | async | keyvalue">
       <h3 style="font-weight: 800; margin: 10px; font-size: 20px">
         {{ brands.key }}
       </h3>
-      <app-dragable-list
-        [brands]="brands.value"
-        (toggleEdit)="editQuestions($event)"
-        (toggleDel)="deleteBrand($event)"
-        (openBrandProd)="openBrandProd($event)"
-        (orderRanking)="storeOrder($event)"
-      ></app-dragable-list>
+      <app-dragable-list [brands]="brands.value" (toggleEdit)="editQuestions($event)" (toggleDel)="deleteBrand($event)"
+        (openBrandProd)="openBrandProd($event)" (orderRanking)="storeOrder($event)"></app-dragable-list>
     </mat-list>
   </mat-tab>
   <mat-tab label="Circulo">
@@ -39,110 +26,63 @@
       <h3 style="font-weight: 800; margin: 10px; font-size: 20px">
         {{ brands.key }}
       </h3>
-      <app-dragable-circle
-        [elements]="brands.value"
-        (toggleEdit)="editQuestions($event)"
-        (toggleDel)="deleteBrand($event)"
-        (openBrandProd)="openBrandProd($event)"
-        (orderRanking)="storeOrder($event)"
-      ></app-dragable-circle>
+      <app-dragable-circle [elements]="brands.value" (toggleEdit)="editQuestions($event)"
+        (toggleDel)="deleteBrand($event)" (openBrandProd)="openBrandProd($event)"
+        (orderRanking)="storeOrder($event)"></app-dragable-circle>
     </div>
   </mat-tab>
 </mat-tab-group>
 
 <mat-drawer #new_brand_drawer class="example-sidenav" mode="over" position="end">
   <h4>
-    Agregar Brand
-    <button
-      mat-icon-button
-      style="float: right"
-      (click)="new_brand_drawer.toggle()"
-    >
+    Agregar Marca
+    <button mat-icon-button style="float: right" (click)="new_brand_drawer.toggle()">
       <mat-icon>close</mat-icon>
     </button>
   </h4>
-  <mat-progress-bar
-    *ngIf="loading === true"
-    mode="indeterminate"
-  ></mat-progress-bar>
+  <mat-progress-bar *ngIf="loading === true" mode="indeterminate"></mat-progress-bar>
 
   <form [formGroup]="form" *ngIf="questions != null">
-    <div
-      class="form-row"
-      style="
+    <div class="form-row" style="
         max-width: 400px;
         display: block;
         margin-left: auto;
         margin-right: auto;
-      "
-    >
-      <app-question
-        *ngFor="let q of questions.questions"
-        [question]="q"
-        [form]="form"
-        [idx]="0"
-        (fileUpload)="setImage($event)"
-      >
+      ">
+      <app-question *ngFor="let q of questions.questions" [question]="q" [form]="form" [idx]="0"
+        (fileUpload)="setImage($event)">
       </app-question>
       <app-warehouse></app-warehouse>
     </div>
-    <button
-      mat-button
-      
-      (click)="brandAction('brand.create', new_brand_drawer)"
-    >
+    <button mat-button (click)="brandAction('brand.create', new_brand_drawer)">
       Guardar
     </button>
   </form>
 </mat-drawer>
 
-<mat-drawer
-  #edit_prod_drawer
-  class="example-sidenav"
-  mode="over"
-  position="end"
-  style="margin-bottom: 40px; overflow-y: scroll"
->
+<mat-drawer #edit_prod_drawer class="example-sidenav" mode="over" position="end"
+  style="margin-bottom: 40px; overflow-y: scroll">
   <h4>
-    Editar Brand
-    <button
-      mat-icon-button
-      style="float: right"
-      (click)="edit_prod_drawer.toggle()"
-    >
+    Editar Marca
+    <button mat-icon-button style="float: right" (click)="edit_prod_drawer.toggle()">
       <mat-icon>close</mat-icon>
     </button>
   </h4>
-  <mat-progress-bar
-    *ngIf="loading === true"
-    mode="indeterminate"
-  ></mat-progress-bar>
+  <mat-progress-bar *ngIf="loading === true" mode="indeterminate"></mat-progress-bar>
 
   <form [formGroup]="form" *ngIf="questions != null">
-    <div
-      class="form-row"
-      style="
+    <div class="form-row" style="
         max-width: 400px;
         display: block;
 
         margin-left: auto;
         margin-right: auto;
-      "
-    >
-      <app-question
-        *ngFor="let q of questions.questions"
-        [question]="q"
-        [form]="form"
-        [idx]="0"
-      >
+      ">
+      <app-question *ngFor="let q of questions.questions" [question]="q" [form]="form" [idx]="0">
       </app-question>
       <app-warehouse></app-warehouse>
     </div>
-    <button
-      mat-button
-     
-      (click)="brandAction('brand.update', edit_prod_drawer)"
-    >
+    <button mat-button (click)="brandAction('brand.update', edit_prod_drawer)">
       Guardar
     </button>
   </form>
@@ -159,7 +99,7 @@
   <mat-accordion>
     <mat-expansion-panel #editProd>
       <mat-expansion-panel-header>
-        <mat-panel-title >Producto</mat-panel-title>
+        <mat-panel-title>Producto</mat-panel-title>
       </mat-expansion-panel-header>
       <app-product></app-product>
     </mat-expansion-panel>
@@ -167,7 +107,8 @@
       <mat-expansion-panel-header>
         <mat-panel-title>Alterar Catalogo de Producto</mat-panel-title>
       </mat-expansion-panel-header>
-      <app-dragrable-product-list (editProdEvent)="editProd.toggle()"  (saveProdEvent)="saveProd($event)" (deleteProdEvent)="deleteProd($event)"></app-dragrable-product-list>
+      <app-dragrable-product-list (editProdEvent)="editProd.toggle()" (saveProdEvent)="saveProd($event)"
+        (deleteProdEvent)="deleteProd($event)"></app-dragrable-product-list>
     </mat-expansion-panel>
   </mat-accordion>
 </mat-drawer>

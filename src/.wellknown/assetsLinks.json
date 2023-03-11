@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.Brixar.VaporLabs",
+      "sha256_cert_fingerprints":
+        ["BD:E9:67:6F:77:6B:C8:D2:70:9B:6B:8A:6C:08:64:DB:F1:C4:A8:66:7F:8B:C0:76:C4:E1:C0:AE:46:00:49:1B"]
+    }
+  }
+]

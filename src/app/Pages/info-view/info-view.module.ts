@@ -44,6 +44,7 @@ import { RepresentativesComponent } from './representatives/representatives.comp
 import { ReservationsComponent } from '../reservations/reservations.component';
 import { TimeComponent } from 'src/app/Components/time/time.component';
 import { OrdersTrackingComponent } from './order-tracking/orders-tracking.component';
+import { DepartmentComponent } from './department/department.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { OrdersTrackingComponent } from './order-tracking/orders-tracking.compon
     NotificationsComponent,
     OrdersTrackingComponent,
     TimeComponent,
-    RepresentativesComponent
+    RepresentativesComponent,
+    DepartmentComponent
 ],
   imports: [
     CommonModule,

@@ -7,17 +7,25 @@
   "targets": {
     "prty-dev": {
       "hosting": {
-        "MKWeb": [
+        "PRTYWeb": [
           "prty-dev"
         ]
       }
     },
     "maskkingapp": {
       "hosting": {
-        "MKWeb": [
+        "PRTYWeb": [
           "maskkingapp"
         ]
       }
+    },
+    "gala-muebles": {
+      "hosting": {
+        "PRTYWeb": [
+          "gala-muebles"
+        ]
+      }
     }
-  }
+  },
+  "etags": {}
 }

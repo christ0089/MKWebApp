@@ -1,6 +1,5 @@
 import { CdkDragDrop, CdkDragEnter, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit, EventEmitter, Output} from '@angular/core';
-import { IBrands } from 'src/app/Models/DataModels';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-dragable-circle',
@@ -10,12 +9,12 @@ import { IBrands } from 'src/app/Models/DataModels';
 export class DragableCircleComponent implements OnInit {
 
 
-  @Input() elements!: IBrands[];
-  @Output() toggleEdit: EventEmitter<IBrands> = new EventEmitter<IBrands>();
-  @Output() toggleDel: EventEmitter<IBrands> = new EventEmitter<IBrands>();
-  @Output() openBrandProd: EventEmitter<IBrands> = new EventEmitter<IBrands>();
-  @Output() orderRanking: EventEmitter<IBrands[]> = new EventEmitter<
-    IBrands[]
+  @Input() elements!: any[];
+  @Output() toggleEdit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() toggleDel: EventEmitter<any> = new EventEmitter<any>();
+  @Output() openBrandProd: EventEmitter<any> = new EventEmitter<any>();
+  @Output() orderRanking: EventEmitter<any[]> = new EventEmitter<
+    any[]
   >();
 
   constructor() { }
@@ -48,15 +47,15 @@ export class DragableCircleComponent implements OnInit {
   }
 
 
-  editBrand(brand: IBrands) {
+  editBrand(brand: any) {
     this.toggleEdit.emit(brand);
   }
 
-  deleteBrand(brand: IBrands) {
+  deleteBrand(brand: any) {
     this.toggleDel.emit(brand);
   }
 
-  openBrand(brand: IBrands) {
+  openBrand(brand: any) {
     this.openBrandProd.emit(brand);
   }
 

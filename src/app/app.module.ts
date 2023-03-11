@@ -19,7 +19,7 @@ import { MatTableModule } from '@angular/material/table';
 import { AuthGuard } from './Guard/auth.guard';
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,

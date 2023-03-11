@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "MKWeb": {
+    "PRTYWeb": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/MKWeb",
+            "outputPath": "dist/PRTYWeb",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -28,7 +28,8 @@
             "inlineStyleLanguage": "sass",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/.wellknown"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
@@ -73,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "MKWeb:build:production"
+              "browserTarget": "PRTYWeb:build:production"
             },
             "development": {
-              "browserTarget": "MKWeb:build:development"
+              "browserTarget": "PRTYWeb:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -84,7 +85,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "MKWeb:build"
+            "browserTarget": "PRTYWeb:build"
           }
         },
         "test": {
@@ -111,7 +112,7 @@
           "options": {
             "prerender": false,
             "ssr": false,
-            "browserTarget": "MKWeb:build:production",
+            "browserTarget": "PRTYWeb:build:production",
             "firebaseProject": "prty-dev",
             "firebaseHostingSite": "prty-dev"
           }
@@ -119,5 +120,5 @@
       }
     }
   },
-  "defaultProject": "MKWeb"
+  "defaultProject": "PRTYWeb"
 }

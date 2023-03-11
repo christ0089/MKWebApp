@@ -1,7 +1,7 @@
 {
   "hosting": {
-    "target": "MKWeb",
-    "public": "dist/MKWeb",
+    "target": "PRTYWeb",
+    "public": "dist/PRTYWeb",
     "ignore": [
       "**/.*"
     ],
